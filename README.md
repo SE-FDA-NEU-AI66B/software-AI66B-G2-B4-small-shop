@@ -7,7 +7,10 @@ One-paragraph description of what your team is building goes here.
 
 | Name | GitHub username | Role |
 | --- | --- | --- |
+
 | Trần Ngọc Mai đã bị hà vy thao túng |ngocmai141106 | |
+
+| Trần Ngọc Mai đã sửa dòng này |ngocmai141106 | |
 |Trần Phương Oanh|oanhtran020906-sys| |
 |Nguyễn Đỗ Ánh Dương|aizun| |
 |Nguyễn Hà Vy|HaVy2006| |
@@ -20,7 +23,6 @@ cd <repo-name>
 ```
 
 this is aizun line. muahahahaha =))))
-<<<<<<< HEAD
 this is hà vy
 this is sencond aizun line. heheheheheh =)))))
 nuoc loc
