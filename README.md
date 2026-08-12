@@ -7,7 +7,7 @@ One-paragraph description of what your team is building goes here.
 
 | Name | GitHub username | Role |
 | --- | --- | --- |
-| Trần Ngọc Mai |ngocmai141106 | |
+| Trần Ngọc Mai đã bị hà vy thao túng |ngocmai141106 | |
 |Trần Phương Oanh|oanhtran020906-sys| |
 |Nguyễn Đỗ Ánh Dương|aizun| |
 |Nguyễn Hà Vy|HaVy2006| |
