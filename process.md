@@ -52,7 +52,7 @@ The instructor mainly provides feedback during classes, consultations, and proje
 
 ### 5. What do organizational culture and contract constraints allow?
 
-The course has four fixed milestones and a final demo date, so our team needs a clear plan to stay on schedule. However, between milestones, we can still adjust task priorities, detailed requirements, and forecasting models based on actual results. This makes an Incremental process with Agile practices suitable for our project.
+The course has four fixed milestones and a final demo date, so our team needs a clear plan to stay on schedule. However, between milestones, we can still adjust task priorities, detailed requirements, and forecasting models based on actual results. This makes a hybrid Spiral process with Agile practices suitable for our project.
 
 ## Section 3 - Critical thinking: risks of the opposite choice
 
