@@ -1,10 +1,10 @@
-# <YUMS (YoU Manage your Shop) >
+# YUMS (YoU Manage your Shop)
 
-<A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.>
+A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 
-**Group:** G2 **Thành viên:** @oanhtran @aizun @ngocmai141106 @HaVy2006
-**Product Owner (cố định cả kỳ):** @oanhtran
-**Scrum Master (luân phiên mỗi sprint):** @ngocmai141106 (Sprint 1)
+**Group:** G2 · **Members:** @oanhtran @aizun @ngocmai141106 @HaVy2006  
+**Product Owner (fixed for the semester):** @oanhtran  
+**Scrum Master (rotates each sprint):** @ngocmai141106 (Sprint 1)  
 **Board:** https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1
 
 ## Run
