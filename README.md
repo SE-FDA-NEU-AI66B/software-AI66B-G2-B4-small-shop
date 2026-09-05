@@ -1,20 +1,14 @@
-# software-AI66B-G2-B4-small-shop
-# Team Project
+# YUMS (YoU Manage your Shop)
 
-One-paragraph description of what your team is building goes here.
+A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 
-## Team
+**Group:** G2 · **Members:** @oanhtran @aizun @ngocmai141106 @HaVy2006  
+**Product Owner (fixed for the semester):** @oanhtran  
+**Scrum Master (rotates each sprint):** @ngocmai141106 (Sprint 1)  
+**Board:** https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1
 
-| Name | GitHub username | Role |
-| --- | --- | --- |
-| Trần Ngọc Mai |ngocmai141106 | |
-|Trần Phương Oanh|oanhtran020906-sys| |
-|Nguyễn Đỗ Ánh Dương|aizun|Database manager|
-|Nguyễn Hà Vy|HaVy2006| |
-
-## Setup
+## Run
 
 ```bash
-git clone <this-repo-url>
-cd <repo-name>
-```
+git clone https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop.git
+cd software-AI66B-G2-B4-small-shop
