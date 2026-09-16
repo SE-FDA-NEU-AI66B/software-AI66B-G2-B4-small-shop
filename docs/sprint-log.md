@@ -4,7 +4,7 @@ One section per sprint. Fill it in **during** the sprint, not the night before
 the milestone deadline - the commit timestamps on this file are part of the
 evidence that the process was real.
 
----
+--- sample - delete later ---
 
 ## Sprint N - <start date> to <end date>
 
@@ -27,6 +27,60 @@ has no goal and you are just doing tasks.>
 | Issue | Story | Points | Owner |
 |-------|-------|--------|-------|
 | #     |       |        | @     |
+
+**Total committed: __ points**
+
+### Result
+
+| Issue | Points | Status | If not done, why |
+|-------|--------|--------|------------------|
+| #     |        | Done / Carried over | |
+
+**Completed: __ points. Velocity this sprint: __**
+
+### Sprint Review
+
+- What we demonstrated:
+- Feedback received:
+- Backlog changes as a result:
+
+### Retrospective
+
+| Keep doing | Stop doing | Start doing |
+|------------|------------|-------------|
+|            |            |             |
+
+**One concrete action for next sprint (with an owner):**
+
+<!-- A retro that produces no action item is a complaint session.
+     Exactly one action, one owner, checked at the next retro. -->
+
+### Attendance
+
+| Member | Planning | Review | Retro |
+|--------|----------|--------|-------|
+| @      |          |        |       |
+
+--- real sprint log ---
+## Sprint 1 - 16/09/2026 to 21/09/2026
+### Sprint goal
+
+Collect and prepare project requirements.
+
+### Hai chore issue bắt buộc
+
+| Issue | Người làm | Đã đóng? |
+|-------|-----------|----------|
+| [Chore] Refine backlog cho Sprint 1 | @oanhtran020906-sys (PO) | |
+| [Chore] Sprint 1 wrap-up | @HaVy2006 (SM) | |
+
+### Committed
+
+| Issue | Story | Points | Owner |
+|-------|-------|--------|-------|
+| #16   |       |        | @     |
+| #17   |       |        |       |
+| #18   |       |        |       |
 
 **Total committed: __ points**
 
