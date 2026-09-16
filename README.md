@@ -7,6 +7,18 @@ A demand forecasting tool designed for small retail stores. The system allows us
 **Scrum Master (rotates each sprint):** @ngocmai141106 (Sprint 1)  
 **Board:** https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1
 
+| Criteria      | Info                                      |
+|-------------- |-------------------------------------------|
+| Group         | G2                                        |
+| Members       | @oanhtran @aizun @ngocmai141106 @HaVy2006 |
+| Product Owner | @oanhtran                                 |
+| Board         | https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1 |
+
+|Sprint No.  | Scum Master | Scum Master's account |
+|----------- | ----------- | --------------------- |
+|1           |Tran Ngoc Mai| @ngocmai141106 |
+|2           | ... | ... |
+
 ## Run
 
 ```bash
