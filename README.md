@@ -2,11 +2,6 @@
 
 A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 
-**Group:** G2 · **Members:** @oanhtran @aizun @ngocmai141106 @HaVy2006  
-**Product Owner (fixed for the semester):** @oanhtran  
-**Scrum Master (rotates each sprint):** @ngocmai141106 (Sprint 1)  
-**Board:** https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1
-
 | Criteria      | Info                                      |
 |-------------- |-------------------------------------------|
 | Group         | G2                                        |
@@ -14,9 +9,9 @@ A demand forecasting tool designed for small retail stores. The system allows us
 | Product Owner | @oanhtran                                 |
 | Board         | https://github.com/orgs/SE-FDA-NEU-AI66B/projects/8/views/1 |
 
-|Sprint No.  | Scum Master | Scum Master's account |
+|Sprint No.  | Scrum Master | Scrum Master's account |
 |----------- | ----------- | --------------------- |
-|1           |Tran Ngoc Mai| @ngocmai141106 |
+|1           | Nguyen Ha Vy | @HaVy2006 |
 |2           | ... | ... |
 
 ## Run
