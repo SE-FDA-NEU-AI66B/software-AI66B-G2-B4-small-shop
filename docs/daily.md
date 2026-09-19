@@ -8,3 +8,7 @@
 
 ## 18/09/2026
 - @ngocmai141106: Switched the task into In progress. Filled in the basic idea for manager's US. No acceptance criteria nor Task included yet. The file is unbeta-ed.
+
+## 19/9/2026
+- @oanhtran020906-sys: switched the task into In Progress. completed 5 employee's US, with priorities and story points assigned to each one. 
+- @oanhtran020906-sys: added the relevant business rules to clarify the expected system behavior.
