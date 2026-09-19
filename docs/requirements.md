@@ -1,12 +1,58 @@
 # Milestone 1 - Requirements Document
 ## Product vision
-**to be filled later**
+YUMS (YoU Manage your Shop) is a management website designed for small food and beverage (F&B) shop owners. It provides a centralized system to handle day-to-day operations, long-term information tracking, and specially customized to fit small shops' requirements and preferences in simplicity.
 
 ## Personas    
-**to be filled later**
+
+**1. My Doan, shop manager of Rot Rot cafe, 24**
+Ms Doan is a shop manager of a take-away coffee shop. She stays at the shop the entire day through all 3 shifts. She makes coffee, buys ingredients, and supervises her employees. She use notebooks and a selling app from iPOS to manage the store. 
+- Goal: Manage employees and inventory simply, can get rid of physical notebooks.
+- Pain: The current selling app does not provide enough features, keeping multiple notebooks for each mission.
+- In her words: *"I'm keeping multiple notes, and that's messy"* (interviewed on 17th Sep 2026).
+- Technical skills: very familiar, use both phone, laptop, selling machines from iPOS.
+
+**2. Viet, shop owner of Banh Trang Be My, 33**
+Mr Viet is a shop owner of a branch store of Banh Trang Be My. He and his wife make contact with other siblings on Group chat to report financial condition and to provide ingredients. His shop serve both take-away and dine-in. He use a selling system so the customers can make orders by scanning a QR code on the table. 
+- Goal: A clear and precise revenues and profit reports with visualization.
+- Pain: The current app does not provide tracking expenses. He can only see the total revenue but cannot calculate the profit.
+- In his words: *"This is just a selling app, not a managing app so it doesn't have the expenses tracking"* (interviewed on 17th Sep 2026).
+- Technical skills: basic, phone only, doesn't have a laptop.
+
+**3. Linh, employee of Ot Chuong Mart, 42**
+Mrs Linh is a part-time cashier of Ot Chuong Mart. She sits at the cashier desk, create bills on a computer, and some times check inventory at the end of the day. The mart is crowded most of the time, so the queue is usually quite long.
+- Goal: make payment for each customer as quick and simple as possible.
+- Pain: the names of the products are weird, hard to remember to lookup in the system. Creating new customer may take time, lenghthen the waiting time of the queue.
+- In her words: *"but if there's a long queue, asking every single customer for their phone number would take lots of time and the waiting customer would be mad and make complaints."* 
+- Technical skills: as a middle-age, she struggles with technology, required training before she hiring.
+
 
 ## Scenarios    
-**to be filled later**
+**1. My Doan checks for Inventory**
+1. At the end of the day, Ms Doan wants to check for expired ingredients.
+2. She opens the app, check the *'Inventory'* section.
+3. The app shows all the ingredients she is having, bought date and expired date, with warning flags.
+4. She select the *'expired'* products, the app shows a list.
+5. She takes the expired ingredients from the fridge and the counter, destroy them.
+6. She comes back the the app, press *'destroyed all'* (or select what she has destroyed)
+7. The app shows pop-ups, confirm, and delete the destroyed products/ingredients.
+
+**2. Viet calculates the profit**
+1. Viet buying the ingredients to prepare for today.
+2. He opens the *'Sales'* section, note down the expenses, the cost of his shopping.
+3. The app confirms his expenditure. He close the app.
+4. After a long day, all the orders and revenue are recorded. He open the *'Sales* section again.
+5. The app shows the dashboards, numbers, calculated profit, revenue, expenses on the top of the page.
+6. He saw the report, feels happy with eye-pleasing charts, press *'Export Dashboard'*.
+7. The system download an image or a PDF file of the dashboard to his device, and show confirms.
+
+**3. Linh creates a new customer profile**
+1. Linh is checking out for this new customer, before they pay, she asks for the customer's information.
+2. She press *'New customer'* button right on the order page.
+3. The app shows the boxes, input bars,... for Linh to write the customer's details in.
+4. She writes the customer info.
+5. She doubled checks, and press *'Confirm'*
+6. The app shows notification of success, the new customer has been saved to the system.
+
 
 ## User stories 
 ### US01: Order creation - P0 - points: 5
