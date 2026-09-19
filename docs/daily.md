@@ -5,3 +5,6 @@
 
 ## 17/09/2026
 - @aizun: conducted 2 interviews. recorded into audios. wrote the answers in answers forms.
+
+## 18/09/2026
+- @ngocmai141106: Switched the task into In progress. Filled in the basic idea for manager's US. No acceptance criteria nor Task included yet. The file is unbeta-ed.
