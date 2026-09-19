@@ -11,3 +11,4 @@
 
 ## 19/09/2026
 - @oanhtran020906-sys: filled in the idea for employee's US with priority and points assigned to each one.
+- @oanhtran020906-sys: added 6 business rules.

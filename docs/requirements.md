@@ -270,3 +270,52 @@ As a manager, I want to be able to add or edit an employee or view my employees 
 - New employee addition/existing employee editing form
 - Empty-state handling when there’s no employee yet
 - Test for validation
+
+## Business Rules
+### BR1: Unavailable products cannot be added to an order
+
+A product that is unavailable for sale must not be added to a new or existing order.
+
+***Worked example:***
+A product is marked as unavailable. When an employee tries to add it to an order, the system rejects the action and displays “Product is not available”.
+
+### BR2: An order cannot be completed before payment is confirmed
+
+An order with “Before-payment” status must remain incomplete until its payment has been confirmed.
+
+***Worked example:***
+An order is currently “Before-payment”. When an employee tries to complete the order without confirming payment, the order remains “Before-payment”.
+
+### BR3: Only paid orders can be printed as completed purchase receipts
+
+The system must not generate a completed-purchase receipt for an order that has not been marked as “Paid”.
+
+***Worked example:***
+An order is still “Before-payment”. When an employee tries to print its receipt, the system prevents the receipt from being generated as a completed purchase receipt.
+
+### BR4: Products kept for 7 days without being sold are considered expired
+
+A product that remains in inventory for 7 days without being sold must be labeled “Expired” and excluded from the ready-to-sell list.
+
+***Worked example:***
+An item has been stocked for 7 days and has not been sold. The system labels it “Expired” and hides it from the ready-to-sell list.
+
+### BR5: Products at or below the minimum stock quantity are considered low-stock
+
+A product must be labeled “Low-stock” when its current quantity reaches or falls below its configured minimum stock quantity. The label must disappear when its quantity is above that threshold.
+
+***Worked example:***
+A product has a minimum stock quantity of 3. When its quantity is 3, the system displays “Low-stock”. After restocking it to 4, the label disappears.
+
+### BR6: Customer membership tier is determined by total spending
+
+A customer's membership tier must be automatically assigned according to their recorded total spending:
+
+- Bronze: > $50
+- Silver: > $100
+- Gold: > $150
+
+***Worked example:***
+A customer has spent $52 in total, so the system assigns Bronze. When their total spending reaches $110, the system upgrades them to Silver.
+
+## Screens and flow
