@@ -365,3 +365,28 @@ A customer's membership tier must be automatically assigned according to their r
 A customer has spent $52 in total, so the system assigns Bronze. When their total spending reaches $110, the system upgrades them to Silver.
 
 ## Screens and flow
+Note: E = employee; M = manager.    
+
+| # | Route | Purpose | Access | Priority |
+|---|-------|---------|--------|----------|
+| 01 | /login | Login the system (with the right role). | E M | P0 |
+| 02 | /order | Defaultly show the order list - how many based on the role, and access to other functional buttons. | E M | P1 |
+| 03 | /order/new | Create new order. | E M | P0 |
+| 04 | /order/{id} | View an order’s detailed information. | E M | P1 |
+| 05 | /order/{id}/paymen | Switch and unpaid order to Paid status. | E M | P0 |
+| 06 | /inventory | Defaultly show all inventory items with some basic information (and label if any). | M | P0 |
+| 07 | /inventory/new | Add new items to the inventory. | M | P0 |
+| 08 | /inventory/{id} | View an item’s detailed information. | M | P1 |
+| 09 | /inventory{id}/edit | Edit an item’s information, including expiry date and low-stock threshold. | M | P0 |
+| 10 | /inventory/{id}/delete | Delete an item. | M | P0 |
+| 11 | /sales | Show daily/weekly/monthly sales reports. | M | P0 |
+| 12 | /customer | Defaultly show all customers with some basic information. | M | P1 |
+| 13 | /customer/new | Add new customers to the inventory. | M | P0 |
+| 14 | /customer/{id} | View a customer’s detailed information. | M | P1 |
+| 15 | /customer/{id}/edit | Edit a customer’s information (except their membership tier and spent money). | M | P0 |
+| 16 | /customer/{id}/delete | Delete a customer. | M | P0 |
+| 17 | /employee | Defaultly show all employees with some basic information. | M | P1 |
+| 18 | /employee/new | Add new employees to the inventory. | M | P1 |
+| 19 | /employee/{id} | View an employee’s detailed information. | M | P1 |
+| 20 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
+| 21 | /employee/{id}/delete | Delete an employee. | M | P1 |

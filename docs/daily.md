@@ -10,5 +10,7 @@
 - @ngocmai141106: Switched the task into In progress. Filled in the basic idea for manager's US. No acceptance criteria nor Task included yet. The file is unbeta-ed.
 
 ## 19/09/2026
+- @ngocmai141106: Finished manager's US part. Priority and assigned point be decided later.
 - @oanhtran020906-sys: filled in the idea for employee's US with priority and points assigned to each one.
 - @oanhtran020906-sys: added 6 business rules.
+- @ngocmai141106: Added screenlist t Screen and Flow part.
