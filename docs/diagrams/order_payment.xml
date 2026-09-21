@@ -1,0 +1,44 @@
+@startuml
+
+title Order Payment Sequence Diagram
+
+actor Employee
+participant "/order"
+participant "/order/{id}"
+participant "/order/{id}/payment"
+participant backend
+database "Order Database" as DB
+
+Employee -> "/order" : select a specific order
+"/order" -> "/order/{id}" : show order details
+
+Employee -> "/order/{id}" : press 'Payment'
+"/order/{id}" -> "/order/{id}/payment" : open payment page
+
+"/order/{id}/payment" -> backend : send order_id, call API 'get_order'
+backend -> DB : get order information
+DB --> backend : order details + payment status
+backend --> "/order/{id}/payment" : show payment information
+
+alt Order is not paid
+
+    Employee -> "/order/{id}/payment" : choose payment method\nand press 'Paid'
+
+    "/order/{id}/payment" -> backend : send order_id + payment method,\ncall API 'pay_order'
+
+    backend -> DB : update order status to Paid
+    DB --> backend : payment updated successfully
+
+    backend --> "/order/{id}/payment" : payment success
+    "/order/{id}/payment" --> Employee : display payment success\nand show receipt
+
+else Order is already paid
+
+    "/order/{id}/payment" --> Employee : display "Order is already paid"
+
+end
+
+Employee -> "/order/{id}/payment" : press 'Exit'
+"/order/{id}/payment" -> "/order" : return to order list
+
+@enduml
