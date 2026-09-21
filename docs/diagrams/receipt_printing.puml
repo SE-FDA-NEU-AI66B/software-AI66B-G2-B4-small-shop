@@ -1,0 +1,31 @@
+@startuml
+
+title Receipt Printing Sequence Diagram
+
+actor "Employee" as Employee
+participant "Receipt UI" as UI
+participant "Receipt Service" as Service
+database "Order Database" as DB
+participant "Receipt Printer" as Printer
+
+Employee -> UI : requestReceiptPrint(orderId)
+
+UI -> Service : printReceipt(orderId)
+
+Service -> DB : getOrderPaymentStatus(orderId)
+DB --> Service : order details + payment status
+
+alt Order is paid
+    Service -> Service : generateCompletedReceipt(orderDetails)
+
+    Service -> Printer : printReceipt(receiptData)
+    Printer --> Service : printSuccess
+
+    Service --> UI : receiptPrinted()
+    UI --> Employee : displayPrintSuccess()
+else Order is not paid
+    Service --> UI : paymentRequired()
+    UI --> Employee : displayPaymentRequired()
+end
+
+@enduml
