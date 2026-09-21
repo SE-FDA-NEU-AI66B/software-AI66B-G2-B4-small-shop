@@ -1,0 +1,36 @@
+@startuml
+title Order
+
+actor Employee
+participant "/login"
+participant "/home"
+participant "/order"
+participant "/order/{id}"
+participant "/order/new"
+participant "/order/{id}/payment"
+
+Employee->"/login": insert user name and password
+"/login" -> "/home": login success
+
+Employee -> "/home": choose 'Order' button
+"/home"-> "/order": 
+
+group Select order
+Employee -> "/order": select a specific order
+"/order" -> "/order/{id}":
+"/order/{id}" -> backend: send JSON of order_id, call API 'get_order'
+return show order details
+end
+
+group Create new order
+Employee -> "/order": 'create new order' button
+"/order"-> "/order/new":
+Employee -> "/order/new": insert order information and press 'Confirm'
+"/order/new" -> "/order/{id}/payment": 
+Employee -> "/order/{id}/payment": choose payment method, and press 'Paid'
+"/order/{id}/payment" -> backend: send JSON, call API 'create_new_order'
+return confirm, notice order success and show bill
+"/order/{id}/payment" -> "/order": press 'exit' button
+end
+
+@enduml
