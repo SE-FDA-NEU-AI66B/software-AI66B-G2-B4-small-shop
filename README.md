@@ -12,7 +12,7 @@ A demand forecasting tool designed for small retail stores. The system allows us
 |Sprint No.  | Scrum Master | Scrum Master's account |
 |----------- | ----------- | --------------------- |
 |1           | Nguyen Ha Vy | @HaVy2006 |
-|2           | ... | ... |
+|2           | Nguyen Do Anh Duong | @aizun |
 
 ## Run
 
