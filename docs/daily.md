@@ -14,3 +14,6 @@
 - @oanhtran020906-sys: filled in the idea for employee's US with priority and points assigned to each one.
 - @oanhtran020906-sys: added 6 business rules.
 - @ngocmai141106: Added screenlist t Screen and Flow part.
+
+## 27/09/2026
+- @aizun: created basic tasks for sprint 2, focused on database; update sprint 2 documents
