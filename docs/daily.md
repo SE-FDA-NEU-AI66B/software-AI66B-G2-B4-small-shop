@@ -17,3 +17,6 @@
 
 ## 27/09/2026
 - @aizun: created basic tasks for sprint 2, focused on database; update sprint 2 documents
+
+## 02/10/2026
+- @ngocmai141106: Finished pushing all required files for Order interfaces. Finished the Design decisions part in the design file.
