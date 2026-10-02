@@ -412,6 +412,29 @@ A customer's membership tier must be automatically assigned according to their r
 ***Worked example:***
 A customer has spent $52 in total, so the system assigns Bronze. When their total spending reaches $110, the system upgrades them to Silver.
 
+### BR7: Demand forecast is based on historical sales data
+
+The system must generate demand forecasts using the shop's recorded historical sales data for the relevant products.
+
+***Worked example:*** 
+A product has recorded sales history in the system. When the manager requests a demand forecast, the system uses the recorded sales data to generate the predicted demand for the selected period.
+
+### BR8: Forecast period must be weekly or monthly
+
+The system must support demand forecasting for either the upcoming week or the upcoming month.
+
+***Worked example:*** 
+When the manager selects the weekly forecast option, the system generates the predicted demand for the upcoming week. When the manager selects the monthly option, the system generates the predicted demand for the upcoming month.
+
+### BR9: Restock recommendation is based on predicted demand and current inventory
+
+The recommended restock quantity must be calculated by comparing the predicted demand with the product's current inventory quantity. The recommendation must not be negative.
+
+Recommended restock quantity = max(0, predicted demand - current inventory)
+
+***Worked example:*** 
+A product has a predicted demand of 20 units and current inventory of 8 units. The system recommends restocking 12 units. If the current inventory is 25 units, the system recommends 0 units.
+
 ## Screens and flow
 Note: E = employee; M = manager.    
 
