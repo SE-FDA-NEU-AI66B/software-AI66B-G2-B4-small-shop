@@ -22,3 +22,6 @@
 - @ngocmai141106: Finished pushing all required files for Order interfaces. Finished the Design decisions part in the design file.
 - @oanhtran020906-sys: add inventory page
 - @oanhtran020906-sys: add sales and profit dasboard and demand prediction and restock suggestion in sales page
+- @aizun: completed demo frontend for employee pages. need to add an kpi employee page. edit the customer pages. need to study about architecture, api. ughhh i'm suffering ToT these deadlines and requirements are too much, too urgent!!! imma oej oej
+- @oanhtran020906-sys: add inventory page
+- @aizun: 2nd daily update... i have fixed the customer FE pages, fix bug of database/seed.sql, and so much more that i can't remember at 10:35pm. this Sprint is truly madness!!! Tomorow, i will do some research about architecture, API design, then write to the official docs. then i will plan to write all the python backend, api, so the web can function so real. hopefully we can made it on Sunday night. Ugh! the workload of this sprint is just tooooo much ToT doing not only the design, but also make a running app (though just partial) in only 5 days????? like we only knew what to do on this Wed-30/09/26. 
