@@ -105,7 +105,7 @@ VALUES
 (1, 4, 'delivered');
 INSERT INTO `order_items` (`order_id`, `product_id`, `quantity`) 
 VALUES 
-(6, 1, 1);
+(4, 1, 1);
 
 SELECT * FROM inventory;
 SELECT * FROM products;
