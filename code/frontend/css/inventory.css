@@ -1,0 +1,76 @@
+table.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table.inventory-table th {
+    background-color: #F2EAE0;
+    color: var(--text-dark);
+    font-family: var(--font-content);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+table.inventory-table td {
+    padding: 16px 20px;
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+table.inventory-table tbody tr {
+    transition: background-color var(--transition-speed);
+}
+
+table.inventory-table tbody tr:hover {
+    background-color: var(--hover-beige);
+}
+
+table.inventory-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.item-sku {
+    font-weight: 600;
+    color: var(--bg-sidebar);
+    letter-spacing: 0.5px;
+}
+
+/* Badges for Inventory Statuses */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.badge-instock {
+    background-color: #E2EFCB;
+    color: #2E5A1C;
+    border: 1px solid #C4E197;
+}
+
+.badge-lowstock {
+    background-color: #FDF3D6;
+    color: #7A5B0B;
+    border: 1px solid #F5E1A4;
+}
+
+.badge-expired {
+    background-color: #F8D7DA;
+    color: #842029;
+    border: 1px solid #F5C2C7;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
