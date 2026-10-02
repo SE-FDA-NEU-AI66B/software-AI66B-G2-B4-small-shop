@@ -135,7 +135,7 @@ As an employee, I want to view my previous orders and their payment status so th
 
 - Test order filtering and information visibility
 
-### US04: Customer lookup and loyalty - P0 - points: 5
+### US04: Customer lookup and loyalty - P1 - points: 3
 
 As an employee, I want to search for a customer by phone number and see their loyalty information so that I can apply their customer information while processing an order.
 
@@ -215,7 +215,7 @@ As a manager, I want to be able to create, edit or confirm payment for orders li
 - Test for validation    
 
 
-### US08: Inventory management - P0 - points: 5    
+### US08: Inventory management - P1 - points: 3    
 As a manager, I want to see all the inventory lists as well as add or edit a product so that I can make better plans for budget and sales control, instead of just preparing the ingredients based on intuitions.    
 
 ***Acceptance criteria:***
@@ -316,6 +316,54 @@ As a manager, I want to be able to add or edit an employee or view my employees 
 - New employee addition/existing employee editing form
 - Empty-state handling when there’s no employee yet
 - Test for validation
+
+### US15: Demand forecasting - P0 - points: 5
+As a manager, I want to see the predicted demand for each product for the upcoming week or month so that I can prepare inventory based on expected sales instead of intuition.
+
+***Acceptance criteria:***
+- Given that the shop has enough historical sales data, when I select a weekly or monthly forecast, then the system should display the predicted demand for each relevant product for the selected period.
+- Given that the shop does not have enough historical sales data, when I request a forecast, then the system should display a notification indicating that there is not enough information to generate a forecast.
+- Given that a forecast has been generated, when I view the forecast, then the predicted demand and selected forecast period should be clearly displayed for each product.
+
+***Task:***
+- Select weekly or monthly forecast period
+- Retrieve historical sales data required for forecasting
+- Calculate predicted demand for each relevant product
+- Display predicted demand and forecast period
+- Handle insufficient-data state
+- Test forecast period selection and forecast visibility
+
+### US16: Restock recommendation - P0 - points: 5
+As a manager, I want to receive a recommended restock quantity for each product based on its predicted demand and current inventory so that I know how much to prepare for the upcoming period.
+
+***Acceptance criteria:***
+- Given that a product has a predicted demand of 20 units and a current inventory of 8 units, when the system generates a restock recommendation, then it should recommend restocking 12 units.
+- Given that a product's current inventory is greater than or equal to its predicted demand, when the system generates a restock recommendation, then the recommended restock quantity should be 0.
+- Given that a product requires restocking, when I view the recommendation, then the system should clearly indicate the recommended quantity for that product.
+
+***Task:***
+- Retrieve predicted demand for each product
+- Retrieve current inventory quantity
+- Calculate recommended restock quantity
+- Display restock recommendations
+- Handle products that do not require restocking
+- Test restock calculation and validation
+
+### US17: Forecast and restock planning - P1 - points: 3
+As a manager, I want to view demand forecasts and restock recommendations together so that I can make inventory purchasing decisions quickly.
+
+***Acceptance criteria:***
+- Given that demand forecasts and current inventory information are available, when I open the forecast and restock planning interface, then I should see each product's current inventory, predicted demand and recommended restock quantity.
+- Given that I select a weekly or monthly planning period, when the system loads the planning interface, then the displayed forecast and restock recommendation should correspond to the selected period.
+- Given that there is no product requiring additional inventory, when I view the planning interface, then the system should display that no restocking is currently recommended.
+
+***Task:***
+- Display current inventory quantity
+- Display predicted demand
+- Display recommended restock quantity
+- Support weekly and monthly planning periods
+- Handle empty restock recommendation state
+- Test forecast and restock information visibility
 
 ## Business Rules
 ### BR1: Unavailable products cannot be added to an order
