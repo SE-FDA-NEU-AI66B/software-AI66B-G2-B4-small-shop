@@ -1,0 +1,666 @@
+
+
+
+
+
+
+/* =========================================================
+   HEADER ACTION BUTTONS
+========================================================= */
+
+.header-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 5px;
+
+    width: 178px;
+}
+
+
+/* Back */
+
+.btn-secondary {
+    align-self: flex-end;
+
+    background-color: transparent;
+
+    border: 1px solid var(--border-color);
+
+    color: var(--text-dark);
+
+    padding: 9px 18px;
+
+    border-radius: 4px;
+
+    font-family: var(--font-content);
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+
+    transition: all var(--transition-speed);
+}
+
+.btn-secondary:hover {
+    background-color: var(--hover-beige);
+}
+
+
+/* Edit */
+
+.header-actions .btn-add {
+    width: 100%;
+
+    justify-content: center;
+
+    background-color: var(--color-accent-red);
+
+    color: var(--text-light);
+
+    border: 1px solid var(--color-accent-red);
+
+    padding: 11px 22px;
+
+    border-radius: 4px;
+
+    font-family: var(--font-content);
+
+    font-size: 0.88rem;
+
+    font-weight: 500;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: all var(--transition-speed) ease;
+}
+
+.header-actions .btn-add:hover {
+    background-color: #630202;
+
+    border-color: #630202;
+
+    box-shadow: 0 2px 6px rgba(127, 3, 3, 0.25);
+}
+
+
+/* =========================================================
+   CUSTOMER PROFILE CARD
+========================================================= */
+
+.customer-profile-card {
+    display: grid;
+
+    grid-template-columns: 220px 1fr;
+
+    gap: 35px;
+
+    width: 100%;
+
+    padding: 25px;
+
+    margin-bottom: 22px;
+
+    background-color: var(--card-bg);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   CUSTOMER AVATAR
+========================================================= */
+
+.customer-avatar-section {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: center;
+}
+
+.customer-avatar {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 12px;
+
+    border-radius: 50%;
+
+    background-color: var(--color-warm-beige);
+
+    color: var(--bg-sidebar);
+
+    font-family: var(--font-title);
+
+    font-size: 1.1rem;
+
+    font-weight: 600;
+}
+
+.customer-avatar-section h3 {
+    margin-bottom: 7px;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+}
+
+
+/* =========================================================
+   MEMBERSHIP BADGE
+========================================================= */
+
+.membership-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 10px;
+
+    border-radius: 12px;
+
+    font-size: 0.68rem;
+
+    font-weight: 500;
+
+    letter-spacing: 0.2px;
+}
+
+.membership-badge.gold {
+    background-color: #F5E7C6;
+
+    color: #7A5B0B;
+
+    border: 1px solid #E8D49E;
+}
+
+
+/* =========================================================
+   CUSTOMER INFORMATION
+========================================================= */
+
+.customer-info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    column-gap: 45px;
+
+    row-gap: 18px;
+
+    align-content: center;
+}
+
+.info-item {
+    min-width: 0;
+}
+
+.info-item label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.info-item p {
+    margin: 0;
+
+    color: var(--text-dark);
+
+    font-size: 0.85rem;
+
+    font-weight: 500;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* Status */
+
+.info-item:nth-child(5) p {
+    color: #2F7D45;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CUSTOMER STATISTICS
+========================================================= */
+
+.customer-stats {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+
+/* Statistic card */
+
+.stat-card {
+    min-width: 0;
+
+    padding: 17px 18px;
+
+    background-color: var(--card-bg);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card h4 {
+    margin-bottom: 9px;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.stat-card h2 {
+    margin: 0;
+
+    color: var(--text-dark);
+
+    font-size: 1.25rem;
+
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   RECENT ORDERS
+========================================================= */
+
+.table-wrapper {
+    width: 100%;
+
+    margin-bottom: 22px;
+}
+
+
+/* Section title */
+
+.section-header {
+    margin-bottom: 10px;
+}
+
+.section-header h3 {
+    font-family: var(--font-title);
+
+    color: var(--color-accent-red);
+
+    font-size: 1.35rem;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ORDERS TABLE
+========================================================= */
+
+.orders-table {
+    width: 100%;
+
+    min-width: 750px;
+
+    table-layout: fixed;
+
+    border-collapse: collapse;
+
+    text-align: left;
+
+    background-color: var(--card-bg);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+
+/* Table header */
+
+.orders-table th {
+    background-color: #F2EAE0;
+
+    color: var(--text-dark);
+
+    font-family: var(--font-content);
+
+    font-weight: 600;
+
+    font-size: 0.72rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    padding: 12px 14px;
+
+    border-bottom: 2px solid var(--border-color);
+
+    white-space: nowrap;
+}
+
+
+/* Table body */
+
+.orders-table td {
+    padding: 12px 14px;
+
+    font-size: 0.78rem;
+
+    color: var(--text-dark);
+
+    border-bottom: 1px solid var(--border-color);
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+
+/* Last row */
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Hover */
+
+.orders-table tbody tr {
+    transition: background-color var(--transition-speed);
+}
+
+.orders-table tbody tr:hover {
+    background-color: var(--hover-beige);
+}
+
+
+/* =========================================================
+   TABLE COLUMN WIDTHS
+========================================================= */
+
+.orders-table th:nth-child(1),
+.orders-table td:nth-child(1) {
+    width: 14%;
+}
+
+.orders-table th:nth-child(2),
+.orders-table td:nth-child(2) {
+    width: 15%;
+}
+
+.orders-table th:nth-child(3),
+.orders-table td:nth-child(3) {
+    width: 25%;
+}
+
+.orders-table th:nth-child(4),
+.orders-table td:nth-child(4) {
+    width: 17%;
+}
+
+.orders-table th:nth-child(5),
+.orders-table td:nth-child(5) {
+    width: 12%;
+}
+
+.orders-table th:nth-child(6),
+.orders-table td:nth-child(6) {
+    width: 17%;
+}
+
+
+/* =========================================================
+   ORDER STATUS
+========================================================= */
+
+.orders-table td:last-child {
+    color: #2F7D45;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+.customer-notes {
+    margin-top: 5px;
+}
+
+.customer-notes h3 {
+    margin-bottom: 9px;
+
+    font-family: var(--font-title);
+
+    color: var(--color-accent-red);
+
+    font-size: 1.35rem;
+
+    font-weight: 600;
+}
+
+.customer-notes textarea {
+    display: block;
+
+    width: 100%;
+
+    max-width: 500px;
+
+    min-height: 90px;
+
+    padding: 11px 13px;
+
+    resize: vertical;
+
+    background-color: var(--card-bg);
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 4px;
+
+    color: var(--text-dark);
+
+    font-family: var(--font-content);
+
+    font-size: 0.8rem;
+
+    outline: none;
+
+    transition: border-color var(--transition-speed);
+}
+
+.customer-notes textarea:focus {
+    border-color: var(--bg-sidebar);
+}
+
+.customer-notes textarea::placeholder {
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+
+/* Tablet */
+
+@media (max-width: 1100px) {
+
+    .customer-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .customer-profile-card {
+        grid-template-columns: 180px 1fr;
+
+        gap: 25px;
+    }
+}
+
+
+/* Smaller tablet */
+
+@media (max-width: 850px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .main-content {
+        margin-left: 220px;
+
+        padding: 30px 25px;
+    }
+
+    .customer-profile-card {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-avatar-section {
+        justify-content: flex-start;
+    }
+}
+
+
+/* Mobile */
+
+@media (max-width: 650px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+
+        padding: 25px 18px;
+    }
+
+
+    /* Header */
+
+    .top-header {
+        flex-direction: column;
+
+        gap: 18px;
+
+        align-items: stretch;
+    }
+
+    .header-title h2 {
+        font-size: 1.8rem;
+    }
+
+    .header-title p {
+        line-height: 1.5;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .btn-secondary {
+        align-self: flex-start;
+    }
+
+
+    /* Profile */
+
+    .customer-profile-card {
+        padding: 20px;
+
+        grid-template-columns: 1fr;
+    }
+
+    .customer-info-grid {
+        grid-template-columns: 1fr;
+
+        gap: 15px;
+    }
+
+
+    /* Statistics */
+
+    .customer-stats {
+        grid-template-columns: 1fr;
+    }
+
+
+    /* Table */
+
+    .table-wrapper {
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+    .orders-table {
+        min-width: 750px;
+    }
+
+
+    /* Notes */
+
+    .customer-notes textarea {
+        max-width: 100%;
+    }
+}
