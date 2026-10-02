@@ -20,3 +20,5 @@
 
 # 02/10/2026
 - @oanhtran020906-sys: add inventory page
+## 02/10/2026
+- @ngocmai141106: Finished pushing all required files for Order interfaces. Finished the Design decisions part in the design file.
