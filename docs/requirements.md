@@ -462,8 +462,8 @@ Note: E = employee; M = manager.
 | 20 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
 | 21 | /employee/{id}/delete | Delete an employee. | M | P1 |
 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_login.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_order.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_inventory.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_customer.jpg)
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_employee.jpg) 
+![Login](./images/flow_login.jpg) 
+![Order](./images/flow_order.jpg) 
+![Inventory](./images/flow_inventory.jpg) 
+![Customer](./images/flow_customer.jpg)
+![Employee](./images/flow_employee.jpg) 
