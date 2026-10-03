@@ -22,24 +22,18 @@ VALUES
 -- 3 USERS
 INSERT INTO `users` (`username`, `password`, `role`)
 VALUES 
-('havy', '12345', 'Admin'),
-('minhtuan', 'hhhhh', 'Manager'),
-('phuonglinh', 'fffff', 'Cashier'),
-('dieuhoa', '11111', 'Cashier'),
-('hoangnam', 'hahaha', 'Manage'),
-('khanhvy', 'huhhhu', 'Staff'),
-('thanhanh', '123456', 'Staff');
+('havy', '12345', 'Admin');
 
--- 3 EMPLOYEES
-INSERT INTO employees (name, user_id, phone, email, role, status, created_at)
+-- 4 EMPLOYEES
+INSERT INTO employees (name, phone, email, role, status, created_at)
 VALUES
-('Nguyen Ha Vy', 1, '0901234567', 'havy@yums.com', 'Manager', 'Active', '2026-01-10'),
-('Tran Minh Anh', 2, '0912345678', 'minhanh@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Le Quang Huy', 3, '0923456789', 'quanghuy@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Pham Thu Trang', 4, '0934567890', 'thutrang@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Do Duc Anh', 5, '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive', '2026-01-10');
+('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Active', '2026-01-10'),
+('Tran Minh Anh',  '0912345678', 'minhanh@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Le Quang Huy',  '0923456789', 'quanghuy@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Pham Thu Trang',  '0934567890', 'thutrang@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive', '2026-01-10');
 
--- 4 CUSTOMERS 
+-- 5 CUSTOMERS 
 INSERT INTO customers
 (name, phone, email, total_spent, customer_type_id)
 VALUES
@@ -52,7 +46,7 @@ VALUES
 ('Do Minh Quan', '0981000007', 'quan@gmail.com', 150000, 1),
 ('Bui Khanh Linh', '0981000008', 'linh@gmail.com', 4200000, 4);
 
--- 5 PRODUCTS
+-- 6 PRODUCTS
 INSERT INTO products
 (name, category_id, unit_price)
 VALUES
@@ -80,7 +74,7 @@ VALUES
 ('Tiramisu', 6, 60000),
 ('Ice Cream', 6, 40000);
 
--- 6 INVENTORY
+-- 7 INVENTORY
 INSERT INTO inventory (product_id, quantity, stocked_at)
 VALUES 
 (1, 50, '2026-10-01'), -- available
@@ -92,7 +86,7 @@ VALUES
 (5, 20, '2026-09-27'), -- near
 (6, 10, '2026-09-26');
 
--- 7 ORDERS
+-- 8 ORDERS
 INSERT INTO `orders` (`employee_id`, `customer_id`) 
 VALUES 
 (1, 1),
@@ -100,7 +94,7 @@ VALUES
 (3, 5),
 (4, 3);
 
--- 8 ORDER ITEMS
+-- 9 ORDER ITEMS
 INSERT INTO `order_items` (`order_id`, `product_id`, `quantity`) 
 VALUES 
 (1, 1, 2),
@@ -118,3 +112,4 @@ SELECT * FROM orders;
 SELECT * FROM order_items;
 SELECT * FROM customers;
 SELECT * FROM users;
+SELECT * FROM employees;
