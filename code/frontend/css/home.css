@@ -1,0 +1,63 @@
+/*MAIN SCREEN PART*/
+.main-content {
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s;
+}
+
+.welcome {
+    text-align: center;
+}
+
+.welcome h1 {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.welcome p {
+    color: var(--color-accent-red);
+    font-size: 1rem;
+}
+
+/*MENU BUTTON*/
+.menu-btn {
+    position: fixed;
+    margin: 10px 10px 10px 0 ;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    border: none;
+    color: var(--color-soft-blue);
+    background-color: var(--bg-sidebar);
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0 6px 6px 0;
+    z-index: 200;
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+.main-content.expand {
+    left: 0;
+}
+
+.menu-btn.update {
+    background-color: var(--bg-main);
+    color: var(--text-muted);
+}
+
+.menu-btn:hover {
+    color: var(--color-warm-beige);
+}
+
