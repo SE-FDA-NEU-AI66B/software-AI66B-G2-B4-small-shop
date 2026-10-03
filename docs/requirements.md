@@ -83,17 +83,15 @@ As an employee, I want to create and edit an order by searching or scanning prod
 
 - Test for order creation/editing and validation
 
-### US02: Order payment - P0 - points: 5
+### US02: Order delivery status - P0 - points: 5
 
-As an employee, I want to confirm an order's payment so that I can complete the customer's purchase and record its payment status.
+As an employee, I want to confirm an order's delivery status (whether the drinks/food are given to the customer or not at the counter) so that I can complete the customer's purchase.
 
 ***Acceptance criteria:***
 
-- Given that an order is at “Before-payment” status, when I receive the customer's payment and confirm it, then the order status should change to “Paid”.
+- Given that an order is at “Not delivered” status, when I give the order to the customer waiting at the counter and confirm it, then the order status should change to "Delivered".
 
-- Given that an order has a total price of $25, when I confirm that the customer has paid $25, then the order should be successfully marked as “Paid”.
-
-- Given that an order is still at “Before-payment” status, when I try to complete it without confirming payment, then the order should remain at “Before-payment”.
+- Given that an order has a total price of $25 and has 25$ added up to the net sales, when it hasn't been confirmed that the customer claimed their drinks/food, then the manager or shop owner should be able to trace if there's any fraud or stealing.
 
 ***Task:***
 
@@ -258,15 +256,15 @@ As a manager, I want to have a low-stock warning mechanism so that I can know wh
 - Test for validation
 
 
-### US11: Sale and profit dashboard - P0 - points: 5    
-As a manager, I want to generate a dashboard of sales and profit, as well as analysis of it, so that I can get the information saved without having to use printed tickets and physical notebooks.    
+### US11: Sale dashboard - P0 - points: 5    
+As a manager, I want to generate a dashboard of sales, as well as analysis of it, so that I can get the information saved without having to use printed tickets and physical notebooks.    
 
 ***Acceptance criteria:***
 - Given that my shop has been active for more than 7 days, when I require a weekly sales report, then I should be able to get a dashboard of the latest 7 days.
 - Given that my shop hasn’t been active for enough 28-30 days, when I require a monthly sales report, then I should receive a notification of “Not enough information to generate”.
 
 ***Task:***
-- Implement sales revenue calculation
+- Implement total sales calculation
 - Create visualizations (line, bar chart, etc.)
 - Handle empty-state when there’s not enough information to create required dashboard
 - Test for date/week/month filtering
@@ -441,26 +439,27 @@ Note: E = employee; M = manager.
 | # | Route | Purpose | Access | Priority |
 |---|-------|---------|--------|----------|
 | 01 | /login | Login the system (with the right role). | E M | P0 |
-| 02 | /order | Defaultly show the order list - how many based on the role, and access to other functional buttons. | E M | P1 |
-| 03 | /order/new | Create new order. | E M | P0 |
-| 04 | /order/{id} | View an order’s detailed information. | E M | P1 |
-| 05 | /order/{id}/paymen | Switch and unpaid order to Paid status. | E M | P0 |
+| 02 | /order | Defaultly show the New order interface. | E M | P1 |
+| 03 | /order/check | View all orders list, how many of them depends on the role we're on. | E M | P0 |
+| 04 | /order/check{id} | View an order’s detailed information. | E M | P1 |
+| 05 | /order/check/{id}/deliver | Mini pop-up screen to switch a Not delivered order to Delivered status. | E M | P0 |
 | 06 | /inventory | Defaultly show all inventory items with some basic information (and label if any). | M | P0 |
 | 07 | /inventory/new | Add new items to the inventory. | M | P0 |
 | 08 | /inventory/{id} | View an item’s detailed information. | M | P1 |
 | 09 | /inventory{id}/edit | Edit an item’s information, including expiry date and low-stock threshold. | M | P0 |
 | 10 | /inventory/{id}/delete | Delete an item. | M | P0 |
-| 11 | /sales | Show daily/weekly/monthly sales reports. | M | P0 |
-| 12 | /customer | Defaultly show all customers with some basic information. | M | P1 |
-| 13 | /customer/new | Add new customers to the inventory. | M | P0 |
-| 14 | /customer/{id} | View a customer’s detailed information. | M | P1 |
-| 15 | /customer/{id}/edit | Edit a customer’s information (except their membership tier and spent money). | M | P0 |
-| 16 | /customer/{id}/delete | Delete a customer. | M | P0 |
-| 17 | /employee | Defaultly show all employees with some basic information. | M | P1 |
-| 18 | /employee/new | Add new employees to the inventory. | M | P1 |
-| 19 | /employee/{id} | View an employee’s detailed information. | M | P1 |
-| 20 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
-| 21 | /employee/{id}/delete | Delete an employee. | M | P1 |
+| 11 | /sales | Show Sales & Demand Analysis function's interface as clicking from sidebar. Defaultly show daily/weekly/monthly sales reports. | M | P0 |
+| 12 | /sales/stock | Show Demand Prediction & Restock recommendation | M | P0 |
+| 13 | /customer | Defaultly show all customers with some basic information. | M | P1 |
+| 14 | /customer/new | Add new customers to the inventory. | M | P0 |
+| 15 | /customer/{id} | View a customer’s detailed information. | M | P1 |
+| 16 | /customer/{id}/edit | Edit a customer’s information (except their membership tier and spent money). | M | P0 |
+| 17 | /customer/{id}/delete | Delete a customer. | M | P0 |
+| 18 | /employee | Defaultly show all employees with some basic information. | M | P1 |
+| 19 | /employee/new | Add new employees to the inventory. | M | P1 |
+| 20 | /employee/{id} | View an employee’s detailed information. | M | P1 |
+| 21 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
+| 22 | /employee/{id}/delete | Delete an employee. | M | P1 |
 
 ![Login](./images/flow_login.jpg) 
 ![Order](./images/flow_order.jpg) 
