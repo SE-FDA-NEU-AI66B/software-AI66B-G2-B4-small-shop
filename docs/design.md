@@ -1,8 +1,10 @@
 # Milestone 2 - Walking skeleton
 ## Architecture
 
+![Architecture Diagram](./diagrams/YUMS_architecture.png)
+
 ## Data model
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/66_design_data_model/docs/images/erd.png)
+![ERD](./images/erd.png)
 | Table              | Columns                                                                                                                         | Constraint · which M1 rule                                                                                                                                                                                                      |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **employees**      | `employee_id` PK · `name` · `phone` · `email` · `role` · `status` · `created_at`                                                | `employee_id` uniquely identifies each employee · `role` and `status` are required · supports employee management · **US14**                                                                                                    |
