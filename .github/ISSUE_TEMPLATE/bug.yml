@@ -6,25 +6,9 @@ body:
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
+      label: Bug description
       value: |
-        1.
-        2.
-        3.
-    validations:
-      required: true
-
-  - type: input
-    id: expected
-    attributes:
-      label: Expected result
-    validations:
-      required: true
-
-  - type: input
-    id: actual
-    attributes:
-      label: Actual result
+        
     validations:
       required: true
 

@@ -83,17 +83,15 @@ As an employee, I want to create and edit an order by searching or scanning prod
 
 - Test for order creation/editing and validation
 
-### US02: Order payment - P0 - points: 5
+### US02: Order delivery status - P0 - points: 5
 
-As an employee, I want to confirm an order's payment so that I can complete the customer's purchase and record its payment status.
+As an employee, I want to confirm an order's delivery status (whether the drinks/food are given to the customer or not at the counter) so that I can complete the customer's purchase.
 
 ***Acceptance criteria:***
 
-- Given that an order is at “Before-payment” status, when I receive the customer's payment and confirm it, then the order status should change to “Paid”.
+- Given that an order is at “Not delivered” status, when I give the order to the customer waiting at the counter and confirm it, then the order status should change to "Delivered".
 
-- Given that an order has a total price of $25, when I confirm that the customer has paid $25, then the order should be successfully marked as “Paid”.
-
-- Given that an order is still at “Before-payment” status, when I try to complete it without confirming payment, then the order should remain at “Before-payment”.
+- Given that an order has a total price of $25 and has 25$ added up to the net sales, when it hasn't been confirmed that the customer claimed their drinks/food, then the manager or shop owner should be able to trace if there's any fraud or stealing.
 
 ***Task:***
 
@@ -135,7 +133,7 @@ As an employee, I want to view my previous orders and their payment status so th
 
 - Test order filtering and information visibility
 
-### US04: Customer lookup and loyalty - P0 - points: 5
+### US04: Customer lookup and loyalty - P1 - points: 3
 
 As an employee, I want to search for a customer by phone number and see their loyalty information so that I can apply their customer information while processing an order.
 
@@ -215,7 +213,7 @@ As a manager, I want to be able to create, edit or confirm payment for orders li
 - Test for validation    
 
 
-### US08: Inventory management - P0 - points: 5    
+### US08: Inventory management - P1 - points: 3    
 As a manager, I want to see all the inventory lists as well as add or edit a product so that I can make better plans for budget and sales control, instead of just preparing the ingredients based on intuitions.    
 
 ***Acceptance criteria:***
@@ -258,15 +256,15 @@ As a manager, I want to have a low-stock warning mechanism so that I can know wh
 - Test for validation
 
 
-### US11: Sale and profit dashboard - P0 - points: 5    
-As a manager, I want to generate a dashboard of sales and profit, as well as analysis of it, so that I can get the information saved without having to use printed tickets and physical notebooks.    
+### US11: Sale dashboard - P0 - points: 5    
+As a manager, I want to generate a dashboard of sales, as well as analysis of it, so that I can get the information saved without having to use printed tickets and physical notebooks.    
 
 ***Acceptance criteria:***
 - Given that my shop has been active for more than 7 days, when I require a weekly sales report, then I should be able to get a dashboard of the latest 7 days.
 - Given that my shop hasn’t been active for enough 28-30 days, when I require a monthly sales report, then I should receive a notification of “Not enough information to generate”.
 
 ***Task:***
-- Implement sales revenue calculation
+- Implement total sales calculation
 - Create visualizations (line, bar chart, etc.)
 - Handle empty-state when there’s not enough information to create required dashboard
 - Test for date/week/month filtering
@@ -317,6 +315,54 @@ As a manager, I want to be able to add or edit an employee or view my employees 
 - Empty-state handling when there’s no employee yet
 - Test for validation
 
+### US15: Demand forecasting - P0 - points: 5
+As a manager, I want to see the predicted demand for each product for the upcoming week or month so that I can prepare inventory based on expected sales instead of intuition.
+
+***Acceptance criteria:***
+- Given that the shop has enough historical sales data, when I select a weekly or monthly forecast, then the system should display the predicted demand for each relevant product for the selected period.
+- Given that the shop does not have enough historical sales data, when I request a forecast, then the system should display a notification indicating that there is not enough information to generate a forecast.
+- Given that a forecast has been generated, when I view the forecast, then the predicted demand and selected forecast period should be clearly displayed for each product.
+
+***Task:***
+- Select weekly or monthly forecast period
+- Retrieve historical sales data required for forecasting
+- Calculate predicted demand for each relevant product
+- Display predicted demand and forecast period
+- Handle insufficient-data state
+- Test forecast period selection and forecast visibility
+
+### US16: Restock recommendation - P0 - points: 5
+As a manager, I want to receive a recommended restock quantity for each product based on its predicted demand and current inventory so that I know how much to prepare for the upcoming period.
+
+***Acceptance criteria:***
+- Given that a product has a predicted demand of 20 units and a current inventory of 8 units, when the system generates a restock recommendation, then it should recommend restocking 12 units.
+- Given that a product's current inventory is greater than or equal to its predicted demand, when the system generates a restock recommendation, then the recommended restock quantity should be 0.
+- Given that a product requires restocking, when I view the recommendation, then the system should clearly indicate the recommended quantity for that product.
+
+***Task:***
+- Retrieve predicted demand for each product
+- Retrieve current inventory quantity
+- Calculate recommended restock quantity
+- Display restock recommendations
+- Handle products that do not require restocking
+- Test restock calculation and validation
+
+### US17: Forecast and restock planning - P1 - points: 3
+As a manager, I want to view demand forecasts and restock recommendations together so that I can make inventory purchasing decisions quickly.
+
+***Acceptance criteria:***
+- Given that demand forecasts and current inventory information are available, when I open the forecast and restock planning interface, then I should see each product's current inventory, predicted demand and recommended restock quantity.
+- Given that I select a weekly or monthly planning period, when the system loads the planning interface, then the displayed forecast and restock recommendation should correspond to the selected period.
+- Given that there is no product requiring additional inventory, when I view the planning interface, then the system should display that no restocking is currently recommended.
+
+***Task:***
+- Display current inventory quantity
+- Display predicted demand
+- Display recommended restock quantity
+- Support weekly and monthly planning periods
+- Handle empty restock recommendation state
+- Test forecast and restock information visibility
+
 ## Business Rules
 ### BR1: Unavailable products cannot be added to an order
 
@@ -364,35 +410,59 @@ A customer's membership tier must be automatically assigned according to their r
 ***Worked example:***
 A customer has spent $52 in total, so the system assigns Bronze. When their total spending reaches $110, the system upgrades them to Silver.
 
+### BR7: Demand forecast is based on historical sales data
+
+The system must generate demand forecasts using the shop's recorded historical sales data for the relevant products.
+
+***Worked example:*** 
+A product has recorded sales history in the system. When the manager requests a demand forecast, the system uses the recorded sales data to generate the predicted demand for the selected period.
+
+### BR8: Forecast period must be weekly or monthly
+
+The system must support demand forecasting for either the upcoming week or the upcoming month.
+
+***Worked example:*** 
+When the manager selects the weekly forecast option, the system generates the predicted demand for the upcoming week. When the manager selects the monthly option, the system generates the predicted demand for the upcoming month.
+
+### BR9: Restock recommendation is based on predicted demand and current inventory
+
+The recommended restock quantity must be calculated by comparing the predicted demand with the product's current inventory quantity. The recommendation must not be negative.
+
+Recommended restock quantity = max(0, predicted demand - current inventory)
+
+***Worked example:*** 
+A product has a predicted demand of 20 units and current inventory of 8 units. The system recommends restocking 12 units. If the current inventory is 25 units, the system recommends 0 units.
+
 ## Screens and flow
 Note: E = employee; M = manager.    
 
 | # | Route | Purpose | Access | Priority |
 |---|-------|---------|--------|----------|
 | 01 | /login | Login the system (with the right role). | E M | P0 |
-| 02 | /order | Defaultly show the order list - how many based on the role, and access to other functional buttons. | E M | P1 |
-| 03 | /order/new | Create new order. | E M | P0 |
-| 04 | /order/{id} | View an order’s detailed information. | E M | P1 |
-| 05 | /order/{id}/paymen | Switch and unpaid order to Paid status. | E M | P0 |
+| 02 | /order | Defaultly show the New order interface. | E M | P1 |
+| 03 | /order/check | View all orders list, how many of them depends on the role we're on. | E M | P0 |
+| 04 | /order/check{id} | View an order’s detailed information. | E M | P1 |
+| 05 | /order/check/{id}/deliver | Mini pop-up screen to switch a Not delivered order to Delivered status. | E M | P0 |
 | 06 | /inventory | Defaultly show all inventory items with some basic information (and label if any). | M | P0 |
 | 07 | /inventory/new | Add new items to the inventory. | M | P0 |
 | 08 | /inventory/{id} | View an item’s detailed information. | M | P1 |
 | 09 | /inventory{id}/edit | Edit an item’s information, including expiry date and low-stock threshold. | M | P0 |
 | 10 | /inventory/{id}/delete | Delete an item. | M | P0 |
-| 11 | /sales | Show daily/weekly/monthly sales reports. | M | P0 |
-| 12 | /customer | Defaultly show all customers with some basic information. | M | P1 |
-| 13 | /customer/new | Add new customers to the inventory. | M | P0 |
-| 14 | /customer/{id} | View a customer’s detailed information. | M | P1 |
-| 15 | /customer/{id}/edit | Edit a customer’s information (except their membership tier and spent money). | M | P0 |
-| 16 | /customer/{id}/delete | Delete a customer. | M | P0 |
-| 17 | /employee | Defaultly show all employees with some basic information. | M | P1 |
-| 18 | /employee/new | Add new employees to the inventory. | M | P1 |
-| 19 | /employee/{id} | View an employee’s detailed information. | M | P1 |
-| 20 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
-| 21 | /employee/{id}/delete | Delete an employee. | M | P1 |
+| 11 | /sales | Show Sales & Demand Analysis function's interface as clicking from sidebar. Defaultly show daily/weekly/monthly sales reports. | M | P0 |
+| 12 | /sales/stock | Show Demand Prediction & Restock recommendation | M | P0 |
+| 13 | /customer | Defaultly show all customers with some basic information. | M | P1 |
+| 14 | /customer/new | Add new customers to the inventory. | M | P0 |
+| 15 | /customer/{id} | View a customer’s detailed information. | M | P1 |
+| 16 | /customer/{id}/edit | Edit a customer’s information (except their membership tier and spent money). | M | P0 |
+| 17 | /customer/{id}/delete | Delete a customer. | M | P0 |
+| 18 | /employee | Defaultly show all employees with some basic information. | M | P1 |
+| 19 | /employee/new | Add new employees to the inventory. | M | P1 |
+| 20 | /employee/{id} | View an employee’s detailed information. | M | P1 |
+| 21 | /employee/{id}/edit | Edit an employee's information. | M | P1 |
+| 22 | /employee/{id}/delete | Delete an employee. | M | P1 |
 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_login.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_order.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_inventory.jpg) 
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_customer.jpg)
-![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/29-draw-flow-login/docs/images/flow_employee.jpg) 
+![Login](./images/flow_login.jpg) 
+![Order](./images/flow_order.jpg) 
+![Inventory](./images/flow_inventory.jpg) 
+![Customer](./images/flow_customer.jpg)
+![Employee](./images/flow_employee.jpg) 
