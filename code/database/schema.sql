@@ -9,19 +9,19 @@ USE mini_shop;
 CREATE TABLE `users` (
   `user_id` int PRIMARY KEY AUTO_INCREMENT,
   `username` varchar(50) UNIQUE NOT NULL,
-  `password` varchar(255) UNIQUE NOT NULL, -- Lưu hashedPassword
+  `password` varchar(255) UNIQUE NOT NULL, 
   `role` varchar(30) NOT NULL, -- Admin, Manager, Cashier, Staff
   `is_active` boolean NOT NULL DEFAULT TRUE,
+  `employee_id` int UNIQUE,
   `created_at` datetime NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `employees` (
   `employee_id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int UNIQUE,
   `name` varchar(100) NOT NULL,
   `phone` VARCHAR(20),
   `email` varchar(100),
-  `role` varchar(30) NOT NULL,
+  `role` varchar(30) NOT NULL, -- Manager, Cashier, Staff
   `status` varchar(20) NOT NULL,
   `created_at` date NOT NULL DEFAULT (CURRENT_DATE)
 );
@@ -84,7 +84,7 @@ CREATE TABLE `order_items` (
 );
 
 -- RÀNG BUỘC KHÓA NGOẠI (FOREIGN KEYS)
-ALTER TABLE `employees` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `users` ADD FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`);
 ALTER TABLE `orders` ADD FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`);
 ALTER TABLE `orders` ADD FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`);
 ALTER TABLE `inventory` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
