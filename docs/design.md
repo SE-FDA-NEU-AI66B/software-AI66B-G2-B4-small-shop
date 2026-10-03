@@ -1,9 +1,54 @@
 # Milestone 2 - Walking skeleton
 ## Architecture
 
+![Architecture Diagram](./diagrams/YUMS_architecture.png)
+
 ## Data model
+![ERD](./images/erd.png)
+| Table              | Columns                                                                                                                         | Constraint · which M1 rule                                                                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **employees**      | `employee_id` PK · `name` · `phone` · `email` · `role` · `status` · `created_at`                                                | `employee_id` uniquely identifies each employee · `role` and `status` are required · supports employee management · **US14**                                                                                                    |
+| **customer_types** | `customer_type_id` PK · `type_name` · `discount_percent`                                                                        | `customer_type_id` uniquely identifies each customer type · `discount_percent` defaults to 0 · supports membership discounts · **BR6**                                                                                          |
+| **customers**      | `customer_id` PK · `name` · `phone` · `email` · `total_spent` · `customer_type_id` FK · `created_at`                            | `customer_type_id` links a customer to their customer type · `total_spent` stores accumulated spending · supports customer management and membership assignment · **US12, US13, BR6**                                           |
+| **categories**     | `category_id` PK · `category_name`                                                                                              | `category_id` uniquely identifies each product category · products are grouped by category · **US08**                                                                                                                           |
+| **products**       | `product_id` PK · `name` · `category_id` FK · `unit_price` · `is_available` BOOL                                                | `category_id` references `categories` · `is_available` prevents unavailable products from being added to orders · **BR1**                                                                                                       |
+| **inventory**      | `inventory_id` PK · `product_id` FK · `quantity` · `stocked_at` · `expiry_date` · `status`                                      | `product_id` references `products` · expired products are marked `Expired` and excluded from sale · products close to expiry are marked `Near Expiration` · low quantity is marked `Low Stock` · **BR4, BR5**                   |
+| **orders**         | `order_id` PK · `employee_id` FK · `customer_id` FK NULL · `deliver_status` · `total_amount` · `discount_amount` · `created_at` | `employee_id` references the employee creating the order · `customer_id` may be NULL for walk-in customers · `total_amount` and `discount_amount` are calculated from order items and customer type · **US01, US02, US06, BR6** |
+| **order_items**    | `order_item_id` PK · `order_id` FK · `product_id` FK · `quantity` · `unit_price` · `subtotal`                                   | `order_id` and `product_id` reference their parent records · unavailable products cannot be added · `subtotal` is calculated from `quantity × unit_price` · **BR1**                                                             |
+
+
 
 ## API design
+
+| Method | Path | Input | Success | Errors |
+| :--- | :--- | :--- | :--- | :--- |
+| **AUTH & USERS** | | | | |
+| `POST` | `/api/auth/register` | `username`, `password`, `role` | `201` · user profile created | `400` invalid format<br>`409` username/email/phone already exists |
+| `POST` | `/api/auth/login` | `identifier` (username), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
+| `POST` | `/api/auth/logout` | — | `200` · logged out successfully | `401` unauthorized |
+| `GET` | `/api/users/me` | — | `200` · current user profile & role permissions | `401` unauthorized |
+| **ORDER MANAGEMENT** | | | | |
+| `POST` | `/api/orders` | `customer_id`, `items` (product_id, quantity), `notes` | `201` · created order details | `400` invalid items or quantity<br>`401` unauthorized<br>`422` insufficient product stock |
+| `GET` | `/api/orders/<id>` | — | `200` · complete order details, items & status | `401` unauthorized<br>`404` order not found |
+| **CUSTOMER MANAGEMENT** | | | | |
+| `POST` | `/api/customers` | `name`, `email`, `phone`, `address` | `201` · customer profile created | `400` invalid input<br>`401` unauthorized<br>`409` phone/email already registered |
+| `GET` | `/api/customers/<id>` | — | `200` · customer details & history | `401` unauthorized<br>`404` customer not found |
+| `PUT` | `/api/customers/<id>` | `name`, `email`, `phone`, `address` | `200` · updated customer profile | `400` invalid input<br>`401` unauthorized<br>`404` customer not found |
+| `DELETE` | `/api/customers/<id>` | — | `200` · customer deleted | `401` unauthorized<br>`403` action forbidden<br>`404` customer not found |
+| **EMPLOYEE MANAGEMENT** | | | | |
+| `POST` | `/api/employees` | `full_name`, `email`, `phone`, `role`, `department` | `201` · employee record created | `400` invalid data<br>`401` unauthorized<br>`403` manager access required |
+| `GET` | `/api/employees/<id>` | — | `200` · employee details | `401` unauthorized<br>`404` employee not found |
+| `PUT` | `/api/employees/<id>` | `full_name`, `email`, `phone`, `role`, `status` | `200` · updated employee record | `400` invalid data<br>`401` unauthorized<br>`404` employee not found |
+| `DELETE` | `/api/employees/<id>` | — | `200` · employee deleted/deactivated | `401` unauthorized<br>`403` manager access required<br>`404` employee not found |
+| **INVENTORY (PRODUCTS)** | | | | |
+| `POST` | `/api/inventory/products` | `sku`, `name`, `category`, `price`, `stock_quantity` | `201` · product created | `400` invalid format<br>`401` unauthorized<br>`409` SKU already exists |
+| `GET` | `/api/inventory/products/<id>` | — | `200` · product details & current stock | `401` unauthorized<br>`404` product not found |
+| `PUT` | `/api/inventory/products/<id>` | `sku`, `name`, `category`, `price`, `stock_quantity` | `200` · updated product info | `400` invalid input<br>`401` unauthorized<br>`404` product not found |
+| `DELETE` | `/api/inventory/products/<id>` | — | `200` · product removed | `401` unauthorized<br>`403` action forbidden<br>`404` product not found |
+| **SALES & PREDICTIONS** | | | | |
+| `GET` | `/api/sales/dashboard` | `from`, `to` (ISO date), `granularity` (day/month) | `200` · sales metrics, revenue & trends summary | `400` invalid date range<br>`401` unauthorized |
+| `POST` | `/api/sales/predictions/upload` | `file` (CSV file attachment) | `200` · dataset uploaded & parsed successfully | `400` missing file<br>`401` unauthorized<br>`422` invalid CSV schema or format |
+| `GET` | `/api/sales/predictions/<id>` | — | `200` · demand prediction results & forecasted metrics | `401` unauthorized<br>`404` prediction job/file not found<br>`425` prediction still processing |
 
 ## Walking skeleton
 
