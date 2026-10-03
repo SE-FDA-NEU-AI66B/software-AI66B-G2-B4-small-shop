@@ -2,6 +2,19 @@
 ## Architecture
 
 ## Data model
+![](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/blob/66_design_data_model/docs/images/erd.png)
+| Table              | Columns                                                                                                                         | Constraint · which M1 rule                                                                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **employees**      | `employee_id` PK · `name` · `phone` · `email` · `role` · `status` · `created_at`                                                | `employee_id` uniquely identifies each employee · `role` and `status` are required · supports employee management · **US14**                                                                                                    |
+| **customer_types** | `customer_type_id` PK · `type_name` · `discount_percent`                                                                        | `customer_type_id` uniquely identifies each customer type · `discount_percent` defaults to 0 · supports membership discounts · **BR6**                                                                                          |
+| **customers**      | `customer_id` PK · `name` · `phone` · `email` · `total_spent` · `customer_type_id` FK · `created_at`                            | `customer_type_id` links a customer to their customer type · `total_spent` stores accumulated spending · supports customer management and membership assignment · **US12, US13, BR6**                                           |
+| **categories**     | `category_id` PK · `category_name`                                                                                              | `category_id` uniquely identifies each product category · products are grouped by category · **US08**                                                                                                                           |
+| **products**       | `product_id` PK · `name` · `category_id` FK · `unit_price` · `is_available` BOOL                                                | `category_id` references `categories` · `is_available` prevents unavailable products from being added to orders · **BR1**                                                                                                       |
+| **inventory**      | `inventory_id` PK · `product_id` FK · `quantity` · `stocked_at` · `expiry_date` · `status`                                      | `product_id` references `products` · expired products are marked `Expired` and excluded from sale · products close to expiry are marked `Near Expiration` · low quantity is marked `Low Stock` · **BR4, BR5**                   |
+| **orders**         | `order_id` PK · `employee_id` FK · `customer_id` FK NULL · `deliver_status` · `total_amount` · `discount_amount` · `created_at` | `employee_id` references the employee creating the order · `customer_id` may be NULL for walk-in customers · `total_amount` and `discount_amount` are calculated from order items and customer type · **US01, US02, US06, BR6** |
+| **order_items**    | `order_item_id` PK · `order_id` FK · `product_id` FK · `quantity` · `unit_price` · `subtotal`                                   | `order_id` and `product_id` reference their parent records · unavailable products cannot be added · `subtotal` is calculated from `quantity × unit_price` · **BR1**                                                             |
+
+
 
 ## API design
 
