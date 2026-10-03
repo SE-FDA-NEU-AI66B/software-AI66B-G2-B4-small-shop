@@ -23,8 +23,8 @@
 | Method | Path | Input | Success | Errors |
 | :--- | :--- | :--- | :--- | :--- |
 | **AUTH & USERS** | | | | |
-| `POST` | `/api/auth/register` | `username`, `email`, `phone`, `password`, `role` | `201` · user profile created | `400` invalid format<br>`409` username/email/phone already exists |
-| `POST` | `/api/auth/login` | `identifier` (username/email/phone), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
+| `POST` | `/api/auth/register` | `username`, `password`, `role` | `201` · user profile created | `400` invalid format<br>`409` username/email/phone already exists |
+| `POST` | `/api/auth/login` | `identifier` (username), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
 | `POST` | `/api/auth/logout` | — | `200` · logged out successfully | `401` unauthorized |
 | `GET` | `/api/users/me` | — | `200` · current user profile & role permissions | `401` unauthorized |
 | **ORDER MANAGEMENT** | | | | |
