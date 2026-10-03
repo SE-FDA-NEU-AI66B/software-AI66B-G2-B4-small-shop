@@ -19,14 +19,25 @@ VALUES
 ('Food'),
 ('Dessert');
 
+-- 3 USERS
+INSERT INTO `users` (`username`, `password`, `role`)
+VALUES 
+('havy', '12345', 'Admin'),
+('minhtuan', 'hhhhh', 'Manager'),
+('phuonglinh', 'fffff', 'Cashier'),
+('dieuhoa', '11111', 'Cashier'),
+('hoangnam', 'hahaha', 'Manage'),
+('khanhvy', 'huhhhu', 'Staff'),
+('thanhanh', '123456', 'Staff');
+
 -- 3 EMPLOYEES
-INSERT INTO employees (name, phone, email, role, status, created_at)
+INSERT INTO employees (name, user_id, phone, email, role, status, created_at)
 VALUES
-('Nguyen Ha Vy', '0901234567', 'havy@yums.com', 'Manager', 'Active', '2026-01-10'),
-('Tran Minh Anh', '0912345678', 'minhanh@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Le Quang Huy', '0923456789', 'quanghuy@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Pham Thu Trang', '0934567890', 'thutrang@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive', '2026-01-10');
+('Nguyen Ha Vy', 1, '0901234567', 'havy@yums.com', 'Manager', 'Active', '2026-01-10'),
+('Tran Minh Anh', 2, '0912345678', 'minhanh@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Le Quang Huy', 3, '0923456789', 'quanghuy@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Pham Thu Trang', 4, '0934567890', 'thutrang@yums.com', 'Employee', 'Active', '2026-01-10'),
+('Do Duc Anh', 5, '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive', '2026-01-10');
 
 -- 4 CUSTOMERS 
 INSERT INTO customers
@@ -86,7 +97,8 @@ INSERT INTO `orders` (`employee_id`, `customer_id`)
 VALUES 
 (1, 1),
 (2, 2),
-(3, 5);
+(3, 5),
+(4, 3);
 
 -- 8 ORDER ITEMS
 INSERT INTO `order_items` (`order_id`, `product_id`, `quantity`) 
@@ -100,15 +112,9 @@ VALUES
 
 UPDATE `orders` SET `deliver_status` = 'delivered' WHERE `order_id` = 3;
 
-INSERT INTO `orders` (`employee_id`, `customer_id`, `deliver_status`) 
-VALUES 
-(1, 4, 'delivered');
-INSERT INTO `order_items` (`order_id`, `product_id`, `quantity`) 
-VALUES 
-(4, 1, 1);
-
 SELECT * FROM inventory;
 SELECT * FROM products;
 SELECT * FROM orders;
 SELECT * FROM order_items;
 SELECT * FROM customers;
+SELECT * FROM users;
