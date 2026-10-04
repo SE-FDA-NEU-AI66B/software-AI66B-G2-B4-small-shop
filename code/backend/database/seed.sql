@@ -5,9 +5,9 @@ USE mini_shop;
 INSERT INTO customer_types (type_name, discount_percent)
 VALUES
 ('Walk-in', 0.00),
-('Silver', 5.00),
-('Gold', 10.00),
-('Diamond', 15.00);
+('Bronze', 5.00),
+('Silver', 10.00),
+('Gold', 15.00);
 
 -- 2 CATEGORIES
 INSERT INTO categories (category_name)
@@ -27,26 +27,26 @@ VALUES
 -- 4 EMPLOYEES
 INSERT INTO employees (name, phone, email, role, status)
 VALUES
-('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Actemployeesive'),
-('Tran Minh Anh',  '0912345678', 'minhanh@yums.com', 'Employee', 'Active'),
-('Le Quang Huy',  '0923456789', 'quanghuy@yums.com', 'Employee', 'Active'),
-('Pham Thu Trang',  '0934567890', 'thutrang@yums.com', 'Employee', 'Active'),
-('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive'),
-('Nguyen Van An', '0901234567', 'an@example.com', 'manager', 'active'),
-('Tran Thi Binh', '0912345678', 'binh@example.com', 'staff', 'active'),
-('Le Van Cuong', '0923456789', 'cuong@example.com', 'cashier', 'active'),
-('Pham Thi Dung', '0934567890', 'dung@example.com', 'staff', 'active'),
-('Hoang Van Em', '0945678901', 'em@example.com', 'cashier', 'active'),
-('Vu Thi Hoa', '0956789012', 'hoa@example.com', 'staff', 'inactive'),
-('Dang Van Hung', '0967890123', 'hung@example.com', 'cashier', 'active'),
-('Bui Thi Lan', '0978901234', 'lan@example.com', 'staff', 'active'),
-('Do Van Minh', '0989012345', 'minh@example.com', 'cashier', 'inactive'),
-('Nguyen Thi Nga', '0990123456', 'nga@example.com', 'manager', 'active'),
-('Pham Van Long', '0903234567', 'long@yums.com', 'cashier', 'active'),
-('Hoang Thi Mai', '0914345678', 'mai@yums.com', 'staff', 'active'),
-('Vu Quoc Nam', '0925456789', 'nam@yums.com', 'cashier', 'active'),
-('Dang Thi Phuong', '0936567890', 'phuong@yums.com', 'staff', 'inactive'),
-('Bui Van Son', '0947678901', 'son@yums.com', 'cashier', 'active');
+('Nguyen Ha Vy', '0901234567', 'havy@yums.com', 'Manager', 'Active'),
+('Tran Minh Anh', '0912345678', 'minhanh@yums.com', 'Staff', 'Active'),
+('Le Quang Huy', '0923456789', 'quanghuy@yums.com', 'Staff', 'On Leave'),
+('Pham Thu Trang', '0934567890', 'thutrang@yums.com', 'Staff', 'Active'),
+('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Staff', 'Inactive'),
+('Nguyen Van An', '0901234567', 'an@example.com', 'Manager', 'Active'),
+('Tran Thi Binh', '0912345678', 'binh@example.com', 'Staff', 'Active'),
+('Le Van Cuong', '0923456789', 'cuong@example.com', 'Cashier', 'On Leave'),
+('Pham Thi Dung', '0934567890', 'dung@example.com', 'Staff', 'Active'),
+('Hoang Van Em', '0945678901', 'em@example.com', 'Cashier', 'Active'),
+('Vu Thi Hoa', '0956789012', 'hoa@example.com', 'Staff', 'Inactive'),
+('Dang Van Hung', '0967890123', 'hung@example.com', 'Cashier', 'Active'),
+('Bui Thi Lan', '0978901234', 'lan@example.com', 'Staff', 'On Leave'),
+('Do Van Minh', '0989012345', 'minh@example.com', 'Cashier', 'Inactive'),
+('Nguyen Thi Nga', '0990123456', 'nga@example.com', 'Manager', 'On Leave'),
+('Pham Van Long', '0903234567', 'long@yums.com', 'Cashier', 'Active'),
+('Hoang Thi Mai', '0914345678', 'mai@yums.com', 'Staff', 'Active'),
+('Vu Quoc Nam', '0925456789', 'nam@yums.com', 'Cashier', 'On Leave'),
+('Dang Thi Phuong', '0936567890', 'phuong@yums.com', 'Staff', 'Inactive'),
+('Bui Van Son', '0947678901', 'son@yums.com', 'Cashier', 'On Leave');
 
 -- 5 CUSTOMERS 
 INSERT INTO customers
