@@ -17,10 +17,10 @@ Start: 23/09/2026; End: 07/10/2026
 
 Goal: Design the app and database; deploy some basic functions for employee branch (create, update, get), make a frontend of the web.
 
-- Committed: 29 issues
-- Completed: 29 issues with 42 sub-issues
-- Velocity: 73
-- Total commits: 126 (all repo commits: 214)
+- Committed: 30 issues
+- Completed: 30 issues with 44 sub-issues
+- Velocity: 75
+- Total commits: 129 (all repo commits: 217)
 
 Not finished: none.
 
