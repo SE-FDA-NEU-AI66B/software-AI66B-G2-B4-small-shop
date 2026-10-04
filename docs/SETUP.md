@@ -187,6 +187,7 @@ Check that:
 - MySQL Server is running
 - The credentials in `backend/.env` are correct
 - The configured database user has permission to create and modify databases
+- The current directory matches the command's file path. If you are in `../software-AI66B-G2-B4-small-shop>`, use pip install `-r code/backend/requirements.txt`.Adjust other paths accordingly
 
 ### Missing Python Packages
 
