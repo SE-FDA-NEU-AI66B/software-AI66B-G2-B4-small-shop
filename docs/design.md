@@ -99,6 +99,9 @@ If the page cannot load employee data or changes are not saved, check that **MyS
 
 Tested by: Đình Thắng on a fresh Windows laptop, 4 Oct — 5 minutes.
 
+![](./images/screenshots/screenshot_1.png)
+![](./images/screenshots/screenshot_2.png)
+![](./images/screenshots/screenshot_3.png)
 
 ## Design Decisions
 ### ADR01: Web application (with responsive) instead of phone only or desktop only application
