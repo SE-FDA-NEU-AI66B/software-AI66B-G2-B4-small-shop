@@ -25,9 +25,9 @@ VALUES
 ('havy', '12345', 'Admin');
 
 -- 4 EMPLOYEES
-INSERT INTO employees (name, phone, email, role, status, created_at)
+INSERT INTO employees (name, phone, email, role, status)
 VALUES
-('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Active'),
+('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Actemployeesive'),
 ('Tran Minh Anh',  '0912345678', 'minhanh@yums.com', 'Employee', 'Active'),
 ('Le Quang Huy',  '0923456789', 'quanghuy@yums.com', 'Employee', 'Active'),
 ('Pham Thu Trang',  '0934567890', 'thutrang@yums.com', 'Employee', 'Active'),
