@@ -27,11 +27,26 @@ VALUES
 -- 4 EMPLOYEES
 INSERT INTO employees (name, phone, email, role, status, created_at)
 VALUES
-('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Active', '2026-01-10'),
-('Tran Minh Anh',  '0912345678', 'minhanh@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Le Quang Huy',  '0923456789', 'quanghuy@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Pham Thu Trang',  '0934567890', 'thutrang@yums.com', 'Employee', 'Active', '2026-01-10'),
-('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive', '2026-01-10');
+('Nguyen Ha Vy',  '0901234567', 'havy@yums.com', 'Manager', 'Active'),
+('Tran Minh Anh',  '0912345678', 'minhanh@yums.com', 'Employee', 'Active'),
+('Le Quang Huy',  '0923456789', 'quanghuy@yums.com', 'Employee', 'Active'),
+('Pham Thu Trang',  '0934567890', 'thutrang@yums.com', 'Employee', 'Active'),
+('Do Duc Anh', '0945678901', 'ducanh@yums.com', 'Employee', 'Inactive'),
+('Nguyen Van An', '0901234567', 'an@example.com', 'manager', 'active'),
+('Tran Thi Binh', '0912345678', 'binh@example.com', 'staff', 'active'),
+('Le Van Cuong', '0923456789', 'cuong@example.com', 'cashier', 'active'),
+('Pham Thi Dung', '0934567890', 'dung@example.com', 'staff', 'active'),
+('Hoang Van Em', '0945678901', 'em@example.com', 'cashier', 'active'),
+('Vu Thi Hoa', '0956789012', 'hoa@example.com', 'staff', 'inactive'),
+('Dang Van Hung', '0967890123', 'hung@example.com', 'cashier', 'active'),
+('Bui Thi Lan', '0978901234', 'lan@example.com', 'staff', 'active'),
+('Do Van Minh', '0989012345', 'minh@example.com', 'cashier', 'inactive'),
+('Nguyen Thi Nga', '0990123456', 'nga@example.com', 'manager', 'active'),
+('Pham Van Long', '0903234567', 'long@yums.com', 'cashier', 'active'),
+('Hoang Thi Mai', '0914345678', 'mai@yums.com', 'staff', 'active'),
+('Vu Quoc Nam', '0925456789', 'nam@yums.com', 'cashier', 'active'),
+('Dang Thi Phuong', '0936567890', 'phuong@yums.com', 'staff', 'inactive'),
+('Bui Van Son', '0947678901', 'son@yums.com', 'cashier', 'active');
 
 -- 5 CUSTOMERS 
 INSERT INTO customers
