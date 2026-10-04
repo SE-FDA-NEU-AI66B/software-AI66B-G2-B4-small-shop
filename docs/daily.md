@@ -28,3 +28,6 @@
 
 ## 03/10/2026
 - ngocmai141106: Fixed order payment into order delivery status since we've agreed that there was no need to separate into 3 payment status like that while only Success contributes to the sales and the rest will just be database's trash. Delivery status (means the employees at the counter has given the drinks/food to the customer yet) makes much more sense. All the related information in requirements.md (including US, screen list, diagram) have also been fixed accordingly. Demand & Stock prediction function has also been added as a child screen of /sales, as we were reminded by the instructors that our core function - prediction had been neglected. This has been added as new USs by @oanhtran020906-sys before, and has been fixed accordingly in screen list and UC diagram. Old diagram (both png and xml forms) has been replaced by the new version. @oanhtran020906-sys please notice this message while writing What changed in part in this sprint's design.md file.
+
+## 04/10/2026
+- @oanhtran020906-sys: add section 6: what changed in this sprint since M1, write in file design.md. write what changed, why it changed, what was added, impact
