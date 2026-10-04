@@ -2,11 +2,22 @@ import os
 import sys
 from typing import Optional, Dict, Any
 import pymysql
+from typing import List, Dict, Any
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from backend.database.connect_db import get_connection
 from backend.schema.employee import EmployeeCreate, EmployeeUpdate
 
+def get_all_employees() -> List[Dict[str, Any]]:
+    """Retrieves all employee records from the database ordered by ID descending."""
+    connection = get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM employees ORDER BY employee_id DESC;")
+            employees = cursor.fetchall()
+            return employees if employees else []
+    finally:
+        connection.close()
 
 def add_employee(employee_data: EmployeeCreate) -> Dict[str, Any]:
     """Inserts a new employee into the database and returns the inserted record."""

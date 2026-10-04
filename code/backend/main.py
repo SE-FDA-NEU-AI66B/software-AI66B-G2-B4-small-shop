@@ -1,16 +1,41 @@
 import sys
 import os
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from services.employee import add_employee, update_employee
+from services.employee import add_employee, update_employee, get_all_employees
 from config.api import settings
 
 app = FastAPI(title="YUMS")
 
+# Configure CORS so browser fetch requests (POST, PUT, OPTIONS) are permitted
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows requests from local HTML / frontend servers
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows GET, POST, PUT, DELETE, OPTIONS
+    allow_headers=["*"],
+)
 
+@app.get(
+    "/employees",
+    response_model=List[EmployeeResponse],
+    summary="Get all employees",
+)
+def get_all_employees_endpoint():
+    """Returns a list of all registered employees."""
+    try:
+        return get_all_employees()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch employees: {str(e)}",
+        )
+    
 @app.post(
     "/employees",
     response_model=EmployeeResponse,
