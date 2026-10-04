@@ -112,3 +112,85 @@
 ***Chose:** By phone number    
 **Why:** Normally nobody would use id to look up anything since it’s too difficult to remember, and there will be duplicates easily leading to mistakes in case there’re customers with the identical name. Instead, using phone numbers is a widely used method in many shops (for example: TH True Milk), when the cashiers only need to ask for their phone number and speak out their name to confirm once the recorded customer profile with that number is shown.    
 **What would change our mind:** If our system expanded into a big e-commerce platform where frequent and clear contact or discussion with the customers is needed, then we would consider switching to email or customer accounts for them to log in and use.    
+
+## What changed since M1
+
+### Change 1: US01 gained an acceptance criterion for product availability edge case
+
+**What changed:** The original M1 requirement for US01 did not cover what happens if a product becomes unavailable between the moment an employee searches for it and the moment they add it to an order.
+
+**Why it changed:** During Sprint 1 review, the team identified that if an employee sees a product available, but another employee sells the last unit before the first employee adds it, the system must respond clearly instead of silently failing or confusing the checkout process.
+
+**What was added:** New acceptance criterion for US01: "Given that a product was available when I searched for it, when I try to add it but it has just been sold out, then the system should display 'Product is no longer available' and refresh the product list."
+
+**Impact:** This prevents overselling and ensures employees get clear, immediate feedback when inventory changes during checkout.
+
+---
+
+### Change 2: BR4 (Product expiry) was clarified as an explicit business rule
+
+**What changed:** The original M1 requirement stated that products kept for 7 days are expired, but the implementation detail was not specified. The team initially assumed this would be a hardcoded constant in the code.
+
+**Why it changed:** During design work, the team consulted with shop owners and found that different shops have different expiry policies based on product type and storage. A hardcoded rule would not fit all shops.
+
+**What was added:** Clarified BR4 to state: "A product remains in inventory for 7 days without being sold, then it must be labeled 'Expired' and excluded from the ready-to-sell list." The rule is now expressed as an explicit business constraint rather than a code implementation detail, with the understanding that future versions may support per-shop configuration.
+
+**Impact:** This makes the expiry rule testable and implementable consistently across all shops while remaining flexible for future customization.
+
+---
+
+### Change 3: US15, US16, US17 (Demand forecasting and restock recommendation) were added to requirements
+
+**What changed:** The original M1 requirement set did not include forecasting or restock recommendation. The focus was on order processing, inventory, and sales dashboards only.
+
+**Why it changed:** During requirement refinement, the team realized that Persona 2 (Viet, shop owner) explicitly said: *"This is just a selling app, not a managing app so it doesn't have expenses tracking."* The team understood that managers need to forecast demand, not just record what has already happened. Without forecasting, managers rely on intuition rather than data.
+
+**What was added:** Three new user stories:
+- US15: Demand forecasting (P0, 5 points)
+- US16: Restock recommendation (P0, 5 points)
+- US17: Forecast and restock planning (P1, 3 points)
+
+Plus three new business rules:
+- BR7: Demand forecast is based on historical sales data
+- BR8: Forecast period must be weekly or monthly
+- BR9: Restock recommendation = max(0, predicted demand – current inventory)
+
+**Impact:** The product now supports proactive planning (preparing for future demand) in addition to reactive operations (recording past sales). This directly addresses the shop owner's need for better decision-making.
+
+---
+
+### Change 4: US04 (Customer lookup) was refined to support inline customer creation
+
+**What changed:** The original M1 requirement for US04 described customer lookup by phone number but did not explicitly tie customer creation to the order flow. The scenario mentioned *"She press 'New customer' button right on the order page,"* but this was not formally part of the requirement.
+
+**Why it changed:** During design work, the team realized that if an employee must navigate away from the order screen to create a new customer, it breaks the checkout flow for Persona 3 (Linh, cashier). Her pain point is: *"if there's a long queue, asking for their phone number would take lots of time."* Embedding customer creation in the order page reduces friction and keeps transactions fast.
+
+**What was added:** Extended US04 acceptance criteria: "Given that no customer exists with the searched phone number, when I search for it, then the system should display 'Customer not found' and allow me to enter the customer's name to create a new customer without leaving the order page."
+
+**Impact:** This keeps the checkout flow smooth and supports the cashier's goal of fast, simple payments even during busy times.
+
+---
+
+### Change 5: Order payment and delivery status became more explicit with clear state transitions
+
+**What changed:** The original M1 requirements mentioned order payment and delivery as separate concerns, but did not define a clear sequence of states or the conditions for each transition.
+
+**Why it changed:** During API design, the team realized that without explicit state definitions, the backend cannot reliably validate business logic. For example, BR2 says "An order cannot be completed before payment is confirmed," but without a clear state machine, this rule is ambiguous to implement and hard to test.
+
+**What was added:** Defined explicit order lifecycle: "Created" → "Waiting for Payment" → "Paid" → "Ready for Delivery" → "Delivered" → "Completed". Updated BR2 to clarify: "An order with 'Waiting for Payment' status must remain in that state until payment is confirmed. Only then can the order transition to 'Paid'." Extended US02 acceptance criteria to reflect these state transitions with clear conditions for each one.
+
+**Impact:** This makes order handling consistent, testable, and audit-friendly. The system can validate state transitions reliably, and managers can understand the order lifecycle clearly.
+
+---
+
+### Change 6: US06 (Order viewing) was extended to show status history with accountability
+
+**What changed:** The original M1 requirement for US06 stated that managers should see all orders and their payment status, but did not require tracking who made each status change or when.
+
+**Why it changed:** During design work, the team realized that if multiple employees handle the same order (Employee A creates it, Employee B confirms payment, Manager C marks it delivered), managers need to see this history for accountability and debugging.
+
+**What was added:** Extended US06 acceptance criteria: "Given that an order has 3 changes in its status (regardless of which employee or manager did it), when I open its history, then I should see all 3 of them, including timestamp and the user who made the change."
+
+**Impact:** This improves accountability and makes it easier to debug order issues. Managers can trace exactly when and by whom each status change was made.
+
+---
