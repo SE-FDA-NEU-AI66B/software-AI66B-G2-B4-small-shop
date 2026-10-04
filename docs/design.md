@@ -97,6 +97,8 @@ WHERE employee_id = ?;
 
 If the page cannot load employee data or changes are not saved, check that **MySQL and the backend server are running**, the database credentials in `.env` are correct, and the frontend is using the correct API URL and port.
 
+Tested by: Đình Thắng on a fresh Windows laptop, 4 Oct — 5 minutes.
+
 
 ## Design Decisions
 ### ADR01: Web application (with responsive) instead of phone only or desktop only application
