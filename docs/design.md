@@ -63,7 +63,8 @@
 The `GET` method reads employee records from the `employees` table and displays the employee list.
 
 **How to know it worked:**
-trên đường link http://127.0.0.1:5500/code/frontend/html/employees.html tại màn hình Employee Directory sẽ hiện danh sách employees được lấy từ MYSQL database như nào 
+
+In http://127.0.0.1:5500/code/frontend/html/employees.html. On the Employee Directory page, the list of employees retrieved from the MySQL database will be displayed.
  (ảnh màn hình employees)
 
 **Query behind the page:**
@@ -78,6 +79,7 @@ ORDER BY employee_id;
 The `POST` method creates a new employee and stores the submitted data in the `employees` table.
 
 **How to know it worked:**
+
 A successful request to POST /api/employees returns 201 Created and the newly created employee. 
 (ảnh bằng chứng)
 
@@ -100,6 +102,7 @@ Allowed `role` values are `manager`, `staff`, and `cashier`.
 Allowed `status` values are `active` and `inactive`.
 
 **Query behind the page:**
+
 When a valid request is received, the backend inserts the employee into the employees table:
 
 ```sql
