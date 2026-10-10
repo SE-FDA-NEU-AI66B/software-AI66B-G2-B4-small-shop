@@ -4,7 +4,7 @@ USE mini_shop;
 -- 1 CUSTOMER_TYPES
 INSERT INTO customer_types (type_name, discount_percent)
 VALUES
-('Walk-in', 0.00),
+('Rock', 0.00),
 ('Bronze', 5.00),
 ('Silver', 10.00),
 ('Gold', 15.00);
@@ -20,7 +20,7 @@ VALUES
 ('Dessert');
 
 -- 3 USERS
-INSERT INTO `users` (`username`, `password`, `role`)
+INSERT INTO users (username, password, role)
 VALUES 
 ('havy', '12345', 'Admin');
 
@@ -90,19 +90,19 @@ VALUES
 ('Ice Cream', 6, 40000);
 
 -- 7 INVENTORY
-INSERT INTO inventory (product_id, quantity, stocked_at)
+INSERT INTO inventory (product_id, quantity)
 VALUES 
-(1, 50, '2026-10-01'), -- available
-(2, 40, '2026-09-30'),
+(1, 50), 
+(2, 40),
 
-(3, 3, '2026-10-01'), -- low_stock
-(4, 5, '2026-09-25'), -- expiry
+(3, 3), 
+(4, 5), 
 
-(5, 20, '2026-09-27'), -- near
-(6, 10, '2026-09-26');
+(5, 20), 
+(6, 10);
 
 -- 8 ORDERS
-INSERT INTO `orders` (`employee_id`, `customer_id`) 
+INSERT INTO orders (employee_id, customer_id) 
 VALUES 
 (1, 1),
 (2, 2),
@@ -110,16 +110,18 @@ VALUES
 (4, 3);
 
 -- 9 ORDER ITEMS
-INSERT INTO `order_items` (`order_id`, `product_id`, `quantity`) 
+INSERT INTO order_items (`order_id`, `product_id`, `quantity`)
 VALUES 
-(1, 1, 2),
-(1, 2, 1),
-(2, 3, 1),
-(3, 18, 20),
-(3, 16, 15),
-(3, 1, 15);
+(1, 1, 45),
+(2, 2, 1),
+(2, 10, 4),
+(3, 5, 2),
+(4, 11, 1);
 
-UPDATE `orders` SET `deliver_status` = 'delivered' WHERE `order_id` = 3;
+
+
+
+UPDATE `orders` SET `deliver_status` = 'delivered' WHERE `order_id` = 1;
 
 SELECT * FROM inventory;
 SELECT * FROM products;
