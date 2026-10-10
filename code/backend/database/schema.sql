@@ -12,7 +12,7 @@ CREATE TABLE `users` (
   `password` varchar(255) UNIQUE NOT NULL, 
   `role` varchar(30) NOT NULL, -- Admin, Manager, Cashier, Staff
   `is_active` boolean NOT NULL DEFAULT TRUE,
-  `employee_id` int UNIQUE,
+  `employee_id` int,
   `created_at` datetime NOT NULL DEFAULT NOW()
 );
 
@@ -35,10 +35,10 @@ CREATE TABLE `customer_types` (
 CREATE TABLE `customers` (
   `customer_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `phone` VARCHAR(20),
+  `phone` VARCHAR(20) NOT NULL,
   `email` varchar(100),
   `total_spent` decimal(12,2) NOT NULL DEFAULT 0,
-  `customer_type_id` int,
+  `customer_type_id` int DEFAULT 1,
   `created_at` date 
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE `inventory` (
   `inventory_id` int PRIMARY KEY AUTO_INCREMENT,
   `product_id` int NOT NULL,
   `quantity` int NOT NULL DEFAULT 0,
-  `stocked_at` date,
+  `stocked_at` date DEFAULT (CURRENT_DATE),
   `expiry_date` date,
   `status` varchar(20) NOT NULL DEFAULT 'Available'
 );
