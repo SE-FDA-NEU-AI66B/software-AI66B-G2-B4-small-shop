@@ -49,4 +49,4 @@
 
 ## 10/10/2026
 - @ngocmai141106: Fixed the Priority of the two order screens i mixed up in requirements.md. @aizun (are you or sb else?) pls notice if you need to write this in this sprint's What changed.
-- @HaVy2006: Changed the customer types, fixed the trigger to automatically update customer ranks, added new trigger to update quantity inventory
+- @HaVy2006: Changed the customer types, fixed the trigger to automatically update customer ranks, added new trigger to update quantity inventory, added new status-Sold out in inventory table
