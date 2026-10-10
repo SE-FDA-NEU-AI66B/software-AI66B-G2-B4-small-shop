@@ -1,3 +1,4 @@
+
 -- ==========================================
 -- 2. STORED PROCEDURE HỖ TRỢ XỬ LÝ KHÁCH HÀNG
 -- ==========================================
@@ -17,13 +18,13 @@ BEGIN
 
         -- 2. Xác định hạng dựa trên tổng chi tiêu
         IF v_total_spent >= 10000000.00 THEN
-            SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Diamond' LIMIT 1;
-        ELSEIF v_total_spent >= 5000000.00 THEN
             SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Gold' LIMIT 1;
-        ELSEIF v_total_spent >= 2000000.00 THEN
+        ELSEIF v_total_spent >= 5000000.00 THEN
             SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Silver' LIMIT 1;
+        ELSEIF v_total_spent >= 2000000.00 THEN
+            SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Bronze' LIMIT 1;
         ELSE
-            SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Walk-in' LIMIT 1;
+            SELECT customer_type_id INTO v_new_type_id FROM customer_types WHERE type_name = 'Rock' LIMIT 1;
         END IF;
 
         -- 3. Cập nhật lại cho Khách hàng
@@ -117,6 +118,20 @@ BEGIN
     WHERE `product_id` = NEW.product_id;
 END //
 
+-- Trừ số lượng sản phẩm tương ứng trong bảng inventory (lấy lô đầu tiên đủ hàng)
+DROP TRIGGER IF EXISTS `deduct_inventory` //
+CREATE TRIGGER `deduct_inventory`
+AFTER INSERT ON `order_items`
+FOR EACH ROW
+BEGIN
+    UPDATE `inventory`
+    SET `quantity` = `quantity` - NEW.quantity
+    WHERE `product_id` = NEW.product_id 
+      AND `quantity` >= NEW.quantity
+      AND `status` != 'Expired'
+    LIMIT 1;
+END //
+
 DELIMITER ;
 
 
@@ -126,8 +141,8 @@ DELIMITER ;
 DELIMITER //
 
 -- Kiểm tra còn hàng, tự gán giá và tính subtotal trước khi chèn order_items
-DROP TRIGGER IF EXISTS `trg_order_items_before_insert` //
-CREATE TRIGGER `trg_order_items_before_insert`
+DROP TRIGGER IF EXISTS `order_items_before_insert` //
+CREATE TRIGGER `order_items_before_insert`
 BEFORE INSERT ON `order_items`
 FOR EACH ROW
 BEGIN
