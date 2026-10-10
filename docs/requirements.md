@@ -439,8 +439,8 @@ Note: E = employee; M = manager.
 | # | Route | Purpose | Access | Priority |
 |---|-------|---------|--------|----------|
 | 01 | /login | Login the system (with the right role). | E M | P0 |
-| 02 | /order | Defaultly show the New order interface. | E M | P1 |
-| 03 | /order/check | View all orders list, how many of them depends on the role we're on. | E M | P0 |
+| 02 | /order | Defaultly show the New order interface. | E M | P0 |
+| 03 | /order/check | View all orders list, how many of them depends on the role we're on. | E M | P1 |
 | 04 | /order/check{id} | View an order’s detailed information. | E M | P1 |
 | 05 | /order/check/{id}/deliver | Mini pop-up screen to switch a Not delivered order to Delivered status. | E M | P0 |
 | 06 | /inventory | Defaultly show all inventory items with some basic information (and label if any). | M | P0 |
