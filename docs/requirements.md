@@ -167,9 +167,9 @@ As an employee, I want to print a receipt after an order is paid so that I can p
 
 ***Acceptance criteria:***
 
-- Given that an order has been successfully marked as “Paid”, when I select the print receipt action, then the system should generate a receipt containing the order's products, total price and payment status.
+- Given that an order has been successfully marked as “Delivered”, when I select the print receipt action, then the system should generate a receipt containing the order's products, total price and payment status.
 
-- Given that an order has not been paid, when I try to print its receipt, then the system should prevent the receipt from being generated as a completed purchase receipt.
+- Given that an order is still "Not Delivered", when I try to print its receipt, then the system should prevent the receipt from being generated as a completed purchase receipt.
 
 ***Task:***
 
@@ -203,7 +203,7 @@ As a manager, I want to be able to create, edit or confirm payment for orders li
 
 ***Acceptance criteria:***    
 - Given that I’m on the order creating interface using my manager account, when I add at least 1 valid product into the list and create the order, then it should be successful.    
-- Given that the order is at before-payment status, when I receive the money from the customer and change its status into Paid, then it should be successful and the order should appear in the history.    
+- Given that the order is at Not Delivered status, when I receive the money from the customer and change its status into Delivered, then it should be successful and the order should appear in the history.    
 
 ***Task:***    
 - Order creating/editing form (same logic as Employee’s)    
@@ -373,10 +373,10 @@ A product is marked as unavailable. When an employee tries to add it to an order
 
 ### BR2: An order cannot be completed before payment is confirmed
 
-An order with “Before-payment” status must remain incomplete until its payment has been confirmed.
+An order with "Not Delivered" status must not be considered completed and must not contribute to customer spending, loyalty calculations or sales reports until delivery is confirmed.
 
-***Worked example:***
-An order is currently “Before-payment”. When an employee tries to complete the order without confirming payment, the order remains “Before-payment”.
+***Worked example***:
+An order worth $25 is currently "Not Delivered". When an employee views the sales dashboard or the customer's purchase history, the order is not included in revenue, customer spending or loyalty calculations. Once the order is marked as "Delivered", the $25 is included automatically.
 
 ### BR3: Only paid orders can be printed as completed purchase receipts
 
