@@ -7,7 +7,7 @@
 | User Story | Screen | Route | Status | Related Issue |
 |---|---|---|---|---|
 | US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
-| USXX — Story title | Screen name | `/route` | TODO | #XX |
+| US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
 
 **Status:** Not Started / In Progress / Completed
 
@@ -23,12 +23,12 @@
 
 Document every screen related to the PO user stories.
 
-### 2.1 [Screen Name]
+### 2.1 [Create an Order]
 
-**Related User Story:** US01 — [Create and order]
+**Related User Story:** US01 — [Create an order]
 
 **Purpose:**  
-"The user comes here to create a new order by choosing dishes and quantity, sum them up and confirm the customer’s payment.
+The user comes here to create a new order by choosing dishes and quantity, sum them up and confirm the customer’s payment.
 
 **Route:**  
 `/order`
@@ -46,37 +46,31 @@ Document every screen related to the PO user stories.
 ![Order creation - Wireframe](images/ui/order_create_wire.png)
 ![Order creation - Real UI](images/ui/order_create_real.png)
 
-### 2.2 [Next Screen Name]
+### 2.2 [Confirm Delivery Status]
 
-<!-- Repeat Section 2.1 for each screen in the PO user stories. -->
+**Related User Story:** US02 — [Confirm an order's delivery status]
 
----
+**Purpose:**  
+The user comes here to confirm an already-created order’s delivery status by changing it from Not delivered to Delivered.
 
-## 3. UI States
+**Route:**  
+`/order/check/{id}/deliver`
 
-At least one screen must document all four states below.
+**API Endpoints:**
 
-**Screen:** TODO: Screen name
-
-| State | Expected UI Behavior | User Action |
+| Method | Endpoint | Purpose |
 |---|---|---|
-| Empty | Explain that no data is available. | TODO |
-| Loading | Show a loading indicator while fetching data. | Wait for the request to complete. |
-| Error | Display a user-friendly error message. | Retry or follow the suggested action. |
-| Data | Display the retrieved data and available actions. | TODO |
+| POST | `api/orders/{id}` | Fetch the order with that particular id's information |
+| PATCH | `/order/check/{id}/deliver` | Change that order's delivery status
 
-**Evidence / Wireframes:**
+**Wireframe:**
 
-- Empty: `images/ui/screen-empty.png`
-- Loading: `images/ui/screen-loading.png`
-- Error: `images/ui/screen-error.png`
-- Data: `images/ui/screen-data.png`
-
-<!-- Use actual image files and remove states that are not represented by real evidence only if the requirement permits. -->
+![Order delivery status - Wireframe](images/ui/order_deliver_wire.png)
 
 ---
 
-## 4. User-Friendly Error Messages
+
+## 3. User-Friendly Error Messages
 
 Document at least four error messages mapped to actual API error codes and business rules.
 
@@ -84,7 +78,7 @@ Document at least four error messages mapped to actual API error codes and busin
 |---|---|---|---|---|---|
 | 1 | US01 | 409 | BR1 | This product is insufficient at the moment! | Choose another product that is not ran out |
 | 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
-| 3 | USXX | TODO | TODO | TODO | TODO |
+| 3 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status |
 | 4 | USXX | TODO | TODO | TODO | TODO |
 
 **Notes:**
@@ -96,7 +90,7 @@ Document at least four error messages mapped to actual API error codes and busin
 
 ---
 
-## 5. Changes Since M2
+## 4. Changes Since M2
 
 Describe the UI changes made since Milestone 2 and explain why they were needed.
 
@@ -125,7 +119,7 @@ See [`design.md`](design.md) for the corresponding UI design change.
 
 ---
 
-## 6. References
+## 5. References
 
 - UI wireframes and screenshots: `docs/images/ui/`
 - UI design decisions: `docs/design.md`

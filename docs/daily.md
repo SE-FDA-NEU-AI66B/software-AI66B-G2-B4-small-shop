@@ -56,3 +56,5 @@
 
 # 17/10/2026
 - @ngocmai141106: Separated the only error for Create order screen into Insufficient quantity and Expired product error.
+- @HaVy2006: Fixed BR2's payment-delivery logic change problem. Added new BR10 of "Cannot create blank order". (This is written by @ngocmai141106 since @HaVy2006 forgot to write)
+- @ngocmai141106: Added mostly all information related to US02 - P0 stories and status, Wireframe in 4 states and Error message. Its status is also marked as "partly work" and its real UI screenshot is missing for the same reason as above, i'll change accordingly if i have time to complete the code. I also changed the template made by @oanhtran020906 a bit (deleted your ##3 part and re-enumerate the following parts) so it'll be closer to the instructor's requirements on E-learning.
