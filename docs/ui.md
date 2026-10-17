@@ -4,9 +4,9 @@
 
 ### 1.1 PO Stories
 
-| User Story | Screen Name | Route | Status | Related Issue |
+| User Story | Screen | Route | Status | Related Issue |
 |---|---|---|---|---|
-| USXX — Story title | Screen name | `/route` | TODO | #XX |
+| US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
 | USXX — Story title | Screen name | `/route` | TODO | #XX |
 
 **Status:** Not Started / In Progress / Completed
@@ -25,32 +25,26 @@ Document every screen related to the PO user stories.
 
 ### 2.1 [Screen Name]
 
-**Related User Story:** USXX — [Story title]
+**Related User Story:** US01 — [Create and order]
 
 **Purpose:**  
-TODO: Explain what users can accomplish on this screen.
+"The user comes here to create a new order by choosing dishes and quantity, sum them up and confirm the customer’s payment.
 
 **Route:**  
-`/your-route`
+`/order`
 
 **API Endpoints:**
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| GET/POST/PUT/DELETE | `/api/your-endpoint` | TODO |
-
-**Main UI Components:**
-- TODO: Component 1
-- TODO: Component 2
-- TODO: Component 3
-
-**User Actions:**
-1. TODO: Describe the user action.
-2. TODO: Describe the expected result.
+| GET | `/api/products` | Fetch products to display on the selection area |
+| GET | `/api/customers/search?phone=<number>` | Fetch the customer(s) with the phone number the order creator is trying to search |
+| POST | `api/orders` | Create new order |
 
 **Wireframe:**
 
-![Screen Name](images/ui/your-screen.png)
+![Order creation - Wireframe](images/ui/order_create_wire.png)
+![Order creation - Real UI](images/ui/order_create_real.png)
 
 ### 2.2 [Next Screen Name]
 
@@ -88,8 +82,8 @@ Document at least four error messages mapped to actual API error codes and busin
 
 | # | Related User Story | API Error Code | Business Rule | User-Friendly Message | Suggested Action |
 |---|---|---|---|---|---|
-| 1 | USXX | TODO | TODO | TODO | TODO |
-| 2 | USXX | TODO | TODO | TODO | TODO |
+| 1 | US01 | 409 | BR1 | This product is insufficient at the moment! | Choose another product that is not ran out |
+| 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
 | 3 | USXX | TODO | TODO | TODO | TODO |
 | 4 | USXX | TODO | TODO | TODO | TODO |
 
