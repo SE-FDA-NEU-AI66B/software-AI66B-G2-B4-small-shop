@@ -433,6 +433,13 @@ Recommended restock quantity = max(0, predicted demand - current inventory)
 ***Worked example:*** 
 A product has a predicted demand of 20 units and current inventory of 8 units. The system recommends restocking 12 units. If the current inventory is 25 units, the system recommends 0 units.
 
+### BR10: An order must contain at least one product
+
+An order cannot be created or saved if it contains no products.
+
+***Worked example:***
+An employee opens the order creation interface but does not add any products. When they click "Create Order", the system prevents the order from being created and displays "Order must contain at least one product".
+
 ## Screens and flow
 Note: E = employee; M = manager.    
 
