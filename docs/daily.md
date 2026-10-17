@@ -53,3 +53,6 @@
 
 # 16/10/2026
 - @ngocmai141106: Added mostly all information related to US01 - P0 stories and status, Wireframe in 4 states and Error message. It's marked in the P0 stories and status part as "partly work" at the moment, but i'll change this if i can fix the code accordingly to our new logic in time. Also, the wireframe's digital format kinda sucks if you paste this to .md file no matter how you formatted it, so i recommend inserting photos instead. And I found out a problem we forgot to fix accordingly to our new logic in BR2 (about order payment), so either the one who made the BRs (@oanhtran020906-sys is that u?) or I go fix it tmr.
+
+# 17/10/2026
+- @ngocmai141106: Separated the only error for Create order screen into Insufficient quantity and Expired product error.

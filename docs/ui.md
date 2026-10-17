@@ -82,8 +82,8 @@ Document at least four error messages mapped to actual API error codes and busin
 
 | # | Related User Story | API Error Code | Business Rule | User-Friendly Message | Suggested Action |
 |---|---|---|---|---|---|
-| 1 | US01 | 409 | BR1 | This product is not available at the moment! | Choose another product that is neither expired or ran out |
-| 2 | USXX | TODO | TODO | TODO | TODO |
+| 1 | US01 | 409 | BR1 | This product is insufficient at the moment! | Choose another product that is not ran out |
+| 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
 | 3 | USXX | TODO | TODO | TODO | TODO |
 | 4 | USXX | TODO | TODO | TODO | TODO |
 
