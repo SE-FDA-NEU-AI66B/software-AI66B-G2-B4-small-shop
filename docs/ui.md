@@ -8,6 +8,7 @@
 |---|---|---|---|---|
 | US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
 | US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
+| US06 - View all orders | Order Directory (Check order tab) | `/order/check` | works | #203 |
 
 **Status:** Not Started / In Progress / Completed
 
@@ -15,7 +16,7 @@
 
 <!-- Add or update the screen-flow diagram here. -->
 
-![Screen Flow Diagram](images/ui/screen-flow.png)
+![Screen Flow Diagram](images/ui/order_flow.png)
 
 ---
 
@@ -67,6 +68,26 @@ The user comes here to confirm an already-created order’s delivery status by c
 
 ![Order delivery status - Wireframe](images/ui/order_deliver_wire.png)
 
+### 2.3 [View All Orders]
+
+**Related User Story:** US01 — [View all orders]
+
+**Purpose:**  
+The user comes here to view previously created orders and their basic information.
+
+**Route:**  
+`/order/check`
+
+**API Endpoints:**
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `api/orders` | Fetch all orders |
+
+**Wireframe:**
+
+![Order creation - Wireframe](images/ui/order_check_wire.png)
+![Order creation - Real UI](images/ui/order_check_real.png)
 ---
 
 
@@ -78,8 +99,8 @@ Document at least four error messages mapped to actual API error codes and busin
 |---|---|---|---|---|---|
 | 1 | US01 | 409 | BR1 | This product is insufficient at the moment! | Choose another product that is not ran out |
 | 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
-| 3 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status |
-| 4 | USXX | TODO | TODO | TODO | TODO |
+| 3 | US01 | 422 | BR10 | An order must contain at least one product! | Make sure to click at least one dish before clicking "Sum" |
+| 4 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status. Or "Deliver" button won't appear on already-delivered orders at all |
 
 **Notes:**
 - Use error codes that actually exist in the API/backend.
