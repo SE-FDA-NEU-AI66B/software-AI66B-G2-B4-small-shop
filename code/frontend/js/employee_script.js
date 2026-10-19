@@ -64,6 +64,40 @@ async function fetchEmployees() {
   }
 }
 
+async function deleteEmployee(employeeId, employeeName) {
+  // Confirm action with user
+  const confirmDelete = confirm(`Are you sure you want to delete employee "${employeeName}" (NV-${String(employeeId).padStart(3, '0')})?`);
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`/employees/${employeeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Displays backend HTTP 400 (e.g. foreign key conflict) or HTTP 404 cleanly
+      showAlert(data.detail || 'Failed to delete employee.', 'danger');
+      return;
+    }
+
+    showAlert(data.message || 'Employee deleted successfully!', 'success');
+    
+    // Refresh employee table data
+    if (typeof fetchEmployees === 'function') {
+      fetchEmployees();
+    }
+
+  } catch (error) {
+    console.error('Delete Error:', error);
+    showAlert('Server connection error while deleting employee.', 'danger');
+  }
+}
+
 // Render Table Rows matching database schema
 function renderTable(data) {
   tableBody.innerHTML = '';
@@ -100,9 +134,12 @@ function renderTable(data) {
       <td><span class="badge ${badgeClass}">${emp.status}</span></td>
       <td>${formatDate(emp.created_at)}</td>
       <td>
-        <div class="action-buttons" style="justify-content: flex-end;">
+        <div class="action-buttons" style="justify-content: flex-end; display: flex; gap: 8px;">
           <button class="btn-icon" title="Edit Employee" onclick="openEditEmployeeModal(${emp.employee_id})">
             <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="btn-icon btn-delete" title="Delete Employee" onclick="deleteEmployee(${emp.employee_id}, '${emp.name.replace(/'/g, "\\'")}')">
+            <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
       </td>

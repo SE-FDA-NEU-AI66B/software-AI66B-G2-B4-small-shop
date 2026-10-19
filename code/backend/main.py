@@ -1,13 +1,13 @@
 import sys
 import os
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from services.employee import add_employee, update_employee, get_all_employees
+from services.employee import add_employee, update_employee, get_all_employees, delete_employee
 from config.api import settings
 
 app = FastAPI(title="YUMS")
@@ -21,8 +21,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get(
-    "/employees",
+emp_router = APIRouter(prefix="/employees", tags=["Employees"])
+
+@emp_router.get(
+    "",
     response_model=List[EmployeeResponse],
     summary="Get all employees",
 )
@@ -36,8 +38,8 @@ def get_all_employees_endpoint():
             detail=f"Failed to fetch employees: {str(e)}",
         )
     
-@app.post(
-    "/employees",
+@emp_router.post(
+    "",
     response_model=EmployeeResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Add a new employee",
@@ -53,8 +55,8 @@ def create_employee_endpoint(payload: EmployeeCreate):
         )
 
 
-@app.put(
-    "/employees/{employee_id}",
+@emp_router.put(
+    "/{employee_id}",
     response_model=EmployeeResponse,
     summary="Update employee details",
 )
@@ -66,6 +68,12 @@ def update_employee_endpoint(employee_id: int, payload: EmployeeUpdate):
             detail=f"Employee with ID {employee_id} not found.",
         )
     return updated_employee
+
+@emp_router.delete("/{employee_id}", status_code=status.HTTP_200_OK)
+def delete_employee(employee_id: int):
+    return delete_employee(employee_id=employee_id)
+
+app.include_router(emp_router)
 
 if __name__ == "__main__":
     import uvicorn
