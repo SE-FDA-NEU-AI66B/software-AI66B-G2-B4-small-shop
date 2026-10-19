@@ -39,7 +39,6 @@ function getInitials(name) {
 function formatDate(dateStr) {
   if (!dateStr) return 'N/A';
   
-  // Extract YYYY-MM-DD if date comes as ISO string (e.g., "2026-10-04T00:00:00")
   const cleanDateStr = String(dateStr).split('T')[0];
   const parts = cleanDateStr.split('-');
   
@@ -49,6 +48,16 @@ function formatDate(dateStr) {
   }
   
   return dateStr;
+}
+
+// Show Toast Notification
+function showToast(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
 
 // Fetch employees from API
@@ -61,6 +70,37 @@ async function fetchEmployees() {
     filterData();
   } catch (error) {
     showToast(error.message);
+  }
+}
+
+// Delete Employee Handler
+async function deleteEmployee(employeeId, employeeName) {
+  const confirmDelete = confirm(`Are you sure you want to delete employee "${employeeName}" (NV-${String(employeeId).padStart(3, '0')})?`);
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`${API_URL}/${employeeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showToast(data.detail || 'Failed to delete employee.');
+      return;
+    }
+
+    showToast(data.message || 'Employee deleted successfully!');
+    
+    // Refresh employee table data
+    fetchEmployees();
+
+  } catch (error) {
+    console.error('Delete Error:', error);
+    showToast('Server connection error while deleting employee.');
   }
 }
 
@@ -82,8 +122,15 @@ function renderTable(data) {
   data.forEach(emp => {
     const tr = document.createElement('tr');
     const idDisplay = `NV-${String(emp.employee_id).padStart(3, '0')}`;
-    const badgeClass = emp.status === 'Active' ? 'badge-active' : 'badge-leave';
+    const statusClassMap = {
+    'Active': 'badge-active',
+    'On Leave': 'badge-leave',
+    'Inactive': 'badge-inactive'
+    };
+    const badgeClass = statusClassMap[emp.status] || 'badge-inactive';
     
+    const safeName = (emp.name || '').replace(/'/g, "\\'");
+
     tr.innerHTML = `
       <td class="emp-id">${idDisplay}</td>
       <td>
@@ -100,9 +147,12 @@ function renderTable(data) {
       <td><span class="badge ${badgeClass}">${emp.status}</span></td>
       <td>${formatDate(emp.created_at)}</td>
       <td>
-        <div class="action-buttons" style="justify-content: flex-end;">
+        <div class="action-buttons" style="justify-content: flex-end; display: flex; gap: 8px;">
           <button class="btn-icon" title="Edit Employee" onclick="openEditEmployeeModal(${emp.employee_id})">
             <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="btn-icon btn-delete" title="Delete Employee" onclick="deleteEmployee(${emp.employee_id}, '${safeName}')">
+            <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
       </td>
@@ -128,16 +178,6 @@ function filterData() {
   renderTable(filtered);
 }
 
-// Show Toast Notification
-function showToast(message) {
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
-}
-
 // Open Modal in ADD Mode
 function openAddEmployeeModal() {
   isEditMode = false;
@@ -148,7 +188,7 @@ function openAddEmployeeModal() {
 }
 
 // Open Modal in EDIT Mode
-window.openEditEmployeeModal = function(id) {
+function openEditEmployeeModal(id) {
   const emp = employees.find(e => e.employee_id === id);
   if (!emp) return;
 
@@ -163,7 +203,7 @@ window.openEditEmployeeModal = function(id) {
   if (statusInput) statusInput.value = emp.status;
 
   modal.classList.add('active');
-};
+}
 
 // Close Modal
 function closeModal() {
@@ -208,7 +248,7 @@ async function handleFormSubmit(e) {
 
     showToast(isEditMode ? "Updated employee successfully!" : "Added new employee successfully!");
     closeModal();
-    fetchEmployees(); // Refresh data from database
+    fetchEmployees();
 
   } catch (error) {
     showToast(error.message);
@@ -235,3 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial data load
   fetchEmployees();
 });
+
+window.deleteEmployee = deleteEmployee;
+window.openEditEmployeeModal = openEditEmployeeModal;
