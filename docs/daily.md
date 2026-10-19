@@ -61,3 +61,6 @@
 
 # 18/10/2026
 - @ngocmai141106: Added all required information for US06: Story and status, Wireframe in 4 states; and a final flow for Order parts. The newly added error message actually belongs to US01 rather than US06 so i moved it upward. the View all orders screen was also P1, but it's related to US06 (P0) so i added it anyway.
+
+# 19/10/2026
+- @aizun: some other side features of employee tab added: delete, input check, dupilcate check, status new color
