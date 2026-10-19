@@ -122,7 +122,12 @@ function renderTable(data) {
   data.forEach(emp => {
     const tr = document.createElement('tr');
     const idDisplay = `NV-${String(emp.employee_id).padStart(3, '0')}`;
-    const badgeClass = emp.status === 'Active' ? 'badge-active' : 'badge-leave';
+    const statusClassMap = {
+    'Active': 'badge-active',
+    'On Leave': 'badge-leave',
+    'Inactive': 'badge-inactive'
+    };
+    const badgeClass = statusClassMap[emp.status] || 'badge-inactive';
     
     const safeName = (emp.name || '').replace(/'/g, "\\'");
 
