@@ -70,7 +70,7 @@ def update_employee_endpoint(employee_id: int, payload: EmployeeUpdate):
     return updated_employee
 
 @emp_router.delete("/{employee_id}", status_code=status.HTTP_200_OK)
-def delete_employee(employee_id: int):
+def delete_employee_endpoint(employee_id: int):
     return delete_employee(employee_id=employee_id)
 
 app.include_router(emp_router)

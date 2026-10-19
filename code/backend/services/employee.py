@@ -147,4 +147,48 @@ def get_employee_by_id(employee_id: int) -> Optional[Dict[str, Any]]:
 
 
 def delete_employee(employee_id: int) -> Dict[str, str]:
-    pass
+    """Deletes an employee record from the database by ID."""
+    connection = get_connection()
+    if not connection:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database connection failed."
+        )
+
+    try:
+        cursor = connection.cursor()
+
+        # 1. Verify the employee exists before attempting deletion
+        cursor.execute("SELECT employee_id FROM employees WHERE employee_id = %s;", (employee_id,))
+        existing_employee = cursor.fetchone()
+
+        if not existing_employee:
+            cursor.close()
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Employee with ID {employee_id} not found."
+            )
+
+        # 2. Perform deletion
+        delete_query = "DELETE FROM employees WHERE employee_id = %s;"
+        cursor.execute(delete_query, (employee_id,))
+        connection.commit()
+        cursor.close()
+
+        return {"message": f"Employee with ID {employee_id} deleted successfully."}
+
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        # Catch foreign key constraint failures (e.g., if employee is referenced in orders/users)
+        if "foreign key constraint" in str(e).lower() or "1451" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete employee because they are linked to active orders or user accounts."
+            )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete employee: {str(e)}"
+        )
+    finally:
+        connection.close()
