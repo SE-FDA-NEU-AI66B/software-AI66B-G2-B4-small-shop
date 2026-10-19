@@ -134,7 +134,9 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" placeholder="090x xxx xxx">
+                            <input type="tel" id="phone" placeholder="090x xxx xxx" 
+                            maxlength="10" inputmode="numeric" pattern="[0-9]*"
+                            title="Numbers only (0-9)." >
                         </div>
                         <div class="form-group">
                             <label for="role">Position *</label>

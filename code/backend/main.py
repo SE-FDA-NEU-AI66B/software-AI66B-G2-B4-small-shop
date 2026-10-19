@@ -7,7 +7,7 @@ from typing import List
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from services.employee import add_employee, update_employee, get_all_employees, delete_employee
+from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id
 from config.api import settings
 
 app = FastAPI(title="YUMS")
@@ -37,6 +37,21 @@ def get_all_employees_endpoint():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to fetch employees: {str(e)}",
         )
+
+@emp_router.get(
+    "/{employee_id}",
+    response_model=EmployeeResponse,
+    summary="Get employee by ID",
+)
+def get_employee_by_id_endpoint(employee_id: int):
+    """Retrieves a single employee record by ID."""
+    employee = get_employee_by_id(employee_id)
+    if not employee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Employee with ID {employee_id} not found.",
+        )
+    return employee
     
 @emp_router.post(
     "",
