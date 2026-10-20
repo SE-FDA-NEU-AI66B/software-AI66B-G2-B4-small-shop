@@ -70,3 +70,4 @@
 - @oanhtran020906-sys: Added mostly all information related to US015 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: Added mostly all information related to US016 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: create error mess for sale & prediction page
+- @ngocmai141106: Saw the Error documentation for Order @oanhtran020906-sys created for me only now but i already did it in issue #198, #199 and #203. I made this commit (which only have change in this daily note file) so the instructor would know that this issue is actually solved. Sorry for the inconvenience and thank you!
