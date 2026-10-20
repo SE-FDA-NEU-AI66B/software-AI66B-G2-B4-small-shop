@@ -151,6 +151,7 @@ The user comes here to analyze top-selling products by revenue, view profit marg
 ```
 ![Sales Real UI](images/ui/sales_real_ui.png)
 
+---
 ## 3. User-Friendly Error Messages
 
 Document at least four error messages mapped to actual API error codes and business rules.
@@ -165,6 +166,10 @@ Document at least four error messages mapped to actual API error codes and busin
 | 6 | US11 | 404 | BR12 | No category records found matching your filter! | Clear or change your category search keywords |
 | 7 | US11 | 500 | BR15 | Unable to calculate demand prediction! | Contact system administrator to verify historical sales data |
 | 8 | US11 | 403 | BR01 | Access denied to sales analytics page! | Log in with an Administrator or Store Manager account |
+| 9 | US15 | 400 | BR11 | Invalid forecasting window selected! | Choose a valid window option from 7, 14, or 30 days |
+| 10 | US15 | 404 | BR12 | No category records found matching your filter! | Clear or change your category search keywords |
+| 11 | US15 | 500 | BR15 | Unable to calculate demand prediction! | Contact system administrator to verify historical sales data |
+| 12 | US15 | 403 | BR01 | Access denied to sales analytics page! | Log in with an Administrator or Store Manager account |
 **Notes:**
 - Use error codes that actually exist in the API/backend.
 - Link each error to the relevant business rule.
