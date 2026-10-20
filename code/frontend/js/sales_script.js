@@ -1,3 +1,111 @@
+// ==================== GLOBAL STATE & TOAST HANDLER ====================
+let toastTimeout;
+
+/**
+ * Displays reusable toast notification matching error_mess.js template
+ * @param {string} message - Notification text
+ * @param {"success"|"error"|"warning"} type - Toast style type
+ */
+function showToast(message, type = "success") {
+    const toast = document.getElementById("toastNotification");
+    if (!toast) return;
+
+    clearTimeout(toastTimeout);
+
+    toast.textContent = message;
+    toast.classList.remove("show", "toast-success", "toast-error", "toast-warning");
+    toast.classList.add(`toast-${type}`);
+
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
+
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+/**
+ * Extracts error message from API response or applies fallback messages mapped to Business Rules
+ * @param {Response} response - Fetch API Response object
+ * @returns {Promise<string>} User-friendly error message
+ */
+async function getApiErrorMessage(response) {
+    let data = {};
+    try {
+        data = await response.json();
+    } catch {
+        // The response may not contain JSON.
+    }
+
+    // Avoid displaying raw server or database details.
+    if (response.status >= 500) {
+        return "Unable to calculate demand prediction! Please contact system administrator.";
+    }
+
+    if (typeof data.detail === "string" && data.detail.trim()) {
+        return data.detail;
+    }
+
+    const fallbackMessages = {
+        400: "Invalid forecasting window selected! Please choose 7, 14, or 30 days.",
+        401: "Your session may have expired. Please sign in again.",
+        403: "Access denied to sales analytics page! Please sign in as Manager.",
+        404: "No category records found matching your filter!",
+        409: "Restock recommendation already pending approval!",
+        422: "Restock quantity must be greater than zero!"
+    };
+
+    return fallbackMessages[response.status]
+        || "We couldn't complete your request. Please try again.";
+}
+
+function showNetworkError() {
+    showToast(
+        "Unable to connect to the server. Please check your connection and try again.",
+        "error"
+    );
+}
+
+// ==================== LOADING & EMPTY/ERROR STATES ====================
+
+/**
+ * Renders animated loading spinner row inside target table body
+ * @param {HTMLElement} tableBody - Target <tbody> element
+ * @param {number} colspanCount - Number of table columns to span
+ * @param {string} message - Text underneath spinner
+ */
+function showTableLoading(tableBody, colspanCount = 8, message = "Loading sales data...") {
+    if (!tableBody) return;
+
+    tableBody.innerHTML = `
+        <tr class="loading-row">
+            <td colspan="${colspanCount}">
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <p>${message}</p>
+                </div>
+            </td>
+        </tr>
+    `;
+}
+
+/**
+ * Renders empty state message row
+ */
+function renderEmptyTable(tableBody, colspanCount = 8, message = "No matching records found") {
+    if (!tableBody) return;
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="${colspanCount}" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                ${message}
+            </td>
+        </tr>
+    `;
+}
+
+// ==================== DATA & CORE DASHBOARD LOGIC ====================
+
 const salesData = [
   { id: "P-001", name: "Oolong Milk Tea", category: "Beverage", unitsSold: 420, price: 35000, cost: 15000, currentStock: 15 },
   { id: "P-002", name: "Salted Coffee", category: "Beverage", unitsSold: 310, price: 29000, cost: 10000, currentStock: 50 },
@@ -7,17 +115,6 @@ const salesData = [
   { id: "P-006", name: "Hand-Pounded Lemon Tea", category: "Beverage", unitsSold: 290, price: 25000, cost: 9000, currentStock: 30 },
   { id: "P-007", name: "Butter Croissant", category: "Food", unitsSold: 150, price: 35000, cost: 14000, currentStock: 12 }
 ];
-
-const toast = document.getElementById('toastNotification');
-
-function showToast(message) {
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
-}
 
 function switchTab(tabName) {
   const tabs = document.querySelectorAll('.tab-content');
@@ -29,6 +126,7 @@ function switchTab(tabName) {
   if (tabName === 'overview') {
     document.getElementById('tab-overview').classList.add('active');
     document.getElementById('btn-overview').classList.add('active');
+    applyFilters();
   } else if (tabName === 'prediction') {
     document.getElementById('tab-prediction').classList.add('active');
     document.getElementById('btn-prediction').classList.add('active');
@@ -37,38 +135,49 @@ function switchTab(tabName) {
 }
 
 function applyFilters() {
-  const topNDropdown = document.getElementById('topNDropdown');
-  const categoryInput = document.getElementById('categoryInput');
-  const timeframeFilter = document.getElementById('timeframeFilter');
+  const tbody = document.getElementById('topSellingTableBody');
+  if (!tbody) return;
 
-  let timeMultiplier = 1;
-  const timeframe = timeframeFilter ? timeframeFilter.value : 'monthly';
-  if (timeframe === 'daily') timeMultiplier = 1 / 30;
-  else if (timeframe === 'weekly') timeMultiplier = 7 / 30;
+  showTableLoading(tbody, 8, "Loading sales analytics...");
 
-  let processedData = salesData.map(item => {
-    const adjustedUnits = Math.round(item.unitsSold * timeMultiplier);
-    const adjustedRevenue = adjustedUnits * item.price;
-    return {
-      ...item,
-      unitsSoldAdjusted: adjustedUnits,
-      revenueAdjusted: adjustedRevenue
-    };
-  }).sort((a, b) => b.revenueAdjusted - a.revenueAdjusted);
+  setTimeout(() => {
+    try {
+      const topNDropdown = document.getElementById('topNDropdown');
+      const categoryInput = document.getElementById('categoryInput');
+      const timeframeFilter = document.getElementById('timeframeFilter');
 
-  const categoryTerm = categoryInput ? categoryInput.value.toLowerCase().trim() : '';
-  if (categoryTerm !== '') {
-    processedData = processedData.filter(item => 
-      item.category.toLowerCase().includes(categoryTerm)
-    );
-  }
+      let timeMultiplier = 1;
+      const timeframe = timeframeFilter ? timeframeFilter.value : 'monthly';
+      if (timeframe === 'daily') timeMultiplier = 1 / 30;
+      else if (timeframe === 'weekly') timeMultiplier = 7 / 30;
 
-  const limitValue = topNDropdown ? topNDropdown.value : 'ALL';
-  if (limitValue !== 'ALL') {
-    processedData = processedData.slice(0, parseInt(limitValue));
-  }
+      let processedData = salesData.map(item => {
+        const adjustedUnits = Math.round(item.unitsSold * timeMultiplier);
+        const adjustedRevenue = adjustedUnits * item.price;
+        return {
+          ...item,
+          unitsSoldAdjusted: adjustedUnits,
+          revenueAdjusted: adjustedRevenue
+        };
+      }).sort((a, b) => b.revenueAdjusted - a.revenueAdjusted);
 
-  renderSalesTable(processedData);
+      const categoryTerm = categoryInput ? categoryInput.value.toLowerCase().trim() : '';
+      if (categoryTerm !== '') {
+        processedData = processedData.filter(item => 
+          item.category.toLowerCase().includes(categoryTerm)
+        );
+      }
+
+      const limitValue = topNDropdown ? topNDropdown.value : 'ALL';
+      if (limitValue !== 'ALL') {
+        processedData = processedData.slice(0, parseInt(limitValue));
+      }
+
+      renderSalesTable(processedData);
+    } catch (err) {
+      showToast("Failed to process sales filters. Please try again.", "error");
+    }
+  }, 300);
 }
 
 function renderSalesTable(dataToRender) {
@@ -77,7 +186,8 @@ function renderSalesTable(dataToRender) {
   tbody.innerHTML = '';
 
   if (dataToRender.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">No matching items found</td></tr>`;
+    renderEmptyTable(tbody, 8, "No category records found matching your filter!");
+    showToast("No category records found matching your filter!", "warning");
     return;
   }
 
@@ -102,55 +212,73 @@ function renderSalesTable(dataToRender) {
 
 function renderPredictionTable() {
   const tbody = document.getElementById('predictionTableBody');
-  const selectElement = document.getElementById('predictionWindowSelect');
-  const windowDays = parseInt(selectElement ? selectElement.value : "30");
   if (!tbody) return;
-  tbody.innerHTML = '';
 
-  const predictionList = salesData.map(item => {
-    const dailyRate = item.unitsSold / 30; 
-    const predictedDemand = Math.round(dailyRate * windowDays);
-    const safetyStock = 10; 
-    const suggestedRestock = Math.max(0, predictedDemand - item.currentStock + safetyStock);
+  showTableLoading(tbody, 6, "Calculating demand predictions...");
 
-    let priorityScore = 3;
-    let statusBadge = '';
+  setTimeout(() => {
+    try {
+      const selectElement = document.getElementById('predictionWindowSelect');
+      const windowDays = parseInt(selectElement ? selectElement.value : "30");
 
-    if (item.currentStock < 10) {
-      priorityScore = 1;
-      statusBadge = `<span class="badge badge-danger">Critical Deficit</span>`;
-    } else if (suggestedRestock > 0) {
-      priorityScore = 2;
-      statusBadge = `<span class="badge badge-warning">Restock Needed</span>`;
-    } else {
-      priorityScore = 3;
-      statusBadge = `<span class="badge badge-success">Sufficient Stock</span>`;
+      if (![7, 14, 30].includes(windowDays)) {
+        showToast("Invalid forecasting window selected!", "error");
+        renderEmptyTable(tbody, 6, "Invalid forecasting window selected.");
+        return;
+      }
+
+      const predictionList = salesData.map(item => {
+        const dailyRate = item.unitsSold / 30; 
+        const predictedDemand = Math.round(dailyRate * windowDays);
+        const safetyStock = 10; 
+        const suggestedRestock = Math.max(0, predictedDemand - item.currentStock + safetyStock);
+
+        let priorityScore = 3;
+        let statusBadge = '';
+
+        if (item.currentStock < 10) {
+          priorityScore = 1;
+          statusBadge = `<span class="badge badge-danger">Critical Deficit</span>`;
+        } else if (suggestedRestock > 0) {
+          priorityScore = 2;
+          statusBadge = `<span class="badge badge-warning">Restock Needed</span>`;
+        } else {
+          priorityScore = 3;
+          statusBadge = `<span class="badge badge-success">Sufficient Stock</span>`;
+        }
+
+        return {
+          ...item,
+          predictedDemand,
+          suggestedRestock,
+          priorityScore,
+          statusBadge
+        };
+      });
+
+      predictionList.sort((a, b) => a.priorityScore - b.priorityScore);
+
+      tbody.innerHTML = '';
+      predictionList.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 600; color: var(--text-muted);">${item.id}</td>
+          <td style="font-weight: 600; color: var(--bg-sidebar);">${item.name}</td>
+          <td>${item.currentStock} items</td>
+          <td><strong>${item.predictedDemand}</strong> items / ${windowDays} days</td>
+          <td style="color: var(--color-accent-red); font-weight: 700;">+${item.suggestedRestock} items</td>
+          <td>${item.statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      showToast("Unable to calculate demand prediction!", "error");
+      renderEmptyTable(tbody, 6, "Error generating prediction model.");
     }
-
-    return {
-      ...item,
-      predictedDemand,
-      suggestedRestock,
-      priorityScore,
-      statusBadge
-    };
-  });
-
-  predictionList.sort((a, b) => a.priorityScore - b.priorityScore);
-
-  predictionList.forEach(item => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="font-weight: 600; color: var(--text-muted);">${item.id}</td>
-      <td style="font-weight: 600; color: var(--bg-sidebar);">${item.name}</td>
-      <td>${item.currentStock} items</td>
-      <td><strong>${item.predictedDemand}</strong> items / ${windowDays} days</td>
-      <td style="color: var(--color-accent-red); font-weight: 700;">+${item.suggestedRestock} items</td>
-      <td>${item.statusBadge}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+  }, 300);
 }
+
+// ==================== INITIALIZATION & EVENT LISTENERS ====================
 
 document.addEventListener('DOMContentLoaded', () => {
   const topNDropdown = document.getElementById('topNDropdown');
@@ -171,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (categoryInput) categoryInput.value = '';
       if (timeframeFilter) timeframeFilter.value = 'monthly';
       applyFilters();
-      showToast("Filters reset to default");
+      showToast("Filters reset to default", "success");
     });
   }
 
@@ -183,5 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const predictionSelect = document.getElementById('predictionWindowSelect');
   if (predictionSelect) predictionSelect.addEventListener('change', renderPredictionTable);
 
+  // Initial load
   applyFilters();
 });
