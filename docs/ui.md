@@ -9,6 +9,7 @@
 | US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
 | US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
 | US06 - View all orders | Order Directory (Check order tab) | `/order/check` | works | #203 |
+| US11 Sales Analytics & Forecasting | Sales Dashboard | `/sales` | works | #205 |
 
 **Status:** Not Started / In Progress / Completed
 
@@ -17,8 +18,44 @@
 <!-- Add or update the screen-flow diagram here. -->
 
 ![Screen Flow Diagram](images/ui/order_flow.png)
-
 ---
+- Sales Flow for US11
+```
+[Main Navigation Sidebar] 
+           │
+           ▼ (Click "Sales")
+┌────────────────────────────────────────────────────────────────────────┐
+│                          /sales (/sales.html)                          │
+├────────────────────────────────────────────────────────────────────────┤
+│                      Tab Navigation (Switch Tabs)                      │
+│                                                                        │
+│   ┌──────────────────────────────────┐┌────────────────────────────┐   │
+│   │   Tab 1: Sales Overview (Active) ││ Tab 2: Demand Prediction   │   │
+│   └──────────────────────────────────┘└────────────────────────────┘   │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ▼                                                   ▼
+┌───────────────────────────────┐           ┌───────────────────────────────┐
+│ [Tab 1: Sales & Profit Overview] │           │ [Tab 2: Predictive Forecasting]│
+├───────────────────────────────┤           ├───────────────────────────────┤
+│ 1. Load KPI Summary Cards     │           │ 1. Select Forecasting Window  │
+│    - Total Sales              │           │    (7, 14, or 30 Days)        │
+│    - Net Profit               │           │                               │
+│    - Completed Orders         │           │ 2. System Calculates Metrics  │
+│                               │           │    - Daily Sales Speed        │
+│ 2. Apply Filters              │           │    - Predicted Demand         │
+│    - Top Items (3/5/10/All)   │           │    - Suggested Restock        │
+│    - Category (Beverage/...)  │           │                               │
+│    - Timeframe (Daily/...)    │           │ 3. Priority Sorting & Risk    │
+│    - Reset Filters Button     │           │    - Critical Deficit (Red)   │
+│                               │           │    - Restock Needed (Yellow)  │
+│ 3. Render Top-Selling Table   │           │    - Sufficient Stock (Green) │
+│    - Calculated Profit Margin │           │                               │
+│      per item                 │           │ 4. Render Restock Order Table │
+└───────────────────────────────┘           └───────────────────────────────┘
+```
+
 
 ## 2. UI Wireframes
 
@@ -89,7 +126,30 @@ The user comes here to view previously created orders and their basic informatio
 ![Order creation - Wireframe](images/ui/order_check_wire.png)
 ![Order creation - Real UI](images/ui/order_check_real.png)
 ---
+### 2.4 US11: Sales Analytics & Demand Prediction (4 States)
 
+**Purpose:**  
+The user comes here to analyze top-selling products by revenue, view profit margins, and monitor predictive restocking demands for inventory management.
+
+**Route:**  
+`/sales`
+
+**Calls:**  
+`GET /api/sales/overview`, `GET /api/sales/predictions`
+```
++-----------------------------------+-----------------------------------+
+| Empty                             | Loading                           |
+| No sales or inventory data available| (spinner) Loading analytics...   |
+| for the selected timeframe.       |                                   |
+| [Reset Filters]                   |                                   |
++-----------------------------------+-----------------------------------+
+| Error                             | Data                              |
+| Unable to connect to backend server| Total Sales: 45,200,000 ₫        |
+| [Try Again]                       | Rank #1: Oolong Tea (420 units)   |
+|                                   | Restock Alert: Critical Deficit   |
++-----------------------------------+-----------------------------------+
+```
+![Sales Real UI](images/ui/sales_real_ui.png)
 
 ## 3. User-Friendly Error Messages
 
@@ -101,7 +161,10 @@ Document at least four error messages mapped to actual API error codes and busin
 | 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
 | 3 | US01 | 422 | BR10 | An order must contain at least one product! | Make sure to click at least one dish before clicking "Sum" |
 | 4 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status. Or "Deliver" button won't appear on already-delivered orders at all |
-
+| 5 | US11 | 400 | BR11 | Invalid forecasting window selected! | Choose a valid window option from 7, 14, or 30 days |
+| 6 | US11 | 404 | BR12 | No category records found matching your filter! | Clear or change your category search keywords |
+| 7 | US11 | 500 | BR15 | Unable to calculate demand prediction! | Contact system administrator to verify historical sales data |
+| 8 | US11 | 403 | BR01 | Access denied to sales analytics page! | Log in with an Administrator or Store Manager account |
 **Notes:**
 - Use error codes that actually exist in the API/backend.
 - Link each error to the relevant business rule.
