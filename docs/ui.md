@@ -9,6 +9,7 @@
 | US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
 | US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
 | US06 - View all orders | Order Directory (Check order tab) | `/order/check` | works | #203 |
+| US16 Restock recommendation | Sales & Demand Analytics | `/sales` | works | #206 |
 
 **Status:** Not Started / In Progress / Completed
 
@@ -90,6 +91,28 @@ The user comes here to view previously created orders and their basic informatio
 ![Order creation - Real UI](images/ui/order_check_real.png)
 ---
 
+### 2.6 US16: Automated Restock Recommendation & Risk Sorting (4 States)
+
+The user comes here to view automated restocking recommendations based on current inventory deficits and prioritized risk categories (Critical Deficit, Restock Needed, Sufficient Stock).
+
+**Route:** `/sales`  
+**Calls:** `GET /api/sales/predictions`, `POST /api/inventory/restock-orders`
+```
++-- Empty ---------------------+  +-- Loading -------------------+
+|                              |  |                              |
+|  All stock levels are safe!  |  |          (spinner)           |
+|  No restock recommendations. |  | Analyzing stock deficits...  |
+|                              |  |    [====================]    |
++------------------------------+  +------------------------------+
++-- Error ---------------------+  +-- Data ----------------------+
+|                              |  | Item: Tiramisu Cake          |
+| Unable to load restock list. |  | Stock: 5 | Demand: 80        |
+|        [ Try again ]         |  | Restock: +85 units           |
+|                              |  | Alert: [ Critical Deficit ]  |
++------------------------------+  +------------------------------+
+```
+![Restock Recommendation - Real UI](images/ui/demand_real_ui.png)
+---
 
 ## 3. User-Friendly Error Messages
 
@@ -101,7 +124,10 @@ Document at least four error messages mapped to actual API error codes and busin
 | 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
 | 3 | US01 | 422 | BR10 | An order must contain at least one product! | Make sure to click at least one dish before clicking "Sum" |
 | 4 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status. Or "Deliver" button won't appear on already-delivered orders at all |
-
+| 13 | US16 | 409 | BR16 | Restock recommendation already pending approval! | Review existing restock orders in Inventory before creating a duplicate |
+| 14 | US16 | 422 | BR17 | Restock quantity must be greater than zero! | Ensure the calculated deficit requires at least one unit before placing an order |
+| 15 | US16 | 503 | BR18 | Supplier catalog database is currently unreachable! | Wait a few minutes and try again or contact system administration |
+| 16 | US16 | 403 | BR01 | Access denied to restock management! | Switch to an authorized Store Manager or Administrator account |
 **Notes:**
 - Use error codes that actually exist in the API/backend.
 - Link each error to the relevant business rule.
