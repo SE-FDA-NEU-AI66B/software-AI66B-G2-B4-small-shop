@@ -199,30 +199,7 @@ The user comes here to view automated restocking recommendations based on curren
 ```
 ![Restock Recommendation - Real UI](images/ui/demand_real_ui.png)
 ---
-**Purpose:**  
-The user comes here to analyze top-selling products by revenue, view profit margins, and monitor predictive restocking demands for inventory management.
 
-**Route:**  
-`/sales`
-
-**Calls:**  
-`GET /api/sales/overview`, `GET /api/sales/predictions`
-```
-+-----------------------------------+-----------------------------------+
-| Empty                             | Loading                           |
-| No sales or inventory data available| (spinner) Loading analytics...   |
-| for the selected timeframe.       |                                   |
-| [Reset Filters]                   |                                   |
-+-----------------------------------+-----------------------------------+
-| Error                             | Data                              |
-| Unable to connect to backend server| Total Sales: 45,200,000 ₫        |
-| [Try Again]                       | Rank #1: Oolong Tea (420 units)   |
-|                                   | Restock Alert: Critical Deficit   |
-+-----------------------------------+-----------------------------------+
-```
-![Sales Real UI](images/ui/sales_real_ui.png)
-
----
 ## 3. User-Friendly Error Messages
 
 Document at least four error messages mapped to actual API error codes and business rules.
