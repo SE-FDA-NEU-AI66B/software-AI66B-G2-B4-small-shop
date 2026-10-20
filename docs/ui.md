@@ -109,7 +109,7 @@ The user comes here to analyze top-selling products by revenue, view profit marg
 | [Reset Filters]                   |                                   |
 +-----------------------------------+-----------------------------------+
 | Error                             | Data                              |
-| Unable to connect to backend server| Total Sales: $45,200,000         |
+| Unable to connect to backend server| Total Sales: 45,200,000 ₫        |
 | [Try Again]                       | Rank #1: Oolong Tea (420 units)   |
 |                                   | Restock Alert: Critical Deficit   |
 +-----------------------------------+-----------------------------------+
