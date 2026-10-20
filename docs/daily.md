@@ -64,3 +64,8 @@
 
 # 19/10/2026
 - @aizun: some other side features of employee tab added: delete, input check, dupilcate check, status new color
+
+# 20/10/2026
+- @oanhtran020906-sys: Added mostly all information related to US011 - P0 stories and status, Wireframe in 4 states and Error message 
+- @oanhtran020906-sys: Added mostly all information related to US015 - P0 stories and status, Wireframe in 4 states and Error message 
+- @oanhtran020906-sys: Added mostly all information related to US016 - P0 stories and status, Wireframe in 4 states and Error message 
