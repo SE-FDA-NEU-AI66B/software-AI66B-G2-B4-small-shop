@@ -9,7 +9,7 @@
 | US01 - Create an order | Order Directory (New order tab) | `/order` | partly works - it’s fine by our old logic in linking a to-be-created order to a customer, but not by our new logic of this problem. Will fix this once the code is fixed. | #198 |
 | US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
 | US06 - View all orders | Order Directory (Check order tab) | `/order/check` | works | #203 |
-
+| US15 Demand forecasting | Sales & Demand Analytics | `/sales` | works | #205 |
 **Status:** Not Started / In Progress / Completed
 
 ### 1.2 Screen Flow Diagram
@@ -90,7 +90,29 @@ The user comes here to view previously created orders and their basic informatio
 ![Order creation - Real UI](images/ui/order_check_real.png)
 ---
 
+### 2.1 US15 — Demand Forecasting & Restock Alert (4 States)
 
+The user comes here to analyze historical sales rates, predict inventory demand for the next 7, 14, or 30 days, and identify critical stock deficit risks.
+
+**Route:** `/sales`  
+**Calls:** `GET /api/sales/overview`, `GET /api/sales/predictions`
+```
++-- Empty ---------------------+  +-- Loading -------------------+
+|                              |  |                              |
+|   No inventory forecast data |  |          (spinner)           |
+|      available to display.   |  |   Calculating demand...      |
+|                              |  |    [====================]    |
++------------------------------+  +------------------------------+
++-- Error ---------------------+  +-- Data ----------------------+
+|                              |  | Item: Oolong Milk Tea        |
+|  Failed to load forecast data|  | Current Stock: 15 items      |
+|        [ Try again ]         |  | Forecast (30d): 420 items    |
+|                              |  | Alert: Restock Needed (+415) |
++------------------------------+  +------------------------------+
+```
+![Demand Forecasting - Real UI](images/ui/demand_real_ui.png)
+
+---
 ## 3. User-Friendly Error Messages
 
 Document at least four error messages mapped to actual API error codes and business rules.
@@ -101,7 +123,10 @@ Document at least four error messages mapped to actual API error codes and busin
 | 2 | US01 | 409 | BR4 | This product is expired and cannot be sold! | Choose another product that is still edible |
 | 3 | US01 | 422 | BR10 | An order must contain at least one product! | Make sure to click at least one dish before clicking "Sum" |
 | 4 | US02 | 409 | BR2 | Your already confirmed this order's delivery status! | Only change a Not Delivered order's delivery status. Or "Deliver" button won't appear on already-delivered orders at all |
-
+| 9 | US15 | 400 | BR11 | Invalid forecasting window selected! | Choose a valid window option from 7, 14, or 30 days |
+| 10 | US15 | 404 | BR12 | No category records found matching your filter! | Clear or change your category search keywords |
+| 11 | US15 | 500 | BR15 | Unable to calculate demand prediction! | Contact system administrator to verify historical sales data |
+| 12 | US15 | 403 | BR01 | Access denied to sales analytics page! | Log in with an Administrator or Store Manager account |
 **Notes:**
 - Use error codes that actually exist in the API/backend.
 - Link each error to the relevant business rule.
