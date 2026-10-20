@@ -235,25 +235,106 @@ Document at least four error messages mapped to actual API error codes and busin
 
 Describe the UI changes made since Milestone 2 and explain why they were needed.
 
-### Change 1 — [Change Title]
+### Change 1 — Business Rules updated
 
 **Before M3:**  
-TODO: Describe the previous design.
+BR2: An order cannot be completed before payment is confirmed
+
+An order with “Before-payment” status must remain incomplete until its payment has been confirmed.
 
 **After M3:**  
-TODO: Describe the updated design.
+BR2: An order cannot be completed before payment is confirmed
+
+An order with "Not Delivered" status must not be considered completed and must not contribute to customer spending, loyalty calculations or sales reports until delivery is confirmed.
 
 **Reason for Change:**  
-TODO: Explain the problem or feedback that motivated the change.
+During the refinement of the business process, the team identified that delivery status is a more accurate indicator of order completion than payment status. This change ensures that sales statistics and customer loyalty data reflect only successfully delivered orders.
 
 **Impact on Users:**  
-TODO: Explain how the change improves usability or supports a user story.
+Employees can track order completion more accurately, while managers receive more reliable sales reports and customer analytics. Customers are rewarded only for orders that have actually been delivered.
+
+**Evidence**
+
+![UI update](images\ui\m3-change2.png)
+
+### Change 2 — New Business Rule for Order Creation
+
+**Before M3:**  
+The system did not explicitly prevent users from creating an order without adding products.
+
+**After M3:**  
+A new business rule, BR10, was introduced:
+
+BR10: An order must contain at least one product.
+
+The system validates order data before creation and displays the message "Order must contain at least one product" when no products are included.
+
+**Reason for Change:**  
+Testing and requirements review revealed that allowing empty orders could lead to invalid records and data inconsistencies.
+
+**Impact on Users:**  
+Employees receive immediate feedback when attempting to create an invalid order, reducing errors and ensuring higher data quality.
+
+### Change 3 — Order Status Redesign
+
+**Before M3:**  
+Orders used payment-oriented statuses including:
+
+* Pending
+* Success
+* Canceled
+
+**After M3:**  
+The order workflow was simplified to focus on fulfillment status:
+
+* Delivered
+* Not Delivered
+
+**Reason for Change:**  
+The previous statuses focused primarily on payment progress and did not accurately represent whether customers had received their orders. The revised statuses better reflect the actual fulfillment state of an order.
+
+**Impact on Users:**  
+Employees can track order fulfillment more easily, and reports can distinguish completed deliveries from unfinished transactions more accurately.
+
+**Evidence**
+
+![UI update](images\ui\m3-change2.png)
+
+### Change 4 — Enhanced Error Handling
+
+**Before M3:**  
+The system provided limited feedback for server-side and client-side failures, making it difficult for users to understand what went wrong
+
+**After M3:**  
+Dedicated error messages were added for 4xx (Bad Request) and 5xx (Server Error) responses to provide clearer system feedback..
+
+**Reason for Change:**  
+Feedback from testing indicated that generic error responses reduced usability and made troubleshooting difficult.
+
+**Impact on Users:**  
+Users receive more informative error messages, allowing them to identify invalid input or temporary system issues more quickly.
 
 **Evidence:**
 
-![Updated UI](images/ui/updated-screen.png)
+![Updated UI](images/screenshots/409_error.png)
 
-<!-- Repeat for additional changes if applicable. -->
+### Change 5 — Customer Form Simplification
+
+**Before M3:**  
+The customer creation form included fields for Tier and Budget when adding a new customer.
+
+**After M3:**  
+The Tier and Budget fields were removed from the customer creation form.
+
+**Reason for Change:**  
+Requirements analysis showed that these fields were either derived automatically by the system or not required during customer registration. Their presence increased form complexity without providing immediate value.
+
+**Impact on Users:**  
+The customer registration process becomes simpler and faster, reducing unnecessary data entry and minimizing user errors.
+
+**Evidence:**
+
+![Updated UI](images/ui/m3-change1.png)
 
 **Design Document:**  
 See [`design.md`](design.md) for the corresponding UI design change.
