@@ -69,3 +69,4 @@
 - @oanhtran020906-sys: Added mostly all information related to US011 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: Added mostly all information related to US015 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: Added mostly all information related to US016 - P0 stories and status, Wireframe in 4 states and Error message 
+- @oanhtran020906-sys: create error mess for sale & prediction page
