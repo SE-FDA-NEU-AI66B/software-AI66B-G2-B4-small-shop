@@ -18,9 +18,44 @@
 <!-- Add or update the screen-flow diagram here. -->
 
 ![Screen Flow Diagram](images/ui/order_flow.png)
-
-
 ---
+- Sales Flow for US11
+```
+[Main Navigation Sidebar] 
+           │
+           ▼ (Click "Sales")
+┌────────────────────────────────────────────────────────────────────────┐
+│                          /sales (/sales.html)                          │
+├────────────────────────────────────────────────────────────────────────┤
+│                      Tab Navigation (Switch Tabs)                      │
+│                                                                        │
+│   ┌──────────────────────────────────┐┌────────────────────────────┐   │
+│   │   Tab 1: Sales Overview (Active) ││ Tab 2: Demand Prediction   │   │
+│   └──────────────────────────────────┘└────────────────────────────┘   │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ▼                                                   ▼
+┌───────────────────────────────┐           ┌───────────────────────────────┐
+│ [Tab 1: Sales & Profit Overview] │           │ [Tab 2: Predictive Forecasting]│
+├───────────────────────────────┤           ├───────────────────────────────┤
+│ 1. Load KPI Summary Cards     │           │ 1. Select Forecasting Window  │
+│    - Total Sales              │           │    (7, 14, or 30 Days)        │
+│    - Net Profit               │           │                               │
+│    - Completed Orders         │           │ 2. System Calculates Metrics  │
+│                               │           │    - Daily Sales Speed        │
+│ 2. Apply Filters              │           │    - Predicted Demand         │
+│    - Top Items (3/5/10/All)   │           │    - Suggested Restock        │
+│    - Category (Beverage/...)  │           │                               │
+│    - Timeframe (Daily/...)    │           │ 3. Priority Sorting & Risk    │
+│    - Reset Filters Button     │           │    - Critical Deficit (Red)   │
+│                               │           │    - Restock Needed (Yellow)  │
+│ 3. Render Top-Selling Table   │           │    - Sufficient Stock (Green) │
+│    - Calculated Profit Margin │           │                               │
+│      per item                 │           │ 4. Render Restock Order Table │
+└───────────────────────────────┘           └───────────────────────────────┘
+```
+
 
 ## 2. UI Wireframes
 
@@ -114,6 +149,7 @@ The user comes here to analyze top-selling products by revenue, view profit marg
 |                                   | Restock Alert: Critical Deficit   |
 +-----------------------------------+-----------------------------------+
 ```
+![Sales Real UI](images/ui/sales_real_ui.png)
 
 ## 3. User-Friendly Error Messages
 
