@@ -10,7 +10,7 @@
 | US02 — Confirm delivery status | Order Directory (Check order tab) | `/order/check/{id}/deliver` | partly works - we’ve agreed that an order should have multiple delivery status rather than multiple payment status, but it’s still working by payment status, where Success = successful in payment + delivered | #199 |
 | US06 - View all orders | Order Directory (Check order tab) | `/order/check` | works | #203 |
 | US11 Sales Analytics & Forecasting | Sales Dashboard | `/sales` | works | #205 |
-
+| US15 Demand forecasting | Sales & Demand Analytics | `/sales` | works | #205 |
 | US16 Restock recommendation | Sales & Demand Analytics | `/sales` | works | #206 |
 **Status:** Not Started / In Progress / Completed
 
@@ -128,6 +128,54 @@ The user comes here to view previously created orders and their basic informatio
 ![Order creation - Real UI](images/ui/order_check_real.png)
 ---
 ### 2.4 US11: Sales Analytics & Demand Prediction (4 States)
+
+**Purpose:**  
+The user comes here to analyze top-selling products by revenue, view profit margins, and monitor predictive restocking demands for inventory management.
+
+**Route:**  
+`/sales`
+
+**Calls:**  
+`GET /api/sales/overview`, `GET /api/sales/predictions`
+```
++-----------------------------------+-----------------------------------+
+| Empty                             | Loading                           |
+| No sales or inventory data available| (spinner) Loading analytics...   |
+| for the selected timeframe.       |                                   |
+| [Reset Filters]                   |                                   |
++-----------------------------------+-----------------------------------+
+| Error                             | Data                              |
+| Unable to connect to backend server| Total Sales: 45,200,000 ₫        |
+| [Try Again]                       | Rank #1: Oolong Tea (420 units)   |
+|                                   | Restock Alert: Critical Deficit   |
++-----------------------------------+-----------------------------------+
+```
+![Sales Real UI](images/ui/sales_real_ui.png)
+---
+
+### 2.5 US15: Demand Forecasting & Restock Alert (4 States)
+
+The user comes here to analyze historical sales rates, predict inventory demand for the next 7, 14, or 30 days, and identify critical stock deficit risks.
+
+**Route:** `/sales`  
+**Calls:** `GET /api/sales/overview`, `GET /api/sales/predictions`
+```
++-- Empty ---------------------+  +-- Loading -------------------+
+|                              |  |                              |
+|   No inventory forecast data |  |          (spinner)           |
+|      available to display.   |  |   Calculating demand...      |
+|                              |  |    [====================]    |
++------------------------------+  +------------------------------+
++-- Error ---------------------+  +-- Data ----------------------+
+|                              |  | Item: Oolong Milk Tea        |
+|  Failed to load forecast data|  | Current Stock: 15 items      |
+|        [ Try again ]         |  | Forecast (30d): 420 items    |
+|                              |  | Alert: Restock Needed (+415) |
++------------------------------+  +------------------------------+
+```
+![Demand Forecasting - Real UI](images/ui/demand_real_ui.png)
+
+---
 
 ### 2.6 US16: Automated Restock Recommendation & Risk Sorting (4 States)
 
