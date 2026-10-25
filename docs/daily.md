@@ -71,3 +71,6 @@
 - @oanhtran020906-sys: Added mostly all information related to US016 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: create error mess for sale & prediction page
 - @ngocmai141106: Saw the Error documentation for Order @oanhtran020906-sys created for me only now but i already did it in issue #198, #199 and #203. I made this commit (which only have change in this daily note file) so the instructor would know that this issue is actually solved. Sorry for the inconvenience and thank you!
+
+# 25/10/2026:
+- @ngocmai141106: Added the template for our next submission for Sprint 4, and the new sprint's SM information in README.md. Also tried to summarize Sprint 3 of @oanhtran020906-sys in sprint-log.md, but didn't really understand how the counting thing works. Need to ask previous summary writers later (@HaVy2006 @aizun pls notice me!!!!!)
