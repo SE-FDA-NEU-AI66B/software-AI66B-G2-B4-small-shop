@@ -14,6 +14,7 @@ A demand forecasting tool designed for small retail stores. The system allows us
 |1           | Nguyen Ha Vy | @HaVy2006 |
 |2           | Nguyen Do Anh Duong | @aizun |
 |3           | Tran Phuong Oanh | @oanhtran020906-sys|
+|4           | Tran Ngoc Mai | @ngocmai141106 |
 
 ## Run
 

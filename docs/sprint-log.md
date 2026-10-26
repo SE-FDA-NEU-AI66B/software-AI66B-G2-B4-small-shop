@@ -26,3 +26,17 @@ Not finished: none.
 
 SM Sprint 3: @oanhtran020906-sys
 
+# Sprint 3 (weeks 9-10)
+
+Start: 08/10/2026; End: 21/10/2026
+
+Goal: Prove that all P0 story works from back-to-end through the official interface, using real data from database, giving real, clear error messages whenver needed.
+
+- Committed:
+- Completed:
+- Velocity:
+- Total commits:
+
+Not finished: none.
+
+SM Sprint 4: @ngocmai141106
