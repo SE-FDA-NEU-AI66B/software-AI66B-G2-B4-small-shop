@@ -12,9 +12,11 @@
 ### 2.1. US01: Order creation
 | ID | Story | Input | Expected | Kind |
 |----|-------|-------|----------|------|
-| TC-01 | US01: Order creation | input01 | expected01 | kind01 |
-| TC-02 | US01: Order creation | input02 | expected02 | kind02 |
-*continue with your next TC...*
+| TC-01 | US01: Create an order | One valid product, quantity = 1 (Latte x1) | 201 Order created successfully | Normal |
+| TC-02 | US01: Create an order | Several valid products, random quantity (Latte x1, Tiramisu x2, Americano x3) | 201 Order created successfully | Normal |
+| TC-03 | US01: Create an order | Nothing (empty order) | 422 An order must contain at least one product! (BR10) | Error |
+| TC-04 | US01: Create an order | At least one expired order (expiry_date >= NOW) | 409 This product is expired and cannot be sold! (BR4) | Error |
+| TC-05 | US01: Create an order | At least one unavailable product (status = Unavailable) | 409 This product is insufficient at the moment! (BR1) | Error |
 
 ### 2.2. US02: Order delivery status
 | ID | Story | Input | Expected | Kind |

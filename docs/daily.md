@@ -74,3 +74,6 @@
 
 # 25/10/2026:
 - @ngocmai141106: Added the template for our next submission for Sprint 4, and the new sprint's SM information in README.md. Also tried to summarize Sprint 3 of @oanhtran020906-sys in sprint-log.md, but didn't really understand how the counting thing works. Need to ask previous summary writers later (@HaVy2006 @aizun pls notice me!!!!!)
+
+# 27/10/2026:
+- @ngocmai141106: Listed all test cases for US01
