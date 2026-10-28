@@ -26,6 +26,14 @@
 | TC-08 | US02: Order delivery status | An order that is initially undelivered and worths 100k VND | 200 Order delivered successfully!; Total sales +100k VND, customer{id}’s total spend + 100k VND (BR2) | Normal |
 | TC-09 | US02: Order delivery status | A non-existing order ID | 404 Order not found. | Error |
 
+### 2.3. US06: View all orders
+| ID | Story | Input | Expected | Kind |
+|----|-------|-------|----------|------|
+| TC-10 | US06 View all orders | 5 valid orders | 200 Orders loaded successfully!
+ | Normal |
+| TC-11 | US06 View all orders | Multiple orders which include both Delivered and Not delivered | 200 Orders loaded successfully! (Each order’s delivery status must display correctly) | Normal |
+| TC-12 | US06 View all orders | An order that is undelivered but somehow still contributes to sales (means violating BR2) | 409 Conflict - Order violated completion rules! | Error |
+
 *continue with your next US...*
 
 ## 3. Automated tests
