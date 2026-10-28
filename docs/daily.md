@@ -74,3 +74,6 @@
 
 # 25/10/2026:
 - @ngocmai141106: Added the template for our next submission for Sprint 4, and the new sprint's SM information in README.md. Also tried to summarize Sprint 3 of @oanhtran020906-sys in sprint-log.md, but didn't really understand how the counting thing works. Need to ask previous summary writers later (@HaVy2006 @aizun pls notice me!!!!!)
+
+# 27/10/2026:
+- @ngocmai141106: Listed all test cases for US01. Created pytests for all test cases in US01 as well. Added the code/tests folder to hold each US's tests there, and a fake data file and blank init file. Also need to add a fake service file for order just to test (using the service file we wrote in the web repo wont do the thing bc those files are working on real data!!!). Also added some more required things to install in requirements.txt, but if u dont want to run it again u can just go pip install pytest==7.4.2. The results for all TC in US01 is attached in the docs/testing.md.
