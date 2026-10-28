@@ -30,7 +30,7 @@
 
 ## 3. Automated tests
 Test results for US01:
-![Test results for US01](images/test_result/US01.jpg)
+![Test results for US01](images/test_result/order.jpg)
 *please make the tests in tests/, add instructions to run the tests in docs/SETUP.md, then come back here to attach images of the tests' results.*
 
 ## 4. What the tests found
