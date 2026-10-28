@@ -27,3 +27,29 @@ def create_order(repo, products):
             )
 
     return {"status": 201}
+
+
+def mark_order_delivered(repo, order_id):
+    order = repo.get_order(order_id)
+    # TC-09
+    if order is None:
+        raise OrderError(
+            404,
+            "Order not found."
+        )
+
+    # TC-07
+    if order["deliver_status"] == "delivered":
+        raise OrderError(
+            409,
+            "You already confirmed this order's delivery status!"
+        )
+
+    # TC-06 + TC-08
+    order["deliver_status"] = "delivered"
+
+    return {
+        "status": 200,
+        "sales_added": order["total_amount"],
+        "customer_spending_added": order["total_amount"]
+    }
