@@ -80,3 +80,6 @@
 
 # 28/10/2026:
 - @ngocmai141106: Listed all test cases for US02 (counting continue from US01's. Or should i restart from TC-01?), including their related pytests, fake repo class, fake service, and a new success screenshot of all 9 of them this time to replace the old one (with only 5 ones of US01). The same goes for US06 (except i think im vomitting nonsense since the Error one in its TC list shouldn't exist at first point...) Also connect the work to the real database on another branch for Create order and View all order screens (but the View detail information screen isn't working so i wont merge that branch in anytime).
+
+# 29/10/2026:
+- ngocmai141106: Added instruction how to fail the Error TCs on purpose in docs/testing.md. Still need formatting.

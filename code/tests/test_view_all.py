@@ -38,7 +38,6 @@ def test_tc11_display_delivery_status_correctly():
     assert result["orders"][1]["deliver_status"] == "not_deliver"
 
 # TC-12
-
 def test_tc12_undelivered_order_contributes_to_sales():
 
     repo = FakeViewOrderRepo([

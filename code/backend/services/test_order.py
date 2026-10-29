@@ -60,10 +60,7 @@ def view_all_orders(repo):
 
     # TC-12 - BR2 violation
     for order in orders:
-        if (
-            order["deliver_status"] == "not_deliver"
-            and order["included_in_sales"] is True
-        ):
+        if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):
             raise OrderError(
                 409,
                 "Order violated completion rules!"

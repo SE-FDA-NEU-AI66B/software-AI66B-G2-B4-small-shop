@@ -45,6 +45,14 @@ Test results for US01:
 ### 4.0. No bug found
 - The rule we broke on purpose:
 - The red output:
+*@aizun pls reformat this for me*
+How to break each Errror test to show red output: Come to backend/services/test_order.py and change:
+- TC-03: line 9: *if len(products) == 0:* into *if len(products) < 0:*
+- TC04: line 17: *if product["name"] in repo.expired_products:* into *if False:*
+- TC-05: line 23: *if product["name"] in repo.unavailable_products:* into *if False:*
+- TC-07: line 42: *if order["deliver_status"] == "delivered":* into *if False:*
+- TC-12: line 63: *if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):* into *if False:*
+
 
 ### 4.1. Entry 1
 A bug we found no.1:
