@@ -21,14 +21,16 @@
 ### 2.2. US02: Order delivery status
 | ID | Story | Input | Expected | Kind |
 |----|-------|-------|----------|------|
-| TC-01 | US02: Order delivery status | input01 | expected01 | kind01 |
-| TC-02 | US02: Order delivery status | input02 | expected02 | kind02 |
+| TC-06 | US02: Order delivery status | An undelivered order | 200 Order delivered successfully! | Normal |
+| TC-07 | US02: Order delivery status | An already delivered order | 409 You already confirmed this order’s delivery status! (BR2) | Error |
+| TC-08 | US02: Order delivery status | An order that is initially undelivered and worths 100k VND | 200 Order delivered successfully!; Total sales +100k VND, customer{id}’s total spend + 100k VND (BR2) | Normal |
+| TC-09 | US02: Order delivery status | A non-existing order ID | 404 Order not found. | Error |
 
 *continue with your next US...*
 
 ## 3. Automated tests
 Test results for US01:
-![Test results for US01](images/test_result/US01.jpg)
+![Test results for US01](images/test_result/order.jpg)
 *please make the tests in tests/, add instructions to run the tests in docs/SETUP.md, then come back here to attach images of the tests' results.*
 
 ## 4. What the tests found
