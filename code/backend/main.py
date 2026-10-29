@@ -8,9 +8,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
 from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id
-from config.api import settings
+#from schema.order import OrderCreate, DeliveryResponse
+from schema.customer import CustomerCreate, CustomerUpdate
+from services.customer import search_customers, get_customers, get_customer_details, get_customer_types, create_customer, update_customer, delete_customer
+#from services.order import get_products, create_order, get_orders, get_order_by_id, mark_order_delivered
 
-from routers.customer import customer_router
+from config.api import settings
 
 app = FastAPI(title="YUMS")
 
@@ -91,7 +94,90 @@ def delete_employee_endpoint(employee_id: int):
     return delete_employee(employee_id=employee_id)
 
 app.include_router(emp_router)
-app.include_router(customer_router)
+
+#all routers for order screns of maitran
+api_router = APIRouter(prefix="/api")
+
+@api_router.get("/products", tags=["Products"])
+def get_products_endpoint():
+    return get_products()
+
+@api_router.post("/orders", tags=["Orders"], status_code=status.HTTP_201_CREATED)
+def create_order_endpoint(payload: OrderCreate):
+    return create_order(payload)
+
+@api_router.get("/orders", tags=["Orders"])
+def get_orders_endpoint():
+    return get_orders()
+
+@api_router.get("/orders/{order_id}", tags=["Orders"])
+def get_order_endpoint(order_id: int):
+    order = get_order_by_id(order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found.")
+    return order
+
+@api_router.patch("/orders/{order_id}/deliver", response_model=DeliveryResponse, tags=["Orders"])
+def deliver_order_endpoint(order_id: int):
+    return mark_order_delivered(order_id)
+
+#2 customer endpoints since maitran need them for the create ord screen
+@api_router.get("/customers", tags=["Customers"])
+def get_customers_endpoint():
+    try:
+        return get_customers()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Customer database is unavailable. Check the MySQL settings in backend/.env.",
+        ) from e
+
+@api_router.get("/customer-types", tags=["Customers"])
+def get_customer_types_endpoint():
+    try:
+        return get_customer_types()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Customer database is unavailable. Check the MySQL settings in backend/.env.",
+        ) from e
+
+@api_router.get("/customers/{customer_id}/details", tags=["Customers"])
+def get_customer_details_endpoint(customer_id: int):
+    try:
+        return get_customer_details(customer_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Customer database is unavailable. Check the MySQL settings in backend/.env.",
+        ) from e
+
+@api_router.get("/customers/search", tags=["Customers"])
+def search_customers_endpoint(phone: str = ""):
+    try:
+        return search_customers(phone)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Customer database is unavailable. Check the MySQL settings in backend/.env.",
+        ) from e
+
+@api_router.post("/customers", tags=["Customers"], status_code=status.HTTP_201_CREATED)
+def create_customer_endpoint(payload: CustomerCreate):
+    return create_customer(payload)
+
+@api_router.put("/customers/{customer_id}", tags=["Customers"])
+def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
+    return update_customer(customer_id, payload)
+
+@api_router.delete("/customers/{customer_id}", tags=["Customers"], status_code=status.HTTP_204_NO_CONTENT)
+def delete_customer_endpoint(customer_id: int):
+    delete_customer(customer_id)
+
+app.include_router(api_router)
+
 
 if __name__ == "__main__":
     import uvicorn
