@@ -48,3 +48,10 @@ class FakeOrderRepo:
 
     def get_order(self, order_id):
         return self.orders.get(order_id)
+
+class FakeViewOrderRepo:
+    def __init__(self, orders=None):
+        self.orders = orders or []
+
+    def get_orders(self):
+        return self.orders

@@ -26,6 +26,14 @@
 | TC-08 | US02: Order delivery status | An order that is initially undelivered and worths 100k VND | 200 Order delivered successfully!; Total sales +100k VND, customer{id}’s total spend + 100k VND (BR2) | Normal |
 | TC-09 | US02: Order delivery status | A non-existing order ID | 404 Order not found. | Error |
 
+### 2.3. US06: View all orders
+| ID | Story | Input | Expected | Kind |
+|----|-------|-------|----------|------|
+| TC-10 | US06 View all orders | 5 valid orders | 200 Orders loaded successfully!
+ | Normal |
+| TC-11 | US06 View all orders | Multiple orders which include both Delivered and Not delivered | 200 Orders loaded successfully! (Each order’s delivery status must display correctly) | Normal |
+| TC-12 | US06 View all orders | An order that is undelivered but somehow still contributes to sales (means violating BR2) | 409 Conflict - Order violated completion rules! | Error |
+
 *continue with your next US...*
 
 ## 3. Automated tests
@@ -37,6 +45,14 @@ Test results for US01:
 ### 4.0. No bug found
 - The rule we broke on purpose:
 - The red output:
+*@aizun pls reformat this for me*
+How to break each Errror test to show red output: Come to backend/services/test_order.py and change:
+- TC-03: line 9: *if len(products) == 0:* into *if len(products) < 0:*
+- TC04: line 17: *if product["name"] in repo.expired_products:* into *if False:*
+- TC-05: line 23: *if product["name"] in repo.unavailable_products:* into *if False:*
+- TC-07: line 42: *if order["deliver_status"] == "delivered":* into *if False:*
+- TC-12: line 63: *if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):* into *if False:*
+
 
 ### 4.1. Entry 1
 A bug we found no.1:

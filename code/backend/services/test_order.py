@@ -53,3 +53,20 @@ def mark_order_delivered(repo, order_id):
         "sales_added": order["total_amount"],
         "customer_spending_added": order["total_amount"]
     }
+
+def view_all_orders(repo):
+
+    orders = repo.get_orders()
+
+    # TC-12 - BR2 violation
+    for order in orders:
+        if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):
+            raise OrderError(
+                409,
+                "Order violated completion rules!"
+            )
+
+    return {
+        "status": 200,
+        "orders": orders
+    }
