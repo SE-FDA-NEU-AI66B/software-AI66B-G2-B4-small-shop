@@ -1,15 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Initial mock data if localStorage is empty
-    const initialCustomers = [
-        { id: 'CUS-001', name: 'Nguyễn Văn An', email: 'an.nguyen@gmail.com', phone: '0901234567', spending: 15500000, tier: 'Gold', status: 'Active' },
-        { id: 'CUS-002', name: 'Trần Thị Bích', email: 'bich.tran@yahoo.com', phone: '0912345678', spending: 4200000, tier: 'Silver', status: 'Active' },
-        { id: 'CUS-003', name: 'Lê Minh Cường', email: 'cuong.le@hotmail.com', phone: '0987654321', spending: 800000, tier: 'Bronze', status: 'Inactive' },
-        { id: 'CUS-004', name: 'Pham Hoàng Dũng', email: 'dung.pham@gmail.com', phone: '0933445566', spending: 21000000, tier: 'Gold', status: 'Active' }
-    ];
+    const API_URL = 'http://127.0.0.1:8000/customers';
 
     // State management
-    let customers = JSON.parse(localStorage.getItem('yums_customers')) || initialCustomers;
-
+    let customers = []
     // DOM Elements
     const tableBody = document.getElementById('customersTableBody');
     const searchInput = document.getElementById('searchInput');
@@ -30,6 +24,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Forms
     const addForm = document.getElementById('customerForm');
     const editForm = document.getElementById('editCustomerForm');
+
+    async function fetchCustomers() {
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error(`Failed to load customers (${response.status}).`);
+        }
+
+        const data = await response.json();
+
+        customers = data.map(customer => ({
+            id: customer.customer_id,
+            name: customer.name,
+            email: customer.email ?? '',
+            phone: customer.phone,
+            spending: Number(customer.total_spent ?? 0),
+            tier: customer.membership ?? 'None',
+            status: 'Active'
+        }));
+
+        renderTable();
+    } catch (error) {
+        console.error('Error loading customers:', error);
+        showToast('Unable to load customers. Please try again later.');
+    }
+}
 
     // Save customers to localStorage
     function saveCustomers() {
@@ -255,5 +276,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial Render
-    renderTable();
+    fetchCustomers();
 });

@@ -10,6 +10,8 @@ from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
 from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id
 from config.api import settings
 
+from routers.customer import customer_router
+
 app = FastAPI(title="YUMS")
 
 # Configure CORS so browser fetch requests (POST, PUT, OPTIONS) are permitted
@@ -89,6 +91,7 @@ def delete_employee_endpoint(employee_id: int):
     return delete_employee(employee_id=employee_id)
 
 app.include_router(emp_router)
+app.include_router(customer_router)
 
 if __name__ == "__main__":
     import uvicorn
