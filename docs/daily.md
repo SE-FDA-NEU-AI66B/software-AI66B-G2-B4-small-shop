@@ -51,7 +51,7 @@
 - @ngocmai141106: Fixed the Priority of the two order screens i mixed up in requirements.md. @aizun (are you or sb else?) pls notice if you need to write this in this sprint's What changed.
 - @HaVy2006: Changed the customer types, fixed the trigger to automatically update customer ranks, added new trigger to update quantity inventory, added new status-Sold out in inventory table
 
-# 16/10/2026
+## 16/10/2026
 - @ngocmai141106: Added mostly all information related to US01 - P0 stories and status, Wireframe in 4 states and Error message. It's marked in the P0 stories and status part as "partly work" at the moment, but i'll change this if i can fix the code accordingly to our new logic in time. Also, the wireframe's digital format kinda sucks if you paste this to .md file no matter how you formatted it, so i recommend inserting photos instead. And I found out a problem we forgot to fix accordingly to our new logic in BR2 (about order payment), so either the one who made the BRs (@oanhtran020906-sys is that u?) or I go fix it tmr.
 
 ## 17/10/2026
@@ -80,6 +80,21 @@
 - @HaVy2006: Implemented the customer list using real data connected to MySQL through main.py. Created services/customer.py and schemas/customer.py, updated the customer API in main.py, and modified customer.js, the customer HTML, and CSS. Reviewed the existing customer detail code and identified potential issues related to its dependency on order data.
 # 27/10/2026:
 - @ngocmai141106: Listed all test cases for US01. Created pytests for all test cases in US01 as well. Added the code/tests folder to hold each US's tests there, and a fake data file and blank init file. Also need to add a fake service file for order just to test (using the service file we wrote in the web repo wont do the thing bc those files are working on real data!!!). Also added some more required things to install in requirements.txt, but if u dont want to run it again u can just go pip install pytest==7.4.2. The results for all TC in US01 is attached in the docs/testing.md.
+- @HaVy2006: Implemented the customer list using real data connected to MySQL through main.py. Created services/customer.py and schemas/customer.py, updated the customer API in main.py, and modified customer.js, the customer HTML, and CSS. Reviewed the existing customer detail code and identified potential issues related to its dependency on order data.
 
 # 28/10/2026:
 - @ngocmai141106: Listed all test cases for US02 (counting continue from US01's. Or should i restart from TC-01?), including their related pytests, fake repo class, fake service, and a new success screenshot of all 9 of them this time to replace the old one (with only 5 ones of US01). Also connect the work to the real database on another branch for Create order and View all order screens (but the View detail information screen isn't working so i wont merge that branch in anytime).
+## 28/10/2026:
+- @ngocmai141106: Listed all test cases for US02 (counting continue from US01's. Or should i restart from TC-01?), including their related pytests, fake repo class, fake service, and a new success screenshot of all 9 of them this time to replace the old one (with only 5 ones of US01). The same goes for US06 (except i think im vomitting nonsense since the Error one in its TC list shouldn't exist at first point...) Also connect the work to the real database on another branch for Create order and View all order screens (but the View detail information screen isn't working so i wont merge that branch in anytime).
+- @HaVy2006: Redesigned the Home page interface and increased the character size to improve the visual presentation.
+
+## 29/10/2026:
+- ngocmai141106: Added instruction how to fail the Error TCs on purpose in docs/testing.md. Still need formatting.
+
+## 30/10/2026:
+- @HaVy2006: Updated customer membership discount percentages and spending thresholds required to reach higher membership ranks.
+
+## 1/11/2026:
+- @HaVy2006: Updated the database design and modified the employees and users tables.
+- @HaVy2006: Added and adjusted seed data to make the database more complete and realistic.
+- oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database
