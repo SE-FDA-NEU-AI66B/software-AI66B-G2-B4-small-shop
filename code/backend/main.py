@@ -8,12 +8,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
 from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id
-#from schema.order import OrderCreate, DeliveryResponse
+from schema.order import OrderCreate, DeliveryResponse
+from services.order import get_products, create_order, get_orders, get_order_by_id, mark_order_delivered
+
 from schema.customer import CustomerCreate, CustomerUpdate
 from services.customer import search_customers, get_customers, get_customer_details, get_customer_types, create_customer, update_customer, delete_customer
-#from services.order import get_products, create_order, get_orders, get_order_by_id, mark_order_delivered
-from schema.order import OrderCreate, CustomerCreate, DeliveryResponse
-from services.order import get_products, search_customers, create_customer, create_order, get_orders, get_order_by_id, mark_order_delivered
+
 
 from config.api import settings
 
@@ -40,6 +40,7 @@ app.add_middleware(
     allow_methods=["*"],  # Allows GET, POST, PUT, DELETE, OPTIONS
     allow_headers=["*"],
 )
+
 
 emp_router = APIRouter(prefix="/employees", tags=["Employees"])
 
@@ -178,9 +179,6 @@ def search_customers_endpoint(phone: str = ""):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Customer database is unavailable. Check the MySQL settings in backend/.env.",
         ) from e
-@api_router.get("/customers/search", tags=["Customers"])
-def search_customers_endpoint(phone: str = ""):
-    return search_customers(phone)
 
 @api_router.post("/customers", tags=["Customers"], status_code=status.HTTP_201_CREATED)
 def create_customer_endpoint(payload: CustomerCreate):
@@ -197,8 +195,6 @@ def delete_customer_endpoint(customer_id: int):
 app.include_router(api_router)
 
 
-app.include_router(api_router)
-
 if __name__ == "__main__":
     import uvicorn
     
@@ -210,7 +206,7 @@ if __name__ == "__main__":
     )
 
 # oanhtran: product endpoints
-
+#############################product##########################
 @app.get("/products", response_model=List[ProductResponse], summary="Get all products")
 def get_all_products_endpoint():
     try:

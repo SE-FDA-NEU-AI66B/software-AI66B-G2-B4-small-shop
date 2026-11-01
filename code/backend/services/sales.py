@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from backend.database.connect_db import get_connection
