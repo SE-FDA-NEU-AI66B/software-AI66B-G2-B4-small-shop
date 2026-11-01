@@ -10,7 +10,7 @@ CREATE TABLE `users` (
   `user_id` int PRIMARY KEY AUTO_INCREMENT,
   `username` varchar(50) UNIQUE NOT NULL,
   `password` varchar(255) NOT NULL, 
-  `role` varchar(30) NOT NULL, -- Admin, Manager, Employee
+  `role` varchar(30) NULL DEFAULT "Employee", -- Admin, Manager, Employee
   `is_active` boolean NOT NULL DEFAULT TRUE,
   `created_at` datetime NOT NULL DEFAULT NOW()
 );
@@ -18,7 +18,7 @@ CREATE TABLE `users` (
 CREATE TABLE `employees` (
   `employee_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) ,
   `phone` VARCHAR(20),
   `email` varchar(100),
   `role` varchar(30) NOT NULL, -- Manager, Cashier, Staff
@@ -66,7 +66,7 @@ CREATE TABLE `inventory` (
 
 CREATE TABLE `orders` (
   `order_id` int PRIMARY KEY AUTO_INCREMENT,
-  `employee_id` int NOT NULL,
+  `employee_id` int,
   `customer_id` int,
   `deliver_status` varchar(30) NOT NULL DEFAULT 'not_deliver',
   `total_amount` decimal(12,2) NOT NULL DEFAULT 0,
@@ -93,5 +93,8 @@ ALTER TABLE `order_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (
 ALTER TABLE `customers` ADD FOREIGN KEY (`customer_type_id`) REFERENCES `customer_types` (`customer_type_id`);
 ALTER TABLE `products` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
 
-
+-- ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) 
+-- REFERENCES customers(customer_id) ON DELETE SET NULL;
+-- ALTER TABLE orders ADD CONSTRAINT fk_orders_employee FOREIGN KEY (employee_id) 
+-- REFERENCES employees(employee_id) ON DELETE SET NULL;
 
