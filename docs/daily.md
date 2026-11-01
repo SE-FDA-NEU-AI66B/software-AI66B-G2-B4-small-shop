@@ -83,3 +83,6 @@
 
 # 29/10/2026:
 - ngocmai141106: Added instruction how to fail the Error TCs on purpose in docs/testing.md. Still need formatting.
+
+# 1/11/2026:
+- oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database

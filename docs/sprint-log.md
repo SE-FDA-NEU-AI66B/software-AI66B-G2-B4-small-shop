@@ -32,10 +32,10 @@ Start: 08/10/2026; End: 21/10/2026
 
 Goal: Prove that all P0 story works from back-to-end through the official interface, using real data from database, giving real, clear error messages whenver needed.
 
-- Committed:
-- Completed:
-- Velocity:
-- Total commits:
+- Committed: 30 issues
+- Completed: 30 issues with 42 sub-issues
+- Velocity: 75
+- Total commits: 118 (all repo commits: 335)
 
 Not finished: none.
 
