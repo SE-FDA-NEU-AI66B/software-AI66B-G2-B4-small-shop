@@ -51,7 +51,7 @@
 - @ngocmai141106: Fixed the Priority of the two order screens i mixed up in requirements.md. @aizun (are you or sb else?) pls notice if you need to write this in this sprint's What changed.
 - @HaVy2006: Changed the customer types, fixed the trigger to automatically update customer ranks, added new trigger to update quantity inventory, added new status-Sold out in inventory table
 
-# 16/10/2026
+## 16/10/2026
 - @ngocmai141106: Added mostly all information related to US01 - P0 stories and status, Wireframe in 4 states and Error message. It's marked in the P0 stories and status part as "partly work" at the moment, but i'll change this if i can fix the code accordingly to our new logic in time. Also, the wireframe's digital format kinda sucks if you paste this to .md file no matter how you formatted it, so i recommend inserting photos instead. And I found out a problem we forgot to fix accordingly to our new logic in BR2 (about order payment), so either the one who made the BRs (@oanhtran020906-sys is that u?) or I go fix it tmr.
 
 # 17/10/2026
@@ -59,30 +59,37 @@
 - @HaVy2006: Fixed BR2's payment-delivery logic change problem. Added new BR10 of "Cannot create blank order". (This is written by @ngocmai141106 since @HaVy2006 forgot to write)
 - @ngocmai141106: Added mostly all information related to US02 - P0 stories and status, Wireframe in 4 states and Error message. Its status is also marked as "partly work" and its real UI screenshot is missing for the same reason as above, i'll change accordingly if i have time to complete the code. I also changed the template made by @oanhtran020906 a bit (deleted your ##3 part and re-enumerate the following parts) so it'll be closer to the instructor's requirements on E-learning.
 
-# 18/10/2026
+## 18/10/2026
 - @ngocmai141106: Added all required information for US06: Story and status, Wireframe in 4 states; and a final flow for Order parts. The newly added error message actually belongs to US01 rather than US06 so i moved it upward. the View all orders screen was also P1, but it's related to US06 (P0) so i added it anyway.
 
-# 19/10/2026
+## 19/10/2026
 - @aizun: some other side features of employee tab added: delete, input check, dupilcate check, status new color
 
-# 20/10/2026
+## 20/10/2026
 - @oanhtran020906-sys: Added mostly all information related to US011 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: Added mostly all information related to US015 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: Added mostly all information related to US016 - P0 stories and status, Wireframe in 4 states and Error message 
 - @oanhtran020906-sys: create error mess for sale & prediction page
 - @ngocmai141106: Saw the Error documentation for Order @oanhtran020906-sys created for me only now but i already did it in issue #198, #199 and #203. I made this commit (which only have change in this daily note file) so the instructor would know that this issue is actually solved. Sorry for the inconvenience and thank you!
 
-# 25/10/2026:
+## 25/10/2026:
 - @ngocmai141106: Added the template for our next submission for Sprint 4, and the new sprint's SM information in README.md. Also tried to summarize Sprint 3 of @oanhtran020906-sys in sprint-log.md, but didn't really understand how the counting thing works. Need to ask previous summary writers later (@HaVy2006 @aizun pls notice me!!!!!)
 
-# 27/10/2026:
+## 27/10/2026:
 - @ngocmai141106: Listed all test cases for US01. Created pytests for all test cases in US01 as well. Added the code/tests folder to hold each US's tests there, and a fake data file and blank init file. Also need to add a fake service file for order just to test (using the service file we wrote in the web repo wont do the thing bc those files are working on real data!!!). Also added some more required things to install in requirements.txt, but if u dont want to run it again u can just go pip install pytest==7.4.2. The results for all TC in US01 is attached in the docs/testing.md.
+- @HaVy2006: Implemented the customer list using real data connected to MySQL through main.py. Created services/customer.py and schemas/customer.py, updated the customer API in main.py, and modified customer.js, the customer HTML, and CSS. Reviewed the existing customer detail code and identified potential issues related to its dependency on order data.
 
-# 28/10/2026:
+## 28/10/2026:
 - @ngocmai141106: Listed all test cases for US02 (counting continue from US01's. Or should i restart from TC-01?), including their related pytests, fake repo class, fake service, and a new success screenshot of all 9 of them this time to replace the old one (with only 5 ones of US01). The same goes for US06 (except i think im vomitting nonsense since the Error one in its TC list shouldn't exist at first point...) Also connect the work to the real database on another branch for Create order and View all order screens (but the View detail information screen isn't working so i wont merge that branch in anytime).
+- @HaVy2006: Redesigned the Home page interface and increased the character size to improve the visual presentation.
 
-# 29/10/2026:
+## 29/10/2026:
 - ngocmai141106: Added instruction how to fail the Error TCs on purpose in docs/testing.md. Still need formatting.
 
-# 1/11/2026:
+## 30/10/2026:
+- @HaVy2006: Updated customer membership discount percentages and spending thresholds required to reach higher membership ranks.
+
+## 1/11/2026:
+- @HaVy2006: Updated the database design and modified the employees and users tables.
+- @HaVy2006: Added and adjusted seed data to make the database more complete and realistic.
 - oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database
