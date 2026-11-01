@@ -92,3 +92,4 @@
 ## 1/11/2026:
 - @HaVy2006: Updated the database design and modified the employees and users tables.
 - @HaVy2006: Added and adjusted seed data to make the database more complete and realistic.
+- oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database
