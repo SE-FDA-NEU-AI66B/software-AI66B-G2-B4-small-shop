@@ -99,3 +99,6 @@
 - @HaVy2006: Added and adjusted seed data to make the database more complete and realistic.
 - oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database
 - @aizun: changed the style of employee page to be unified with others.
+
+## 2/11/2026
+-@aizun: wrote test case finding
