@@ -58,3 +58,9 @@ A bug we found no.1: business-rule validation failures
 - The issue: The application failed to raise OrderError for several invalid scenarios, including duplicate delivery confirmation, empty orders, expired products, unavailable products, and incorrect sales calculation for undelivered orders
 - The fix:Fixed in PR #245 by implementing the required validation logic and error handling.
 - The test now guarding it:The tests remain as regression tests and now pass successfully (12 passed).
+
+The test were failed:
+![Failed test](images\test_result\failed.png)
+
+After fixing, test case was success:
+![success test](images/test_result/success.png)
