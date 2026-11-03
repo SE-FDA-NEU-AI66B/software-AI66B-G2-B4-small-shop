@@ -2,11 +2,13 @@
 ## 1. What we test, and why
 | Layer | Test | Why |
 |-------|------|-----|
-|  layer01 | test01 | reason01 |
-|  layer02 | test02 | reason02 |
+| code/backend/services/test_order.py (business logic) | Unit tests with fake repositories | This file contains the highest-risk business rules for order creation, delivery confirmation, and validation checks; mistakes here directly affect sales and order correctness |
+| code/backend/services/auth.py (login logic) | Unit tests with a fake DB cursor/connection | Verifies authentication rules such as exact username matching, bcrypt password validation, and inactive-user rejection without needing the real database |
+| code/backend/database/*.sql (schema and constraints) | No automated tests yet | The database schema is critical to data integrity, but it is currently validated through initialization scripts and manual checks rather than a dedicated automated suite |
+| code/frontend/html + js (user interface) | No automated browser tests | The UI is checked manually in the browser; it changes often and the most important logic is already covered by backend unit tests |
 
-**Risk:**    
-2-3 setences about risks go here...
+**Risk:**
+The biggest risks are in the core business rules and authentication flow. If order validation, delivery status, or login checks are wrong, the app can accept invalid data, reject valid actions, or expose unauthorized access. These issues are costly because they affect correctness and trust, not just appearance.
 
 ## 2. Test cases for every P0 story
 ### 2.1. US01: Order creation
@@ -64,3 +66,6 @@ The test were failed:
 
 After fixing, test case was success:
 ![success test](images/test_result/success.png)
+
+*continue with more bugs if any...*
+
