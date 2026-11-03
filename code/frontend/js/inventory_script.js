@@ -227,3 +227,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchProducts();
 });
+
+// Hàm gọi API lấy categories từ database và điền vào các thẻ <select>
+async function loadCategories() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/categories');
+        if (!response.ok) {
+            throw new Error('Không thể tải danh sách categories');
+        }
+        
+        const categories = await response.json();
+        
+        // 1. Đổ dữ liệu vào ô lọc danh mục (Filter Select)
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.category_name; 
+                option.textContent = cat.category_name;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // 2. Đổ dữ liệu vào ô chọn trong Modal Thêm/Sửa sản phẩm
+        const modalCategorySelect = document.getElementById('category');
+        if (modalCategorySelect) {
+            modalCategorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.category_name; 
+                option.textContent = cat.category_name;
+                modalCategorySelect.appendChild(option);
+            });
+        }
+
+    } catch (error) {
+        console.error('Lỗi khi tải categories:', error);
+    }
+}
+
+// Gọi hàm loadCategories ngay khi trang được tải xong
+document.addEventListener('DOMContentLoaded', () => {
+    loadCategories(); // Thêm dòng này vào đầu sự kiện load
+    
+    // Các đoạn code sẵn có bên dưới...
+    if (searchInput) searchInput.addEventListener('input', filterData);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterData);
+    // ...
+});
