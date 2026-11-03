@@ -36,12 +36,21 @@ The biggest risks are in the core business rules and authentication flow. If ord
 | TC-11 | US06 View all orders | Multiple orders which include both Delivered and Not delivered | 200 Orders loaded successfully! (Each order’s delivery status must display correctly) | Normal |
 | TC-12 | US06 View all orders | An order that is undelivered but somehow still contributes to sales (means violating BR2) | 409 Conflict - Order violated completion rules! | Error |
 
-*continue with your next US...*
+### 2.4. US11: Sales analytics
+| ID | Story | Input | Expected | Kind |
+|----|-------|-------|----------|------|
+| TC-13 | US11 View top selling products | top_n="5", category="Beverage" | 200 OK, returns up to 5 top-selling Beverage items sorted by revenue | Normal |
+| TC-14 | US11 View top selling products | top_n="invalid_text" | 500 Internal Server Error (or 422/400), handles invalid parameter type | Error |
+| TC-15 | US11 View top selling products | top_n="1" | 200 OK, returns exactly 1 top-selling item | Boundary, on limit |
+| TC-16 | US11 View top selling products | top_n="0" | 200 OK with empty list [] | Boundary, just below |
+
+---
 
 ## 3. Automated tests
 Test results for US01:
 ![Test results for US01](images/test_result/order.jpg)
 *please make the tests in tests/, add instructions to run the tests in docs/SETUP.md, then come back here to attach images of the tests' results.*
+
 
 ## 4. What the tests found
 ### 4.0. No bug found
