@@ -40,3 +40,16 @@ Goal: Prove that all P0 story works from back-to-end through the official interf
 Not finished: none.
 
 SM Sprint 4: @ngocmai141106
+
+# Sprint 4 (weeks 11-12)
+
+Start: 22/10/2026; End: 04/11/2026
+
+Goal: Prove that all P0 story keeps working when we change them: every P0 story is checked by automated tests that a machine can run in seconds, after every change.
+
+- Committed: 15 issues
+- Completed: 15 issues with 6 sub-issues
+- Velocity: 54
+- Total commits: 31 (all repo commits: 386)
+
+Not finished: none.
