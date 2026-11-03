@@ -1,6 +1,6 @@
 import sys
 import os
-from fastapi import FastAPI, HTTPException, status, APIRouter, Depends
+from fastapi import FastAPI, HTTPException, status, APIRouter, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
@@ -28,8 +28,6 @@ from services.inventory import get_all_inventory, add_inventory, update_inventor
 
 from schema.sales import SalesItemOverview, DemandPredictionResponse, SalesFilterQuery
 from services.sales import get_sales_overview, get_demand_predictions
-from fastapi import Query
-from typing import Optional
 #het oanhtran
 
 app = FastAPI(title="YUMS")
@@ -198,6 +196,98 @@ def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
 
+# oanhtran: product endpoints
+@api_router.get("/products", response_model=List[ProductResponse], tags=["Products"])
+def get_all_products_endpoint():
+    try:
+        return get_all_products()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch products: {str(e)}")
+
+@api_router.post("/products", response_model=ProductResponse, status_code=status.HTTP_201_CREATED, tags=["Products"])
+def create_product_endpoint(payload: ProductCreate):
+    try:
+        return add_product(payload)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create product: {str(e)}")
+
+@api_router.put("/products/{product_id}", response_model=ProductResponse, tags=["Products"])
+def update_product_endpoint(product_id: int, payload: ProductUpdate):
+    updated = update_product(product_id, payload)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
+    return updated
+
+@api_router.delete("/products/{product_id}", tags=["Products"])
+def delete_product_endpoint(product_id: int):
+    success = delete_product(product_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
+    return {"message": f"Product {product_id} deleted successfully."}
+
+# Inventory Endpoints
+@api_router.get("/inventory", response_model=List[InventoryResponse], tags=["Inventory"])
+def get_all_inventory_endpoint():
+    try:
+        return get_all_inventory()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch inventory: {str(e)}")
+
+@api_router.post("/inventory", response_model=InventoryResponse, status_code=status.HTTP_201_CREATED, tags=["Inventory"])
+def create_inventory_endpoint(payload: InventoryCreate):
+    try:
+        return add_inventory(payload)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create item: {str(e)}")
+
+@api_router.put("/inventory/{sku}", response_model=InventoryResponse, tags=["Inventory"])
+def update_inventory_endpoint(sku: str, payload: InventoryUpdate):
+    updated = update_inventory(sku, payload)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
+    return updated
+
+@api_router.delete("/inventory/{sku}", tags=["Inventory"])
+def delete_inventory_endpoint(sku: str):
+    if not delete_inventory(sku):
+        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
+    return {"message": f"Product {sku} deleted successfully."}
+
+# Categories Endpoint (Hỗ trợ load 6 categories cho Inventory)
+@api_router.get("/categories", tags=["Categories"])
+def get_categories_endpoint():
+    conn = None
+    try:
+        conn = get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT category_id, category_name FROM category")
+            categories = cursor.fetchall()
+            return categories if categories else []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
+    finally:
+        if conn and conn.open:
+            conn.close()
+
+# Sales Analytics Endpoints
+@api_router.get("/sales/overview", tags=["Sales"])
+def get_sales_overview_endpoint(
+    top_n: Optional[str] = Query("5"),
+    category: Optional[str] = Query(None),
+    timeframe: Optional[str] = Query("monthly")
+):
+    try:
+        return get_sales_overview(top_n=top_n, category=category)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
+
+@api_router.get("/sales/predictions", tags=["Sales"])
+def get_demand_predictions_endpoint(window_days: int = Query(30)):
+    try:
+        return get_demand_predictions(window_days=window_days)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
+
 app.include_router(api_router)
 
 
@@ -210,97 +300,3 @@ if __name__ == "__main__":
         port=settings.API_PORT,
         reload=settings.API_RELOAD
     )
-
-# oanhtran: product endpoints
-@app.get("/products", response_model=List[ProductResponse], summary="Get all products")
-def get_all_products_endpoint():
-    try:
-        return get_all_products()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch products: {str(e)}")
-
-@app.post("/products", response_model=ProductResponse, status_code=status.HTTP_201_CREATED, summary="Add a new product")
-def create_product_endpoint(payload: ProductCreate):
-    try:
-        return add_product(payload)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to create product: {str(e)}")
-
-@app.put("/products/{product_id}", response_model=ProductResponse, summary="Update product details")
-def update_product_endpoint(product_id: int, payload: ProductUpdate):
-    updated = update_product(product_id, payload)
-    if not updated:
-        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
-    return updated
-
-@app.delete("/products/{product_id}", summary="Delete a product")
-def delete_product_endpoint(product_id: int):
-    success = delete_product(product_id)
-    if not success:
-        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
-    return {"message": f"Product {product_id} deleted successfully."}
-
-# oanhtran: inventory endpoints
-
-@app.get("/inventory", response_model=List[InventoryResponse], summary="Get all inventory products")
-def get_all_inventory_endpoint():
-    try:
-        return get_all_inventory()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch inventory: {str(e)}")
-
-@app.post("/inventory", response_model=InventoryResponse, status_code=status.HTTP_201_CREATED, summary="Add a new inventory product")
-def create_inventory_endpoint(payload: InventoryCreate):
-    try:
-        return add_inventory(payload)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to create item: {str(e)}")
-
-@app.put("/inventory/{sku}", response_model=InventoryResponse, summary="Update inventory product")
-def update_inventory_endpoint(sku: str, payload: InventoryUpdate):
-    updated = update_inventory(sku, payload)
-    if not updated:
-        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
-    return updated
-
-@app.delete("/inventory/{sku}", summary="Delete inventory product")
-def delete_inventory_endpoint(sku: str):
-    if not delete_inventory(sku):
-        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
-    return {"message": f"Product {sku} deleted successfully."}
-
-@app.get("/categories", summary="Get all categories from database")
-def get_categories_endpoint():
-    try:
-        from database.connect_db import get_db_connection
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT category_id, category_name FROM category")
-        categories = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return categories
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
-    
-# oanhtran: sales endpoints and analytics
-@app.get("/sales/overview", summary="Get sales overview (US11)")
-def get_sales_overview_endpoint(
-    top_n: Optional[str] = Query("5"),
-    category: Optional[str] = Query(None),
-    timeframe: Optional[str] = Query("monthly")
-):
-    try:
-        from services.sales import get_sales_overview
-        return get_sales_overview(top_n=top_n, category=category)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
-
-@app.get("/sales/predictions", summary="Get demand forecasting (US15, US16)")
-def get_demand_predictions_endpoint(window_days: int = Query(30)):
-    try:
-        from services.sales import get_demand_predictions
-        return get_demand_predictions(window_days=window_days)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
-
