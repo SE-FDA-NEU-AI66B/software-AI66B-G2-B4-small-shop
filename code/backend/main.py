@@ -260,7 +260,7 @@ def delete_inventory_endpoint(sku: str):
 def get_categories_endpoint():
     conn = None
     try:
-        from backend.database.connect_db import get_connection
+        from database.connect_db import get_connection
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("SELECT category_id, category_name FROM category")
