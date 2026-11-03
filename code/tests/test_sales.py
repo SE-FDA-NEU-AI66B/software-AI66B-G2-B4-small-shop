@@ -40,6 +40,7 @@ def test_tc_us11_04_top_n_boundary_below_zero():
     data = response.json()
     assert len(data) == 0
 
+
 # US15: DEMAND FORECASTING
 
 def test_tc_us15_01_demand_prediction_30_days():
@@ -63,3 +64,30 @@ def test_tc_us15_04_window_days_6_below_bound():
     """TC-US15-04: Edge case - Forecasting with small window (e.g. 6 days)"""
     response = client.get("/sales/predictions?window_days=6")
     assert response.status_code == 200
+
+# US16: RESTOCK RECOMMENDATION
+
+def test_tc_us16_01_restock_calculation_normal():
+    """TC-US16-01: Normal case - Check restock logic for items"""
+    response = client.get("/sales/predictions?window_days=30")
+    assert response.status_code == 200
+    data = response.json()
+    for item in data:
+        assert "suggested_restock" in item
+        assert item["suggested_restock"] >= 0
+
+def test_tc_us16_02_critical_deficit_boundary():
+    """TC-US16-02: Boundary case - Stock <= 5 triggers Critical Deficit"""
+    response = client.get("/sales/predictions?window_days=30")
+    data = response.json()
+    critical_items = [item for item in data if item["current_stock"] <= 5]
+    for item in critical_items:
+        assert "Critical Deficit" in item["status_badge"]
+
+def test_tc_us16_03_low_stock_boundary_on_limit():
+    """TC-US16-03: Boundary case - Stock > 5 and needs restock"""
+    response = client.get("/sales/predictions?window_days=30")
+    data = response.json()
+    restock_items = [item for item in data if item["current_stock"] > 5 and item["suggested_restock"] > 0]
+    for item in restock_items:
+        assert "Restock Needed" in item["status_badge"]

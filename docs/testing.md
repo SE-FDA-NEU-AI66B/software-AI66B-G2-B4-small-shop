@@ -52,6 +52,13 @@ The biggest risks are in the core business rules and authentication flow. If ord
 | TC-19 | US15 Demand forecasting | window_days=7 | 200 OK, calculates demand for 7 days window | Boundary, on limit |
 | TC-20 | US15 Demand forecasting | window_days=6 | 200 OK (or 400 Bad Request) | Edge case, low window |
 
+### 2.6. US16: Restock recommendation
+| ID | Story | Input | Expected | Kind |
+|----|-------|-------|----------|------|
+| TC-21 | US16 Restock recommendation | current_stock=15, predicted_demand=10 | 200 OK, suggested_restock calculated, status_badge="Sufficient Stock" | Normal |
+| TC-22 | US16 Restock recommendation | current_stock=4 | 200 OK, current_stock <= 5 triggers status_badge="Critical Deficit" | Boundary, below limit |
+| TC-23 | US16 Restock recommendation | current_stock=5 | 200 OK, stock at critical threshold triggers "Critical Deficit" | Boundary, on limit |
+| TC-24 | US16 Restock recommendation | current_stock=10 (with high demand) | 200 OK, triggers status_badge="Restock Needed" | Normal / Boundary |
 ---
 
 ## 3. Automated tests
@@ -59,6 +66,8 @@ Test results for US01:
 ![Test results for US01](images/test_result/order.jpg)
 *please make the tests in tests/, add instructions to run the tests in docs/SETUP.md, then come back here to attach images of the tests' results.*
 
+Test results for Sales & Forecasting (US11, US15, US16):
+![Test results for Sales](images/test_result/sales.jpg)
 
 ## 4. What the tests found
 ### 4.0. No bug found
