@@ -106,3 +106,4 @@
 
 ##  3/11/2026
 - @oanhtran020906-sys: add test cases for P0 story: US11, US15 and US16.
+- @ngocmai141106: Updated sprint 4's log (next sprint's SM is still missing).
