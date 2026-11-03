@@ -11,7 +11,6 @@ def get_all_products() -> List[Dict[str, Any]]:
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            # Đã sửa lại đúng tên bảng là product và category
             query = """
                 SELECT p.product_id, p.name, p.category_id, c.category_name, p.unit_price, p.is_available
                 FROM product p
