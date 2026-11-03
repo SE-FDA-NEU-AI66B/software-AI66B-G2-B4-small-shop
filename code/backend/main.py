@@ -16,7 +16,6 @@ from services.order import get_products, create_order, get_orders, get_order_by_
 from schema.customer import CustomerCreate, CustomerUpdate
 from services.customer import search_customers, get_customers, get_customer_details, get_customer_types, create_customer, update_customer, delete_customer
 
-
 from config.api import settings
 
 #oanhtran
@@ -292,6 +291,28 @@ def get_demand_predictions_endpoint(window_days: int = Query(30)):
         return get_demand_predictions(window_days=window_days)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
+# Bổ sung một router riêng cho /sales để tương thích với các file test gọi trực tiếp không có tiền tố /api
+sales_test_router = APIRouter(prefix="/sales", tags=["Sales Test Alias"])
+
+@sales_test_router.get("/overview", response_model=List[SalesItemOverview])
+def get_sales_overview_alias(
+    top_n: Optional[str] = Query("5"),
+    category: Optional[str] = Query(None),
+    timeframe: Optional[str] = Query("monthly")
+):
+    try:
+        return get_sales_overview(top_n=top_n, category=category)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
+
+@sales_test_router.get("/predictions")
+def get_demand_predictions_alias(window_days: int = Query(30)):
+    try:
+        return get_demand_predictions(window_days=window_days)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
+
+app.include_router(sales_test_router)
 
 app.include_router(api_router)
 
