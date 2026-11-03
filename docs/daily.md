@@ -101,6 +101,7 @@
 - @aizun: changed the style of employee page to be unified with others.
 
 ## 2/11/2026
+-@aizun: wrote test case finding
 - @HaVy2006: Create login function using real data, we had updated the database design and relationship between employees and users tables, also changed register screen by Change password screen, we will create this feature in the future. 
 
 ##  3/11/2026

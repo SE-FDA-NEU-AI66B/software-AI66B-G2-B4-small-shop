@@ -64,24 +64,25 @@ Test results for US01:
 ### 4.0. No bug found
 - The rule we broke on purpose:
 - The red output:
-*@aizun pls reformat this for me*
 How to break each Errror test to show red output: Come to backend/services/test_order.py and change:
-- TC-03: line 9: *if len(products) == 0:* into *if len(products) < 0:*
-- TC04: line 17: *if product["name"] in repo.expired_products:* into *if False:*
-- TC-05: line 23: *if product["name"] in repo.unavailable_products:* into *if False:*
-- TC-07: line 42: *if order["deliver_status"] == "delivered":* into *if False:*
-- TC-12: line 63: *if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):* into *if False:*
-
+- TC-03: line 9: 
+```if len(products) == 0:``` into ```if len(products) < 0:```
+- TC04: line 17: ```if product["name"] in repo.expired_products:``` into ```if False:```
+- TC-05: line 23: ```if product["name"] in repo.unavailable_products:``` into ```if False:```
+- TC-07: line 42: ```if order["deliver_status"] == "delivered":``` into ```if False:```
+- TC-12: line 63: ```if (order["deliver_status"] == "not_deliver" and order["included_in_sales"] is True):``` into ```if False:```
 
 ### 4.1. Entry 1
-A bug we found no.1:
-- The issue:
-- The fix:
-- The test now guarding it:
-### 4.2. Entry 2
-A bug we found no.2:
-- The issue:
-- The fix:
-- The test now guarding it:
+A bug we found no.1: business-rule validation failures
+- The issue: The application failed to raise OrderError for several invalid scenarios, including duplicate delivery confirmation, empty orders, expired products, unavailable products, and incorrect sales calculation for undelivered orders
+- The fix:Fixed in PR #245 by implementing the required validation logic and error handling.
+- The test now guarding it:The tests remain as regression tests and now pass successfully (12 passed).
+
+The test were failed:
+![Failed test](images\test_result\failed.png)
+
+After fixing, test case was success:
+![success test](images/test_result/success.png)
 
 *continue with more bugs if any...*
+
