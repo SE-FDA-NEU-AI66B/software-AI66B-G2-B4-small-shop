@@ -263,10 +263,12 @@ def get_categories_endpoint():
         from database.connect_db import get_connection
         conn = get_connection()
         with conn.cursor() as cursor:
-            cursor.execute("SELECT category_id, category_name FROM category")
+            # Sửa từ 'category' thành 'categories' cho khớp với database
+            cursor.execute("SELECT category_id, category_name FROM categories")
             categories = cursor.fetchall()
             return categories if categories else []
     except Exception as e:
+        print(f"Error details: {str(e)}") # In lỗi ra terminal để dễ debug
         raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
     finally:
         if conn and conn.open:
