@@ -7,7 +7,6 @@ from backend.database.connect_db import get_connection
 from backend.schema.inventory import InventoryCreate, InventoryUpdate
 
 def get_all_inventory() -> List[Dict[str, Any]]:
-    """Lấy danh sách tất cả sản phẩm kèm LEFT JOIN với bảng category để lấy đúng tên danh mục."""
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
@@ -15,8 +14,8 @@ def get_all_inventory() -> List[Dict[str, Any]]:
                 SELECT p.product_id, p.name, p.category_id, c.category_name, p.unit_price, p.is_available,
                        CONCAT('P-', LPAD(p.product_id, 3, '0')) AS sku,
                        50 AS stock, 10 AS min_stock
-                FROM product p
-                LEFT JOIN category c ON p.category_id = c.category_id
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.category_id
                 ORDER BY p.product_id DESC;
             """
             cursor.execute(query)
