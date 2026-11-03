@@ -212,7 +212,6 @@ if __name__ == "__main__":
     )
 
 # oanhtran: product endpoints
-#############################product##########################
 @app.get("/products", response_model=List[ProductResponse], summary="Get all products")
 def get_all_products_endpoint():
     try:
@@ -270,7 +269,19 @@ def delete_inventory_endpoint(sku: str):
         raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
     return {"message": f"Product {sku} deleted successfully."}
 
-
+@app.get("/categories", summary="Get all categories from database")
+def get_categories_endpoint():
+    try:
+        from database.connect_db import get_db_connection
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT category_id, category_name FROM category")
+        categories = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return categories
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
 # oanhtran: sales endpoints and analytics
 
 @app.get("/sales/overview", summary="Get sales overview (US11)")
@@ -292,3 +303,4 @@ def get_demand_predictions_endpoint(window_days: int = Query(30)):
         return get_demand_predictions(window_days=window_days)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
+

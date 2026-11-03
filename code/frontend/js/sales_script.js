@@ -1,5 +1,17 @@
 const API_SALES_URL = "http://127.0.0.1:8000/sales";
 
+const toast = document.getElementById('toastNotification');
+
+// Show Toast Notification (Giống hệt trang Employee)
+function showToast(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
 function switchTab(tabName) {
   const tabs = document.querySelectorAll('.tab-content');
   const buttons = document.querySelectorAll('.tab-btn');
@@ -21,20 +33,25 @@ function switchTab(tabName) {
 async function fetchSalesOverview() {
   const topNDropdown = document.getElementById('topNDropdown');
   const categoryInput = document.getElementById('categoryInput');
+  const timeframeFilter = document.getElementById('timeframeFilter');
 
   const topN = topNDropdown ? topNDropdown.value : '5';
   const category = categoryInput ? categoryInput.value.trim() : '';
+  const timeframe = timeframeFilter ? timeframeFilter.value : 'monthly';
 
-  let url = `${API_SALES_URL}/overview?top_n=${topN}`;
+  let url = `${API_SALES_URL}/overview?top_n=${topN}&timeframe=${timeframe}`;
   if (category) url += `&category=${encodeURIComponent(category)}`;
 
   try {
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to load sales overview.");
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || "Failed to load sales analytics from server.");
+    }
     const data = await response.json();
     renderSalesTable(data);
   } catch (error) {
-    console.error(error.message);
+    showToast(error.message);
   }
 }
 
@@ -48,17 +65,26 @@ function renderSalesTable(dataToRender) {
     return;
   }
 
-  dataToRender.forEach((item) => {
+  dataToRender.forEach((item, index) => {
+    const rank = item.rank || (index + 1);
+    const id = item.id || `P-${String(item.product_id || 1).padStart(3, '0')}`;
+    const name = item.name || 'Unknown Product';
+    const category = item.category || 'General';
+    const unitsSold = item.units_sold_adjusted ?? item.units_sold ?? item.unitsSoldAdjusted ?? 0;
+    const price = item.price ?? item.unit_price ?? 0;
+    const revenue = item.revenue_adjusted ?? item.total_revenue ?? (unitsSold * price);
+    const margin = item.profit_margin ?? 40.0;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="font-weight: 700; color: var(--text-muted);">#${item.rank}</td>
-      <td style="font-weight: 600; color: var(--text-muted);">${item.id}</td>
-      <td style="font-weight: 600; color: var(--bg-sidebar);">${item.name}</td>
-      <td><span class="badge" style="background: #EAECEE; color: #2C3E50;">${item.category}</span></td>
-      <td>${(item.units_sold_adjusted || 0).toLocaleString('en-US')} units</td>
-      <td>${item.price.toLocaleString('en-US')} ₫</td>
-      <td style="font-weight: 700; color: var(--bg-sidebar);">${(item.revenue_adjusted || 0).toLocaleString('en-US')} ₫</td>
-      <td><span class="badge badge-success">${item.profit_margin || 40}%</span></td>
+      <td style="font-weight: 700; color: ${rank <= 3 ? 'var(--color-accent-red, #b30000)' : 'var(--text-muted)'};">#${rank}</td>
+      <td style="font-weight: 600; color: var(--text-muted);">${id}</td>
+      <td style="font-weight: 600; color: var(--bg-sidebar);">${name}</td>
+      <td><span class="badge" style="background: #EAECEE; color: #2C3E50;">${category}</span></td>
+      <td>${Number(unitsSold).toLocaleString('en-US')} units</td>
+      <td>${Number(price).toLocaleString('en-US')} ₫</td>
+      <td style="font-weight: 700; color: var(--bg-sidebar);">${Number(revenue).toLocaleString('en-US')} ₫</td>
+      <td><span class="badge badge-success">${margin}%</span></td>
     `;
     tbody.appendChild(tr);
   });
@@ -70,11 +96,14 @@ async function fetchPredictions() {
 
   try {
     const response = await fetch(`${API_SALES_URL}/predictions?window_days=${windowDays}`);
-    if (!response.ok) throw new Error("Failed to load predictions.");
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || "Failed to load demand predictions from server.");
+    }
     const data = await response.json();
     renderPredictionTable(data, windowDays);
   } catch (error) {
-    console.error(error.message);
+    showToast(error.message);
   }
 }
 
@@ -89,14 +118,31 @@ function renderPredictionTable(dataToRender, windowDays) {
   }
 
   dataToRender.forEach(item => {
+    const id = item.id || `P-${String(item.product_id || 1).padStart(3, '0')}`;
+    const name = item.name || 'Unknown Product';
+    const currentStock = item.current_stock ?? item.currentStock ?? 0;
+    const predictedDemand = item.predicted_demand ?? item.predictedDemand ?? 0;
+    const suggestedRestock = item.suggested_restock ?? item.suggestedRestock ?? 0;
+    
+    let statusBadge = item.status_badge || item.statusBadge;
+    if (!statusBadge) {
+      if (currentStock <= 5) {
+        statusBadge = `<span class="badge badge-danger">Critical Deficit</span>`;
+      } else if (suggestedRestock > 0) {
+        statusBadge = `<span class="badge badge-warning">Restock Needed</span>`;
+      } else {
+        statusBadge = `<span class="badge badge-success">Sufficient Stock</span>`;
+      }
+    }
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="font-weight: 600; color: var(--text-muted);">${item.id}</td>
-      <td style="font-weight: 600; color: var(--bg-sidebar);">${item.name}</td>
-      <td>${item.current_stock} items</td>
-      <td><strong>${item.predicted_demand}</strong> items / ${windowDays} days</td>
-      <td style="color: var(--color-accent-red); font-weight: 700;">+${item.suggested_restock} items</td>
-      <td>${item.status_badge}</td>
+      <td style="font-weight: 600; color: var(--text-muted);">${id}</td>
+      <td style="font-weight: 600; color: var(--bg-sidebar);">${name}</td>
+      <td>${currentStock} items</td>
+      <td><strong>${predictedDemand}</strong> items / ${windowDays} days</td>
+      <td style="color: var(--color-accent-red, #b30000); font-weight: 700;">+${suggestedRestock} items</td>
+      <td>${statusBadge}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -116,7 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnReset.addEventListener('click', () => {
       if (topNDropdown) topNDropdown.value = '5';
       if (categoryInput) categoryInput.value = '';
+      if (timeframeFilter) timeframeFilter.value = 'monthly';
       fetchSalesOverview();
+      showToast("Filters reset to default");
     });
   }
 
