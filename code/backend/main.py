@@ -118,10 +118,6 @@ api_router = APIRouter(prefix="/api")
 def login_endpoint(payload: LoginRequest):
     return authenticate_user(payload.username, payload.password)
 
-@api_router.get("/products", tags=["Products"])
-def get_products_endpoint():
-    return get_products()
-
 @api_router.post("/orders", tags=["Orders"], status_code=status.HTTP_201_CREATED)
 def create_order_endpoint(payload: OrderCreate):
     return create_order(payload)
@@ -196,7 +192,7 @@ def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
 
-# oanhtran: product endpoints
+# oanhtran: product endpoints (Đã gộp và thay thế endpoint cũ để tránh route collision)
 @api_router.get("/products", response_model=List[ProductResponse], tags=["Products"])
 def get_all_products_endpoint():
     try:
@@ -253,12 +249,13 @@ def delete_inventory_endpoint(sku: str):
         raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
     return {"message": f"Product {sku} deleted successfully."}
 
-# Categories Endpoint (Hỗ trợ load 6 categories cho Inventory)
+# Categories Endpoint (Hỗ trợ load categories cho Inventory/Product)
 @api_router.get("/categories", tags=["Categories"])
 def get_categories_endpoint():
     conn = None
     try:
         conn = get_connection()
+        from backend.database.connect_db import get_connection # Đảm bảo import đúng cách nếu cần
         with conn.cursor() as cursor:
             cursor.execute("SELECT category_id, category_name FROM category")
             categories = cursor.fetchall()
@@ -270,7 +267,7 @@ def get_categories_endpoint():
             conn.close()
 
 # Sales Analytics Endpoints
-@api_router.get("/sales/overview", tags=["Sales"])
+@api_router.get("/sales/overview", response_model=List[SalesItemOverview], tags=["Sales"])
 def get_sales_overview_endpoint(
     top_n: Optional[str] = Query("5"),
     category: Optional[str] = Query(None),
@@ -281,7 +278,7 @@ def get_sales_overview_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
 
-@api_router.get("/sales/predictions", tags=["Sales"])
+@api_router.get("/sales/predictions", response_model=List[DemandPredictionResponse], tags=["Sales"])
 def get_demand_predictions_endpoint(window_days: int = Query(30)):
     try:
         return get_demand_predictions(window_days=window_days)
@@ -295,7 +292,7 @@ if __name__ == "__main__":
     import uvicorn
     
     uvicorn.run(
-        "main:app",  # Pass as string when reload=True
+        "main:app",  
         host=settings.API_HOST,
         port=settings.API_PORT,
         reload=settings.API_RELOAD
