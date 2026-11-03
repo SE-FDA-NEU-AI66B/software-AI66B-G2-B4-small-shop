@@ -16,9 +16,10 @@ const productForm = document.getElementById('productForm');
 const openModalBtn = document.getElementById('openAddModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
+const toast = document.getElementById('toastNotification');
 
 // Form Input Elements
-const productIdInput = document.createElement('input'); // Trường ẩn ID sản phẩm khi sửa
+const productIdInput = document.createElement('input');
 productIdInput.type = 'hidden';
 productIdInput.id = 'productId';
 if (productForm) productForm.appendChild(productIdInput);
@@ -33,6 +34,16 @@ function formatVND(amount) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
+// Show Toast Notification (Giống hệt trang Employee)
+function showToast(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
 // Fetch products from API
 async function fetchProducts() {
   try {
@@ -42,7 +53,7 @@ async function fetchProducts() {
     products = await response.json();
     filterData();
   } catch (error) {
-    console.error(error.message);
+    showToast(error.message);
   }
 }
 
@@ -146,7 +157,7 @@ async function handleFormSubmit(e) {
 
   const payload = {
     name: productNameInput.value.trim(),
-    category_id: 1, // Mặc định hoặc lấy theo lựa chọn
+    category_id: 1,
     unit_price: parseFloat(priceInput.value) || 0,
     is_available: true
   };
@@ -168,12 +179,16 @@ async function handleFormSubmit(e) {
       });
     }
 
-    if (!response.ok) throw new Error("Action failed.");
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || "Action failed.");
+    }
 
+    showToast(isEditMode ? "Updated product successfully!" : "Added new product successfully!");
     closeModal();
     fetchProducts();
   } catch (error) {
-    console.error(error.message);
+    showToast(error.message);
   }
 }
 
@@ -183,10 +198,14 @@ window.deleteProduct = async function(id) {
 
   try {
     const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("Failed to delete product.");
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || "Failed to delete product.");
+    }
+    showToast("Deleted product successfully!");
     fetchProducts();
   } catch (error) {
-    console.error(error.message);
+    showToast(error.message);
   }
 };
 
@@ -197,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (openModalBtn) openModalBtn.addEventListener('click', openAddProductModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-  if (cancelModalBtn) closeModalBtn.addEventListener('click', closeModal);
+  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
   if (productForm) productForm.addEventListener('submit', handleFormSubmit);
 
   if (modal) {
