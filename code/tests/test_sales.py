@@ -41,6 +41,30 @@ def test_tc_us11_04_top_n_boundary_below_zero():
     assert len(data) == 0
 
 
+# US15: DEMAND FORECASTING
+
+def test_tc_us15_01_demand_prediction_30_days():
+    """TC-US15-01: Normal case - Forecasting for 30 days"""
+    response = client.get("/sales/predictions?window_days=30")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) > 0
+
+def test_tc_us15_02_invalid_window_days():
+    """TC-US15-02: Edge case - Forecasting with custom window (e.g. 45 days)"""
+    response = client.get("/sales/predictions?window_days=45")
+    assert response.status_code == 200
+
+def test_tc_us15_03_window_days_7_lower_bound():
+    """TC-US15-03: Boundary case - Exactly 7 days window"""
+    response = client.get("/sales/predictions?window_days=7")
+    assert response.status_code == 200
+
+def test_tc_us15_04_window_days_6_below_bound():
+    """TC-US15-04: Edge case - Forecasting with small window (e.g. 6 days)"""
+    response = client.get("/sales/predictions?window_days=6")
+    assert response.status_code == 200
+
 # US16: RESTOCK RECOMMENDATION
 
 def test_tc_us16_01_restock_calculation_normal():

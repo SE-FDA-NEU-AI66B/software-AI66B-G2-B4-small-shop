@@ -44,6 +44,14 @@ The biggest risks are in the core business rules and authentication flow. If ord
 | TC-15 | US11 View top selling products | top_n="1" | 200 OK, returns exactly 1 top-selling item | Boundary, on limit |
 | TC-16 | US11 View top selling products | top_n="0" | 200 OK with empty list [] | Boundary, just below |
 
+### 2.5. US15: Demand forecasting
+| ID | Story | Input | Expected | Kind |
+|----|-------|-------|----------|------|
+| TC-17 | US15 Demand forecasting | window_days=30 | 200 OK, returns demand predictions based on historical sales rate | Normal |
+| TC-18 | US15 Demand forecasting | window_days=45 | 200 OK (or 400 Bad Request if custom range validation is active) | Edge case / Error |
+| TC-19 | US15 Demand forecasting | window_days=7 | 200 OK, calculates demand for 7 days window | Boundary, on limit |
+| TC-20 | US15 Demand forecasting | window_days=6 | 200 OK (or 400 Bad Request) | Edge case, low window |
+
 ### 2.6. US16: Restock recommendation
 | ID | Story | Input | Expected | Kind |
 |----|-------|-------|----------|------|
