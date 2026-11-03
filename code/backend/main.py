@@ -286,7 +286,7 @@ def get_sales_overview_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
 
-@api_router.get("/sales/predictions", response_model=List[DemandPredictionResponse], tags=["Sales"])
+@api_router.get("/sales/predictions", tags=["Sales"])
 def get_demand_predictions_endpoint(window_days: int = Query(30)):
     try:
         return get_demand_predictions(window_days=window_days)
