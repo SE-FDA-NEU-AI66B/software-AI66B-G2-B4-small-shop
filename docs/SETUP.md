@@ -238,3 +238,39 @@ and test:
 
 - Add Employee
 - Update Employee
+
+## Guide to Running Test Cases for Sales Analytics (US11, US15, US16)
+
+This document guides you through setting up the environment and executing automated test suites (`pytest`) for the User Stories related to Sales Management and Demand Prediction.
+
+### 1. Setting Up the Test Environment
+
+Before running tests, ensure you are in the project's root directory and your virtual environment (`.venv`) is activated:
+
+- **On Windows (PowerShell / CMD):**
+  ```bash
+  .venv\Scripts\activate
+
+  - **On Linux / macOS:**
+  ```bash
+  source .venv/bin/activate
+  ```
+Install the necessary testing packages (if not already installed):
+```bash
+pip install pytest httpx
+```
+### 2. Test Execution Commands
+
+To execute all test files belonging to the Sales module:
+
+```bash
+pytest tests/test_sales.py -v
+```
+Run with Detailed Output (Debug Log / Print)
+```bash
+pytest tests/test_sales.py -v -s
+```
+### 3. Pass Criteria
+Endpoints return standard HTTP status codes (200 OK for valid data, or 400/422 for invalid test inputs).
+
+The terminal displays PASSED for each corresponding test function.
