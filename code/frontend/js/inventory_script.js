@@ -1,7 +1,11 @@
-const API_URL = "http://127.0.0.1:8000/products";
+const API_URL = "http://127.0.0.1:8000/inventory";
+const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 
 let products = [];
+let categoriesList = [];
 let isEditMode = false;
+let pendingDeleteId = null;
+let deleteTrigger = null;
 
 // DOM Elements
 const tableBody = document.getElementById('inventoryTableBody');
@@ -17,6 +21,12 @@ const openModalBtn = document.getElementById('openAddModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 const toast = document.getElementById('toastNotification');
+
+// Delete Modal Elements
+const deleteModal = document.getElementById('deleteProductModal');
+const deleteProductName = document.getElementById('deleteProductName');
+const confirmDeleteButton = document.getElementById('confirmDeleteProductBtn');
+const cancelDeleteButton = document.getElementById('cancelDeleteProductBtn');
 
 // Form Input Elements
 const productIdInput = document.createElement('input');
@@ -34,7 +44,7 @@ function formatVND(amount) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
 
-// Show Toast Notification (Giống hệt trang Employee)
+// Show Toast Notification
 function showToast(message) {
   if (!toast) return;
   toast.textContent = message;
@@ -44,11 +54,45 @@ function showToast(message) {
   }, 3000);
 }
 
-// Fetch products from API
+// Fetch categories from Database API
+async function loadCategories() {
+  try {
+    const response = await fetch(CATEGORIES_URL);
+    if (!response.ok) throw new Error("Failed to load categories.");
+    
+    categoriesList = await response.json();
+    
+    // 1. Populate Filter Select
+    if (categoryFilter) {
+      categoryFilter.innerHTML = '<option value="">All Categories</option>';
+      categoriesList.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.category_name;
+        option.textContent = cat.category_name;
+        categoryFilter.appendChild(option);
+      });
+    }
+
+    // 2. Populate Modal Category Select
+    if (categoryInput) {
+      categoryInput.innerHTML = '<option value="">-- Select Category --</option>';
+      categoriesList.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.category_id; // Store category_id as value for database storage
+        option.textContent = cat.category_name;
+        categoryInput.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error("Error loading categories:", error);
+  }
+}
+
+// Fetch inventory items from API
 async function fetchProducts() {
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Failed to load products from server.");
+    if (!response.ok) throw new Error("Failed to load inventory from server.");
     
     products = await response.json();
     filterData();
@@ -74,25 +118,26 @@ function renderTable(data) {
 
   data.forEach(item => {
     const tr = document.createElement('tr');
-    const idDisplay = `P-${String(item.product_id).padStart(3, '0')}`;
+    const idDisplay = item.sku || `P-${String(item.product_id).padStart(3, '0')}`;
     const isAvailable = item.is_available !== false;
     const statusText = isAvailable ? "In Stock" : "Unavailable";
     const badgeClass = isAvailable ? "badge-instock" : "badge-expired";
+    const displayCategory = item.category_name || 'General';
     
     tr.innerHTML = `
       <td class="item-sku">${idDisplay}</td>
       <td style="font-weight: 600; color: var(--bg-sidebar);">${item.name}</td>
-      <td><span class="badge" style="background: #EAECEE; color: #2C3E50;">${item.category_name || item.category || 'General'}</span></td>
+      <td><span class="badge" style="background: #EAECEE; color: #2C3E50;">${displayCategory}</span></td>
       <td>${formatVND(item.unit_price)}</td>
       <td style="font-weight: 600;">${item.stock || 50}</td>
       <td>2026-10-01</td>
       <td><span class="badge ${badgeClass}">${statusText}</span></td>
       <td>
         <div class="action-buttons" style="justify-content: flex-end;">
-          <button class="btn-icon" title="Edit Product" onclick="openEditProductModal(${item.product_id})">
+          <button class="btn-icon" title="Edit Product" onclick="openEditProductModal('${item.sku}')">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button class="btn-icon delete" title="Delete Product" onclick="deleteProduct(${item.product_id})">
+          <button class="btn-icon delete" title="Delete Product" onclick="deleteProduct('${item.sku}')">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </div>
@@ -108,10 +153,10 @@ function filterData() {
   const selectedCategory = categoryFilter ? categoryFilter.value : '';
 
   const filtered = products.filter(item => {
-    const idFormatted = `p-${String(item.product_id).padStart(3, '0')}`;
+    const idFormatted = (item.sku || '').toLowerCase();
     const matchesSearch = (item.name && item.name.toLowerCase().includes(searchTerm)) || 
                           idFormatted.includes(searchTerm);
-    const matchesCategory = selectedCategory === "" || (item.category_name || item.category) === selectedCategory;
+    const matchesCategory = selectedCategory === "" || (item.category_name) === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -129,16 +174,20 @@ function openAddProductModal() {
 }
 
 // Open Modal in EDIT Mode
-window.openEditProductModal = function(id) {
-  const item = products.find(p => p.product_id === id);
+window.openEditProductModal = function(sku) {
+  const item = products.find(p => p.sku === sku);
   if (!item) return;
 
   isEditMode = true;
   if (modalTitle) modalTitle.textContent = "Edit Product";
 
-  if (productIdInput) productIdInput.value = item.product_id;
+  if (productIdInput) productIdInput.value = item.sku;
   if (productNameInput) productNameInput.value = item.name;
-  if (categoryInput) categoryInput.value = item.category_name || item.category || '';
+  
+  if (categoryInput) {
+    categoryInput.value = item.category_id || '';
+  }
+
   if (priceInput) priceInput.value = item.unit_price;
   if (stockInput) stockInput.value = item.stock || 50;
 
@@ -151,22 +200,23 @@ function closeModal() {
   if (productForm) productForm.reset();
 }
 
-// Form Submit Handler
+// Form Submit Handler (Saves/Updates via /inventory endpoints)
 async function handleFormSubmit(e) {
   e.preventDefault();
 
   const payload = {
     name: productNameInput.value.trim(),
-    category_id: 1,
+    category_id: parseInt(categoryInput.value) || 1,
     unit_price: parseFloat(priceInput.value) || 0,
-    is_available: true
+    stock: parseInt(stockInput.value) || 50,
+    min_stock: 10
   };
 
   try {
     let response;
     if (isEditMode) {
-      const id = productIdInput.value;
-      response = await fetch(`${API_URL}/${id}`, {
+      const sku = productIdInput.value;
+      response = await fetch(`${API_URL}/${sku}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -184,7 +234,7 @@ async function handleFormSubmit(e) {
       throw new Error(errData.detail || "Action failed.");
     }
 
-    showToast(isEditMode ? "Updated product successfully!" : "Added new product successfully!");
+    showToast(isEditMode ? "Updated product successfully in database!" : "Added new product successfully!");
     closeModal();
     fetchProducts();
   } catch (error) {
@@ -192,20 +242,53 @@ async function handleFormSubmit(e) {
   }
 }
 
-// Delete Product Handler
-window.deleteProduct = async function(id) {
-  if (!confirm(`Are you sure you want to delete product ID ${id}?`)) return;
+// Delete Confirmation Modal Handling
+function openDeleteConfirmation(product, trigger) {
+  pendingDeleteId = product.sku;
+  deleteTrigger = trigger;
+  const idFormatted = product.sku;
+  deleteProductName.textContent = `${idFormatted} — ${product.name}`;
+  deleteModal.classList.add('active');
+  confirmDeleteButton.focus();
+}
+
+function closeDeleteConfirmation() {
+  deleteModal.classList.remove('active');
+  pendingDeleteId = null;
+  confirmDeleteButton.disabled = false;
+  confirmDeleteButton.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete product';
+  deleteTrigger?.focus();
+  deleteTrigger = null;
+}
+
+async function deletePendingProduct() {
+  if (pendingDeleteId === null) return;
+
+  const sku = pendingDeleteId;
+  confirmDeleteButton.disabled = true;
+  confirmDeleteButton.textContent = 'Deleting...';
 
   try {
-    const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    const response = await fetch(`${API_URL}/${sku}`, { method: "DELETE" });
     if (!response.ok) {
       const errData = await response.json();
       throw new Error(errData.detail || "Failed to delete product.");
     }
+    closeDeleteConfirmation();
     showToast("Deleted product successfully!");
     fetchProducts();
   } catch (error) {
+    confirmDeleteButton.disabled = false;
+    confirmDeleteButton.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete product';
     showToast(error.message);
+  }
+}
+
+window.deleteProduct = function(sku) {
+  const item = products.find(p => p.sku === sku);
+  const deleteButton = event.target.closest('.btn-icon');
+  if (item) {
+    openDeleteConfirmation(item, deleteButton);
   }
 };
 
@@ -219,60 +302,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
   if (productForm) productForm.addEventListener('submit', handleFormSubmit);
 
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-  }
+  // Delete modal buttons listeners
+  cancelDeleteButton?.addEventListener('click', closeDeleteConfirmation);
+  confirmDeleteButton?.addEventListener('click', deletePendingProduct);
 
-  fetchProducts();
-});
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+    if (e.target === deleteModal) closeDeleteConfirmation();
+  });
 
-// Hàm gọi API lấy categories từ database và điền vào các thẻ <select>
-async function loadCategories() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/categories');
-        if (!response.ok) {
-            throw new Error('Không thể tải danh sách categories');
-        }
-        
-        const categories = await response.json();
-        
-        // 1. Đổ dữ liệu vào ô lọc danh mục (Filter Select)
-        const categoryFilter = document.getElementById('categoryFilter');
-        if (categoryFilter) {
-            categoryFilter.innerHTML = '<option value="">All Categories</option>';
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat.category_name; 
-                option.textContent = cat.category_name;
-                categoryFilter.appendChild(option);
-            });
-        }
-
-        // 2. Đổ dữ liệu vào ô chọn trong Modal Thêm/Sửa sản phẩm
-        const modalCategorySelect = document.getElementById('category');
-        if (modalCategorySelect) {
-            modalCategorySelect.innerHTML = '<option value="">-- Select Category --</option>';
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat.category_name; 
-                option.textContent = cat.category_name;
-                modalCategorySelect.appendChild(option);
-            });
-        }
-
-    } catch (error) {
-        console.error('Lỗi khi tải categories:', error);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeDeleteConfirmation();
     }
-}
+  });
 
-// Gọi hàm loadCategories ngay khi trang được tải xong
-document.addEventListener('DOMContentLoaded', () => {
-    loadCategories(); // Thêm dòng này vào đầu sự kiện load
-    
-    // Các đoạn code sẵn có bên dưới...
-    if (searchInput) searchInput.addEventListener('input', filterData);
-    if (categoryFilter) categoryFilter.addEventListener('change', filterData);
-    // ...
+  // Initialize data on page load
+  loadCategories();
+  fetchProducts();
 });

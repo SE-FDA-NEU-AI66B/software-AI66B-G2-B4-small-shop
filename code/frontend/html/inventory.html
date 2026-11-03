@@ -19,9 +19,9 @@
 <body>
 
     <!-- Sidebar Navigation -->
-    <button class="menu-btn">☰</button>
+    <button class="menu-btn" id="menuBtn">☰</button>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div>
             <div class="sidebar-brand">
                 <a href="home.html">
@@ -55,7 +55,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
         <header class="top-header">
             <div class="header-title">
                 <h2>Inventory Directory</h2>
@@ -81,7 +81,7 @@
                 <div class="filter-select">
                     <select id="categoryFilter">
                         <option value="">All Categories</option>
-                        <!-- Dữ liệu từ database sẽ được tự động điền vào đây -->
+                        <!-- Dynamic categories from database -->
                     </select>
                 </div>
 
@@ -135,17 +135,16 @@
                             <label for="productName">Product Name *</label>
                             <input type="text" id="productName" placeholder="e.g., Oolong Milk Tea" required>
                         </div>
-
                         <div class="form-group">
                             <label for="category">Category *</label>
                             <select id="category" required>
                                 <option value="">-- Select Category --</option>
+                                <!-- Dynamic categories from database -->
                             </select>
                         </div>
-                        
                         <div class="form-group">
                             <label for="price">Unit Price (VND) *</label>
-                            <input type="number" id="price" placeholder="35000" min="0" step="1000" required>
+                            <input type="number" id="price" placeholder="35000" min="1000" step="1000" title="Price must be at least 1,000 VND and in multiples of 1,000" required>
                         </div>
                         <div class="form-group">
                             <label for="stock">Stock Quantity *</label>
@@ -165,8 +164,40 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal (Customer Style) -->
+    <div
+        class="modal-overlay delete-confirmation-overlay"
+        id="deleteProductModal"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="deleteProductTitle"
+        aria-describedby="deleteProductMessage"
+        tabindex="-1"
+    >
+        <div class="modal-container delete-confirmation">
+            <div class="delete-confirmation-icon" aria-hidden="true">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div class="delete-confirmation-content">
+                <h3 id="deleteProductTitle">Delete product?</h3>
+                <p id="deleteProductMessage">
+                    Are you sure you want to delete <strong id="deleteProductName"></strong>?
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelDeleteProductBtn">Keep product</button>
+                <button type="button" class="btn-delete-confirm" id="confirmDeleteProductBtn">
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                    Delete product
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
     <div class="toast" id="toastNotification">System Notification</div>
-    
+
     <!-- Custom Script -->
     <script src="../js/inventory_script.js"></script>
     <script src="../js/home.js"></script>

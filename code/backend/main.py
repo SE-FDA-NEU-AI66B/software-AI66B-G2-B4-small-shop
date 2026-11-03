@@ -282,8 +282,8 @@ def get_categories_endpoint():
         return categories
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
+    
 # oanhtran: sales endpoints and analytics
-
 @app.get("/sales/overview", summary="Get sales overview (US11)")
 def get_sales_overview_endpoint(
     top_n: Optional[str] = Query("5"),
