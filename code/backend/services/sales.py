@@ -74,11 +74,15 @@ def get_demand_predictions(window_days: int = 30) -> List[Dict[str, Any]]:
 
             predictions = []
             for item in items:
-                daily_rate = item["past_sales"] / 30.0
-                predicted_demand = int(round(daily_rate * window_days))
-                suggested_restock = max(0, predicted_demand - item["current_stock"] + 10)
+                # Ép kiểu Decimal từ MySQL sang float và int để tránh lỗi phép tính
+                past_sales = float(item["past_sales"]) if item["past_sales"] is not None else 0.0
+                current_stock = int(item["current_stock"]) if item["current_stock"] is not None else 0
 
-                if item["current_stock"] <= 5:
+                daily_rate = past_sales / 30.0 
+                predicted_demand = int(round(daily_rate * window_days))
+                suggested_restock = max(0, predicted_demand - current_stock + 10)
+
+                if current_stock <= 5:
                     status_badge = '<span class="badge badge-danger">Critical Deficit</span>'
                 elif suggested_restock > 0:
                     status_badge = '<span class="badge badge-warning">Restock Needed</span>'
@@ -88,7 +92,7 @@ def get_demand_predictions(window_days: int = 30) -> List[Dict[str, Any]]:
                 predictions.append({
                     "id": f"P-{str(item['id']).zfill(3)}",
                     "name": item["name"],
-                    "current_stock": item["current_stock"],
+                    "current_stock": current_stock,
                     "predicted_demand": predicted_demand,
                     "suggested_restock": suggested_restock,
                     "status_badge": status_badge
