@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from backend.database.connect_db import get_connection
-from backend.schema.order import OrderCreate
+from backend.schema.order import OrderCreate, OrderNoteUpdate
 
 #get all products from the products db table
 def get_products() -> List[Dict[str, Any]]:
@@ -30,6 +30,7 @@ def get_order_by_id(order_id: int) -> Optional[Dict[str, Any]]:
             cursor.execute("""
                 SELECT o.order_id, o.employee_id, o.customer_id,
                        o.deliver_status, o.total_amount, o.discount_amount,
+                       o.note,
                        o.created_at,
                        c.name AS customer_name, c.phone AS customer_phone,
                        e.name AS employee_name
@@ -125,9 +126,14 @@ def create_order(data: OrderCreate) -> Dict[str, Any]:
 
             cursor.execute("""
                 INSERT INTO orders
-                    (employee_id, customer_id, deliver_status, total_amount, discount_amount)
-                VALUES (%s, %s, 'not_deliver', %s, 0)
-            """, (data.employee_id, data.customer_id, total))
+                    (employee_id, customer_id, note, deliver_status, total_amount, discount_amount)
+                VALUES (%s, %s, %s, 'not_deliver', %s, 0)
+            """, (
+                data.employee_id,
+                data.customer_id,
+                data.note.strip() or None if data.note is not None else None,
+                total
+            ))
             order_id = cursor.lastrowid
 
             for item in prepared_items:
@@ -151,6 +157,66 @@ def create_order(data: OrderCreate) -> Dict[str, Any]:
     except Exception as e:
         connection.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to create order: {str(e)}")
+    finally:
+        connection.close()
+
+
+#update note of an existing order
+def update_order_note(
+    order_id: int,
+    data: OrderNoteUpdate
+) -> Dict[str, Any]:
+    connection = get_connection()
+
+    try:
+        connection.begin()
+
+        with connection.cursor() as cursor:
+            # Lock the order row while checking and updating
+            cursor.execute("""
+                SELECT order_id, deliver_status
+                FROM orders
+                WHERE order_id = %s
+                FOR UPDATE
+            """, (order_id,))
+
+            order = cursor.fetchone()
+
+            if not order:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Order not found."
+                )
+
+            if order["deliver_status"] != "not_deliver":
+                raise HTTPException(
+                    status_code=409,
+                    detail="Cannot update note of a delivered order."
+                )
+
+            note = data.note.strip() if data.note is not None else None
+
+            cursor.execute("""
+                UPDATE orders
+                SET note = %s
+                WHERE order_id = %s
+            """, (note or None, order_id))
+
+        connection.commit()
+
+        return get_order_by_id(order_id)
+
+    except HTTPException:
+        connection.rollback()
+        raise
+
+    except Exception as e:
+        connection.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to update order note: {str(e)}"
+        )
+
     finally:
         connection.close()
 

@@ -9,9 +9,13 @@ class OrderItemCreate(BaseModel):
 class OrderCreate(BaseModel):
     employee_id: int = Field(..., gt=0)
     customer_id: Optional[int] = Field(None, gt=0)
+    note: Optional[str] = None
     items: list[OrderItemCreate] = Field(..., min_length=1)
 
 class DeliveryResponse(BaseModel):
     order_id: int
     created_at: datetime
     deliver_status: str
+
+class OrderNoteUpdate(BaseModel):
+    note: Optional[str] = None
