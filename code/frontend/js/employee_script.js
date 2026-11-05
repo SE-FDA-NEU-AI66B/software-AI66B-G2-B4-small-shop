@@ -199,6 +199,10 @@ function renderTable(data) {
           <button class="btn-icon" title="Edit Employee" onclick="openEditEmployeeModal(${emp.employee_id})">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
+          <a class="btn-icon" href="employee_details.html?id=${encodeURIComponent(emp.employee_id)}"
+             title="View Employee Details" aria-label="View details for ${idDisplay}">
+            <i class="fa-solid fa-eye"></i>
+          </a>
           <button class="btn-icon btn-delete" title="Delete Employee" onclick="deleteEmployee(${emp.employee_id}, '${safeName}')">
             <i class="fa-solid fa-trash-can"></i>
           </button>

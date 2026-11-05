@@ -7,7 +7,7 @@ from typing import List
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id
+from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id, get_employee_details
 from schema.auth import LoginRequest
 from services.auth import authenticate_user
 from schema.order import OrderCreate, DeliveryResponse
@@ -76,6 +76,22 @@ def get_employee_by_id_endpoint(employee_id: int):
             detail=f"Employee with ID {employee_id} not found.",
         )
     return employee
+
+@emp_router.get(
+    "/{employee_id}/details",
+    summary="Get employee details and order history",
+)
+def get_employee_details_endpoint(employee_id: int):
+    """Returns an employee profile, sales statistics, and recent orders."""
+    try:
+        return get_employee_details(employee_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Employee details are unavailable. Check the database connection.",
+        ) from e
     
 @emp_router.post(
     "",
