@@ -146,6 +146,69 @@ def get_employee_by_id(employee_id: int) -> Optional[Dict[str, Any]]:
         connection.close()
 
 
+def get_employee_details(employee_id: int) -> Dict[str, Any]:
+    """Fetch an employee profile, order totals, and recent orders."""
+    connection = get_connection()
+    if not connection:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database connection failed."
+        )
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT employee_id, name, email, phone, role, status, created_at,
+                       GREATEST(DATEDIFF(CURRENT_DATE, created_at) + 1, 0) AS days_worked
+                FROM employees
+                WHERE employee_id = %s
+            """, (employee_id,))
+            employee = cursor.fetchone()
+            if not employee:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Employee with ID {employee_id} not found."
+                )
+
+            cursor.execute("""
+                SELECT COUNT(*) AS total_orders,
+                       COALESCE(SUM(total_amount), 0) AS total_sales
+                FROM orders
+                WHERE employee_id = %s
+            """, (employee_id,))
+            stats = cursor.fetchone()
+
+            cursor.execute("""
+                SELECT o.order_id, o.created_at, o.deliver_status,
+                       o.total_amount, c.name AS customer_name,
+                       COALESCE(
+                           GROUP_CONCAT(
+                               CONCAT(p.name, ' × ', oi.quantity)
+                               ORDER BY oi.order_item_id SEPARATOR ', '
+                           ),
+                           '—'
+                       ) AS items
+                FROM orders o
+                LEFT JOIN customers c ON c.customer_id = o.customer_id
+                LEFT JOIN order_items oi ON oi.order_id = o.order_id
+                LEFT JOIN products p ON p.product_id = oi.product_id
+                WHERE o.employee_id = %s
+                GROUP BY o.order_id, o.created_at, o.deliver_status,
+                         o.total_amount, c.name
+                ORDER BY o.created_at DESC, o.order_id DESC
+                LIMIT 10
+            """, (employee_id,))
+            recent_orders = cursor.fetchall()
+
+            return {
+                "employee": employee,
+                "stats": stats,
+                "recent_orders": recent_orders
+            }
+    finally:
+        connection.close()
+
+
 def delete_employee(employee_id: int) -> Dict[str, str]:
     """Deletes an employee record from the database by ID."""
     connection = get_connection()
