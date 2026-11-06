@@ -20,7 +20,7 @@ const toast = document.getElementById('toastNotification');
 // Form Input Elements
 const employeeIdInput = document.getElementById('employeeId');
 const fullNameInput = document.getElementById('fullName');
-const emailInput = document.getElementById('email');
+const usernameInput = document.getElementById('username');
 const phoneInput = document.getElementById('phone');
 const roleInput = document.getElementById('role');
 const statusInput = document.getElementById('status');
@@ -186,7 +186,7 @@ function renderTable(data) {
           <div class="emp-avatar">${getInitials(emp.name)}</div>
           <div>
             <div style="font-weight: 500;">${emp.name}</div>
-            <div style="font-size: 0.8rem; color: #777;">${emp.email || 'N/A'}</div>
+            <div style="font-size: 0.8rem; color: #777;">${emp.username || 'N/A'}</div>
           </div>
         </div>
       </td>
@@ -222,6 +222,7 @@ function filterData() {
   const filtered = employees.filter(emp => {
     const empIdFormatted = `nv-${String(emp.employee_id).padStart(3, '0')}`;
     const matchesSearch = (emp.name && emp.name.toLowerCase().includes(searchTerm)) || 
+                          (emp.username && emp.username.toLowerCase().includes(searchTerm)) ||
                           empIdFormatted.includes(searchTerm);
     const matchesRole = selectedRole === "" || emp.role === selectedRole;
     
@@ -250,7 +251,7 @@ function openEditEmployeeModal(id) {
 
   if (employeeIdInput) employeeIdInput.value = emp.employee_id;
   if (fullNameInput) fullNameInput.value = emp.name;
-  if (emailInput) emailInput.value = emp.email || '';
+  if (usernameInput) usernameInput.value = emp.username || '';
   if (phoneInput) phoneInput.value = emp.phone || '';
   if (roleInput) roleInput.value = emp.role;
   if (statusInput) statusInput.value = emp.status;
@@ -270,7 +271,7 @@ async function handleFormSubmit(e) {
 
   const payload = {
     name: fullNameInput.value.trim(),
-    email: emailInput.value.trim() || null,
+    username: usernameInput.value.trim(),
     phone: phoneInput.value.trim() || null,
     role: roleInput.value,
     status: statusInput.value

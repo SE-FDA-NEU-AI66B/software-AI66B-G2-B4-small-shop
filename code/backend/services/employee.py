@@ -42,7 +42,7 @@ def add_employee(employee_data: EmployeeCreate) -> Dict[str, Any]:
             check_query = """
                 SELECT employee_id FROM employees 
                 WHERE name <=> %s 
-                  AND email <=> %s 
+                  AND username <=> %s
                   AND phone <=> %s 
                   AND role <=> %s 
                   AND status <=> %s;
@@ -51,7 +51,7 @@ def add_employee(employee_data: EmployeeCreate) -> Dict[str, Any]:
                 check_query,
                 (
                     employee_data.name,
-                    employee_data.email,
+                    employee_data.username,
                     employee_data.phone,
                     employee_data.role,
                     employee_data.status,
@@ -67,14 +67,14 @@ def add_employee(employee_data: EmployeeCreate) -> Dict[str, Any]:
 
             # 2. Insert new record if no duplicate exists
             insert_query = """
-                INSERT INTO employees (name, email, phone, role, status)
+                INSERT INTO employees (name, username, phone, role, status)
                 VALUES (%s, %s, %s, %s, %s);
             """
             cursor.execute(
                 insert_query,
                 (
                     employee_data.name,
-                    employee_data.email,
+                    employee_data.username,
                     employee_data.phone,
                     employee_data.role,
                     employee_data.status,
@@ -158,7 +158,7 @@ def get_employee_details(employee_id: int) -> Dict[str, Any]:
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT employee_id, name, email, phone, role, status, created_at,
+                SELECT employee_id, name, username, phone, role, status, created_at,
                        GREATEST(DATEDIFF(CURRENT_DATE, created_at) + 1, 0) AS days_worked
                 FROM employees
                 WHERE employee_id = %s
