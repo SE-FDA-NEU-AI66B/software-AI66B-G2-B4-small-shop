@@ -17,7 +17,7 @@ def search_customers(phone: str) -> List[Dict[str, Any]]:
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT customer_id, name, phone, email, customer_type_id
+                SELECT customer_id, name, phone, customer_type_id
                 FROM customers
                 WHERE phone LIKE %s
                 ORDER BY customer_id DESC
@@ -33,7 +33,7 @@ def get_customers() -> List[Dict[str, Any]]:
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT c.customer_id, c.name, c.phone, c.email, c.total_spent,
+                SELECT c.customer_id, c.name, c.phone, c.total_spent,
                        c.customer_type_id, ct.type_name, c.created_at
                 FROM customers c
                 LEFT JOIN customer_types ct ON ct.customer_type_id = c.customer_type_id
@@ -49,7 +49,7 @@ def get_customer_details(customer_id: int) -> Dict[str, Any]:
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT c.customer_id, c.name, c.phone, c.email, c.total_spent,
+                SELECT c.customer_id, c.name, c.phone, c.total_spent,
                        c.customer_type_id, ct.type_name, ct.discount_percent,
                        c.created_at
                 FROM customers c
@@ -128,20 +128,21 @@ def create_customer(data: CustomerCreate) -> Dict[str, Any]:
                     detail="A customer with this phone number already exists."
                 )
             cursor.execute("""
-                INSERT INTO customers (name, phone, email, customer_type_id)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO customers (name, phone, customer_type_id)
+                VALUES (%s, %s, %s)
             """, (
                 data.name.strip(),
                 data.phone.strip(),
-                data.email,
                 data.customer_type_id
             ))
             customer_id = cursor.lastrowid
             connection.commit()
             cursor.execute("""
-                SELECT customer_id, name, phone, email, customer_type_id
-                FROM customers
-                WHERE customer_id = %s
+                SELECT c.customer_id, c.name, c.phone, c.total_spent,
+                       c.customer_type_id, ct.type_name, c.created_at
+                FROM customers c
+                LEFT JOIN customer_types ct ON ct.customer_type_id = c.customer_type_id
+                WHERE c.customer_id = %s
             """, (customer_id,))
             return cursor.fetchone()
     except HTTPException:
@@ -177,18 +178,17 @@ def update_customer(customer_id: int, data: CustomerUpdate) -> Dict[str, Any]:
 
             cursor.execute("""
                 UPDATE customers
-                SET name = %s, phone = %s, email = %s, customer_type_id = %s
+                SET name = %s, phone = %s, customer_type_id = %s
                 WHERE customer_id = %s
             """, (
                 data.name.strip(),
                 data.phone.strip(),
-                data.email.strip() if data.email else None,
                 data.customer_type_id,
                 customer_id
             ))
             connection.commit()
             cursor.execute("""
-                SELECT c.customer_id, c.name, c.phone, c.email, c.total_spent,
+                SELECT c.customer_id, c.name, c.phone, c.total_spent,
                        c.customer_type_id, ct.type_name, c.created_at
                 FROM customers c
                 LEFT JOIN customer_types ct ON ct.customer_type_id = c.customer_type_id

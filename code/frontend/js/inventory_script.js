@@ -1,5 +1,5 @@
-const API_URL = "http://127.0.0.1:8000/api/products";
-const CATEGORIES_URL = "http://127.0.0.1:8000/api/categories";
+const API_URL = "http://127.0.0.1:8000/products";
+const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 
 let products = [];
 let categoriesList = [];
