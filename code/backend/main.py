@@ -118,6 +118,8 @@ def create_employee_endpoint(payload: EmployeeCreate):
     try:
         new_employee = add_employee(payload)
         return new_employee
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

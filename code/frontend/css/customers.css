@@ -166,20 +166,6 @@ table.customers-table tbody tr:last-child td {
     text-align: center;
 }
 
-/* Status Badges */
-.badge-active {
-    background-color: #E2EFCB;
-    color: #2E5A1C;
-    border: 1px solid #C4E197;
-}
-
-.badge-leave,
-.badge-inactive {
-    background-color: #FDF3D6;
-    color: #7A5B0B;
-    border: 1px solid #F5E1A4;
-}
-
 /* Tier Badges (Vintage Style Harmony) */
 .badge-tier.gold {
     background-color: #FFF0C2;
