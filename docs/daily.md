@@ -94,16 +94,19 @@
 ## 30/10/2026:
 - @HaVy2006: Updated customer membership discount percentages and spending thresholds required to reach higher membership ranks.
 
-## 1/11/2026:
+## 01/11/2026:
 - @HaVy2006: Updated the database design and modified the employees and users tables.
 - @HaVy2006: Added and adjusted seed data to make the database more complete and realistic.
 - @oanhtran020906-sys: update sprint log for sprint 3 and connect inventory and sales to real database
 - @aizun: changed the style of employee page to be unified with others.
 
-## 2/11/2026
--@aizun: wrote test case finding
+## 02/11/2026
+- @aizun: wrote test case finding
 - @HaVy2006: Create login function using real data, we had updated the database design and relationship between employees and users tables, also changed register screen by Change password screen, we will create this feature in the future. 
 
-##  3/11/2026
+##  03/11/2026
 - @oanhtran020906-sys: add test cases for P0 story: US11, US15 and US16.
 - @ngocmai141106: Updated sprint 4's log (next sprint's SM is still missing).
+
+## 07/11/2026:
+- @ngocmai141106: Make sugesstion dropbox for customer choosing to assist finding a registered customer.

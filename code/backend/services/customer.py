@@ -8,21 +8,31 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 from backend.database.connect_db import get_connection
 from backend.schema.customer import CustomerCreate, CustomerUpdate
 
-
+#maitran need this to make suggestion dropbox when searching customer in order tab
+#DO NOT CHANGE THIS WITHOUT TELLING ME FIRST !!!!!!!!!!!!!
 def search_customers(phone: str) -> List[Dict[str, Any]]:
     phone = phone.strip()
     if not phone:
         return []
+
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT customer_id, name, phone, customer_type_id
-                FROM customers
-                WHERE phone LIKE %s
-                ORDER BY customer_id DESC
+                SELECT
+                    c.customer_id,
+                    c.name,
+                    c.phone,
+                    c.customer_type_id,
+                    ct.type_name AS customer_type_name
+                FROM customers c
+                LEFT JOIN customer_types ct
+                    ON c.customer_type_id = ct.customer_type_id
+                WHERE c.phone LIKE %s
+                ORDER BY c.customer_id DESC
                 LIMIT 20
             """, (f"%{phone}%",))
+
             return cursor.fetchall()
     finally:
         connection.close()
