@@ -193,6 +193,7 @@ const customerPhoneInput = document.querySelector("#customerPhoneInput");
 const customerSuggestions = document.querySelector("#customerSuggestions");
 let selectedCustomerId = null;
 let customerSearchRequestId = 0;
+let isGuestCustomer = false;
 const orderNoteInput = document.querySelector("#orderNoteInput");
 const confirmItems = document.querySelector("#confirmItems");
 const confirmTotal = document.querySelector("#confirmTotal");
@@ -280,6 +281,7 @@ function renderCustomerSuggestions(customers) {
         item.addEventListener("mousedown", event => {
             event.preventDefault();
             selectedCustomerId = customer.customer_id;
+            isGuestCustomer = false;
             customerPhoneInput.value = customer.phone;
 
             showSelectedCustomerInfo(customer);
@@ -347,17 +349,19 @@ async function saveNewOrder(isGuest = false) {
 
     let customerId = null;
 
-    if (!isGuest) {
+    if (!isGuestCustomer) {
         if (!customerPhoneInput.value.trim()) {
             customerPhoneInput.focus();
             customerPhoneInput.style.borderColor = "#7F0303";
             return;
         }
+
         if (!selectedCustomerId) {
             alert("Please select a customer from the suggestion list.");
             customerPhoneInput.focus();
             return;
         }
+
         customerId = selectedCustomerId;
     }
 
@@ -439,14 +443,23 @@ confirmOrderBtn.addEventListener("click", () => {
 customerPhoneInput.addEventListener("input", () => {
     customerPhoneInput.style.borderColor = "#96C0CE";
     selectedCustomerId = null;
+    isGuestCustomer = false;
     hideSelectedCustomerInfo();
+    customerPhoneInput.style.borderColor = "";
     searchCustomers(customerPhoneInput.value);
 });
 customerPhoneInput.addEventListener("focus", () => {
+    if (isGuestCustomer) {
+        customerPhoneInput.value = "";
+        isGuestCustomer = false;
+        selectedCustomerId = null;
+        hideSelectedCustomerInfo();
+    }
     if (customerPhoneInput.value.trim()) {
         searchCustomers(customerPhoneInput.value);
     }
 });
+
 document.addEventListener("click", event => {
     if (
         !event.target.closest(".customer-search-wrapper")
@@ -456,7 +469,13 @@ document.addEventListener("click", event => {
 });
 
 guestCustomerBtn.addEventListener("click", () => {
-    saveNewOrder(true);
+    isGuestCustomer = true;
+    selectedCustomerId = null;
+    customerPhoneInput.value = "Guest"; //change this if u want the dummy value to look different
+    hideSelectedCustomerInfo();
+    customerSuggestions.classList.remove("show");
+    customerSuggestions.innerHTML = "";
+    customerPhoneInput.style.borderColor = "";
 });
 
 orderConfirmOverlay.addEventListener("click", event => {
