@@ -130,7 +130,20 @@
                         
                         <div class="confirm-customer">
                             <label for="customerPhoneInput">Phone number</label>
-                            <input type="tel" id="customerPhoneInput" name="customerPhone" autocomplete="tel" placeholder="Enter customer phone number...">
+                            <div class="customer-search-wrapper">
+                                <input
+                                    type="tel"
+                                    id="customerPhoneInput"
+                                    name="customerPhone"
+                                    autocomplete="off"
+                                    placeholder="Enter customer phone number..."
+                                >
+                                <div id="selectedCustomerInfo" class="selected-customer-info">
+                                    <span id="selectedCustomerName"></span>
+                                    <span id="selectedCustomerRank" class="customer-suggestion-rank"></span>
+                                </div>
+                                <div id="customerSuggestions" class="customer-suggestions"></div>
+                            </div>
                             <div class="customer-options">
                                 <button type="button" class="customer-option-btn" id="addCustomerBtn">Add customer</button>
                                 <button type="button" class="customer-option-btn" id="guestCustomerBtn">Guest customer</button>

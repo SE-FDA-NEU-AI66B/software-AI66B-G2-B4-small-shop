@@ -1,7 +1,6 @@
 const API_BASE_URL = "http://127.0.0.1:8000";
 
 let availableDishes = [];
-let selectedCustomerId = null;
 let isCreatingOrder = false;
 let selectedDishes = [];
 const dishGrid = document.querySelector("#dishGrid");
@@ -191,6 +190,9 @@ function searchDishes() {
 dishSearch.addEventListener("input", searchDishes);
 const orderConfirmOverlay = document.querySelector("#orderConfirmOverlay");
 const customerPhoneInput = document.querySelector("#customerPhoneInput");
+const customerSuggestions = document.querySelector("#customerSuggestions");
+let selectedCustomerId = null;
+let customerSearchRequestId = 0;
 const orderNoteInput = document.querySelector("#orderNoteInput");
 const confirmItems = document.querySelector("#confirmItems");
 const confirmTotal = document.querySelector("#confirmTotal");
@@ -199,6 +201,9 @@ const cancelOrderBtn = document.querySelector("#cancelOrderBtn");
 const confirmOrderBtn = document.querySelector("#confirmOrderBtn");
 const addCustomerBtn = document.querySelector("#addCustomerBtn");
 const guestCustomerBtn = document.querySelector("#guestCustomerBtn");
+const selectedCustomerInfo = document.querySelector("#selectedCustomerInfo");
+const selectedCustomerName = document.querySelector("#selectedCustomerName");
+const selectedCustomerRank = document.querySelector("#selectedCustomerRank");
 
 function getNextOrderId() {
     const savedOrders = JSON.parse(localStorage.getItem("yumsOrders") || "[]");
@@ -210,18 +215,98 @@ function getNextOrderId() {
     return `ORD-${String(nextNumber).padStart(3, "0")}`;
 }
 
-async function findCustomerByPhone(phone) {
-    const response = await fetch(
-        `${API_BASE_URL}/customers/search?phone=${encodeURIComponent(phone)}`
-    );
+async function searchCustomers(phone) {
+    const requestId = ++customerSearchRequestId;
+    if (!phone.trim()) {
+        customerSuggestions.classList.remove("show");
+        customerSuggestions.innerHTML = "";
+        return;
+    }
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/customers/search?phone=${encodeURIComponent(phone)}`
+        );
+        if (!response.ok) {
+            throw new Error(`Customer search failed: HTTP ${response.status}`);
+        }
+        const customers = await response.json();
+        if (requestId !== customerSearchRequestId) {
+            return;
+        }
+        renderCustomerSuggestions(customers);
+    } catch (error) {
+        if (requestId !== customerSearchRequestId) {
+            return;
+        }
+        console.error("Customer search failed:", error);
+        customerSuggestions.innerHTML = "";
+        const message = document.createElement("div");
+        message.className = "customer-suggestion-empty";
+        message.textContent = "Unable to search for customers";
+        customerSuggestions.appendChild(message);
+        customerSuggestions.classList.add("show");
+    }
+}
 
-    if (!response.ok) {
-        throw new Error(`Customer search failed: HTTP ${response.status}`);
+function renderCustomerSuggestions(customers) {
+    customerSuggestions.innerHTML = "";
+
+    if (!customers.length) {
+        const emptyMessage = document.createElement("div");
+        emptyMessage.className = "customer-suggestion-empty";
+        emptyMessage.textContent = "No customer found";
+        customerSuggestions.appendChild(emptyMessage);
+        customerSuggestions.classList.add("show");
+        return;
     }
 
-    const customers = await response.json();
+    customers.forEach(customer => {
+        const item = document.createElement("div");
+        item.className = "customer-suggestion-item";
+        const phone = document.createElement("span");
+        phone.className = "customer-suggestion-phone";
+        phone.textContent = customer.phone;
+        const info = document.createElement("div");
+        info.className = "customer-suggestion-info";
+        const name = document.createElement("span");
+        name.className = "customer-suggestion-name";
+        name.textContent = customer.name;
+        const rank = document.createElement("span");
+        const rankName = (customer.customer_type_name || "").toLowerCase();
+        rank.className = `customer-suggestion-rank ${rankName}`;
+        rank.textContent = customer.customer_type_name || "";
+        info.append(name, rank);
+        item.append(phone, info);
+        item.addEventListener("mousedown", event => {
+            event.preventDefault();
+            selectedCustomerId = customer.customer_id;
+            customerPhoneInput.value = customer.phone;
 
-    return customers.find(customer => customer.phone === phone) || null;
+            showSelectedCustomerInfo(customer);
+
+            customerSuggestions.classList.remove("show");
+            customerSuggestions.innerHTML = "";
+        });
+        customerSuggestions.appendChild(item);
+    });
+
+    customerSuggestions.classList.add("show");
+}
+
+function showSelectedCustomerInfo(customer) {
+    selectedCustomerName.textContent = customer.name || "";
+    const rankName = (customer.customer_type_name || "").toLowerCase();
+    selectedCustomerRank.className =
+        `customer-suggestion-rank ${rankName}`;
+    selectedCustomerRank.textContent =
+        customer.customer_type_name || "";
+    selectedCustomerInfo.classList.add("show");
+}
+
+function hideSelectedCustomerInfo() {
+    selectedCustomerInfo.classList.remove("show");
+    selectedCustomerName.textContent = "";
+    selectedCustomerRank.textContent = "";
 }
 
 function renderConfirmItems() {
@@ -263,30 +348,17 @@ async function saveNewOrder(isGuest = false) {
     let customerId = null;
 
     if (!isGuest) {
-        const phone = customerPhoneInput.value.trim();
-
-        if (!phone) {
+        if (!customerPhoneInput.value.trim()) {
             customerPhoneInput.focus();
             customerPhoneInput.style.borderColor = "#7F0303";
             return;
         }
-
-        try {
-            const customer = await findCustomerByPhone(phone);
-
-            if (!customer) {
-                alert(
-                    "Customer not found. Please check the phone number."
-                );
-                return;
-            }
-
-            customerId = customer.customer_id;
-        } catch (error) {
-            console.error("Customer lookup failed:", error);
-            alert("Unable to search for the customer. Please try again.");
+        if (!selectedCustomerId) {
+            alert("Please select a customer from the suggestion list.");
+            customerPhoneInput.focus();
             return;
         }
+        customerId = selectedCustomerId;
     }
 
     const payload = {
@@ -364,6 +436,25 @@ confirmOrderBtn.addEventListener("click", () => {
 //    saveNewOrder("Success");
 //});
 
+customerPhoneInput.addEventListener("input", () => {
+    customerPhoneInput.style.borderColor = "#96C0CE";
+    selectedCustomerId = null;
+    hideSelectedCustomerInfo();
+    searchCustomers(customerPhoneInput.value);
+});
+customerPhoneInput.addEventListener("focus", () => {
+    if (customerPhoneInput.value.trim()) {
+        searchCustomers(customerPhoneInput.value);
+    }
+});
+document.addEventListener("click", event => {
+    if (
+        !event.target.closest(".customer-search-wrapper")
+    ) {
+        customerSuggestions.classList.remove("show");
+    }
+});
+
 guestCustomerBtn.addEventListener("click", () => {
     saveNewOrder(true);
 });
@@ -372,10 +463,6 @@ orderConfirmOverlay.addEventListener("click", event => {
     if (event.target === orderConfirmOverlay) {
         closeConfirmDialog();
     }
-});
-
-customerPhoneInput.addEventListener("input", () => {
-    customerPhoneInput.style.borderColor = "#96C0CE";
 });
 
 loadDishes();
