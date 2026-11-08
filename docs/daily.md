@@ -109,4 +109,4 @@
 - @ngocmai141106: Updated sprint 4's log (next sprint's SM is still missing).
 
 ## 07/11/2026:
-- @ngocmai141106: Make sugesstion dropbox for customer choosing to assist finding a registered customer.
+- @ngocmai141106: Make sugesstion dropbox for customer choosing to assist finding a registered customer. Make the phone number entry fill will dummy value "Guest" when clicking on [Guest customer] button while confirming a new order, instead of creating the order under guest customer mode right away.
