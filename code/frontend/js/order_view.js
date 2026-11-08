@@ -4,6 +4,7 @@ const params = new URLSearchParams(window.location.search);
 const orderId = params.get("id");
 
 const orderCode = document.querySelector("#orderCode");
+const createdBy = document.querySelector("#createdBy");
 const customerName = document.querySelector("#customerName");
 const orderStatus = document.querySelector("#orderStatus");
 const orderItems = document.querySelector("#orderItems");
@@ -241,8 +242,8 @@ async function loadOrderDetails() {
 //Render in4mation
 function renderOrder(order) {
     orderCode.textContent = order.order_id;
+    createdBy.textContent = order.employee_name || "Unknown";
     customerName.textContent = order.customer_name || "Guest";
-
     orderStatus.textContent = getStatusLabel(order.deliver_status);
     orderStatus.className =
         `status-badge ${getStatusClass(order.deliver_status)}`;
