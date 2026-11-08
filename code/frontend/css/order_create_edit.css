@@ -862,6 +862,11 @@ body {
     opacity: 0.85;
 }
 
+/*this is too keep the Add cus mini popup above the Cf order popup one layer*/
+.order-add-customer-overlay {
+    z-index: 2101;
+}
+
 .confirm-items {
     min-height: 0;
     flex: 1;

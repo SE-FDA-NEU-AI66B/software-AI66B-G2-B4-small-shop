@@ -112,4 +112,4 @@
 - @ngocmai141106: Make sugesstion dropbox for customer choosing to assist finding a registered customer. Make the phone number entry fill will dummy value "Guest" when clicking on [Guest customer] button while confirming a new order, instead of creating the order under guest customer mode right away.
 
 ## 08/11/2026:
-- @ngocmai141106: New feature: record order creator (which employee created this order) !!! This is also available for old ahh orders and can be view in View order's detail, next to Order ID.
+- @ngocmai141106: New feature: record order creator (which employee created this order) !!! This is also available for old ahh orders and can be view in View order's detail, next to Order ID. Also, finished Add new customer function for the button in Confirm order's information screen. And render new information filed (Created at) in both Check all orders and View order's detail screen.
