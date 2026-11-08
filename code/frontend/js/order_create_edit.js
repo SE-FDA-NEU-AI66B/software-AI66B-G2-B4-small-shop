@@ -8,6 +8,9 @@ const billItems = document.querySelector("#billItems");
 const billTotal = document.querySelector("#billTotal");
 const dishSearch = document.querySelector("#dishSearch");
 const sumBtn = document.querySelector("#sumBtn");
+const authenticatedUser = JSON.parse(
+    sessionStorage.getItem("authenticatedUser") || "null"
+);
 
 const productImages = {
     1: "../img/espresso.jpg",
@@ -366,7 +369,7 @@ async function saveNewOrder(isGuest = false) {
     }
 
     const payload = {
-        employee_id: 1, //i'll change into "now logged in employee" instead of emp. no1 like this later
+        username: authenticatedUser.username,
         customer_id: customerId,
         note: orderNoteInput.value.trim() || null,
         items: selectedDishes.map(dish => ({
