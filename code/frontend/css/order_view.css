@@ -305,7 +305,7 @@ body {
 .order-detail-header {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     align-items: center;
     padding: 15px 5px 18px;
     color: #0F414A;
