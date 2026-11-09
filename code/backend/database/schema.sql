@@ -37,7 +37,7 @@ CREATE TABLE `customers` (
   `phone` VARCHAR(20) NOT NULL,
   `total_spent` decimal(12,2) NOT NULL DEFAULT 0,
   `customer_type_id` int DEFAULT 1,
-  `created_at` date 
+  `created_at` date DEFAULT (CURRENT_DATE)
 );
 
 CREATE TABLE `categories` (
