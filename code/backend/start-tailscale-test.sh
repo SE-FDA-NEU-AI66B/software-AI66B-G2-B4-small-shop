@@ -5,40 +5,60 @@ set -eu
 
 mkdir -p /var/lib/tailscale /var/run/tailscale
 
-# Start Tailscale in userspace networking mode.
+echo "===== START TAILSCALE DAEMON ====="
+
 tailscaled \
   --state=/var/lib/tailscale/tailscaled.state \
   --socket=/var/run/tailscale/tailscaled.sock \
-  --tun=userspace-networking \
-  --socks5-server=127.0.0.1:1055 &
+  --tun=userspace-networking &
 
-# Wait for Tailscale daemon.
+TAILSCALE_PID=$!
+
+# Wait for the Unix socket, not for a successful login.
 READY=0
+
 for i in $(seq 1 30); do
-    if tailscale --socket=/var/run/tailscale/tailscaled.sock status >/dev/null 2>&1; then
+    if [ -S /var/run/tailscale/tailscaled.sock ]; then
         READY=1
         break
     fi
+
+    if ! kill -0 "$TAILSCALE_PID" 2>/dev/null; then
+        echo "ERROR: tailscaled process exited"
+        exit 1
+    fi
+
     sleep 1
 done
 
 if [ "$READY" -ne 1 ]; then
-    echo "Tailscale daemon did not start"
+    echo "ERROR: Tailscale socket was not created"
     exit 1
 fi
 
-# Join the private Tailscale network.
-tailscale --socket=/var/run/tailscale/tailscaled.sock up \
+echo "===== CONNECT TO TAILSCALE ====="
+
+tailscale \
+  --socket=/var/run/tailscale/tailscaled.sock \
+  up \
   --authkey="${TS_AUTHKEY}" \
   --hostname=render-yums-test \
   --accept-dns=false
 
 echo "===== TAILSCALE STATUS ====="
-tailscale --socket=/var/run/tailscale/tailscaled.sock status
+
+tailscale \
+  --socket=/var/run/tailscale/tailscaled.sock \
+  status
 
 echo "===== TEST WINDOWS DEVICE ====="
-tailscale --socket=/var/run/tailscale/tailscaled.sock ping \
-  --timeout=5s 100.115.168.64 || echo "Windows ping test failed"
+
+tailscale \
+  --socket=/var/run/tailscale/tailscaled.sock \
+  ping \
+  --timeout=10s \
+  100.115.168.64 || echo "WARNING: Windows ping test failed"
 
 echo "===== START FASTAPI ====="
+
 exec uvicorn main:app --host 0.0.0.0 --port "${PORT:-10000}"
