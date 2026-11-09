@@ -59,6 +59,12 @@ tailscale \
   --timeout=10s \
   100.115.168.64 || echo "WARNING: Windows ping test failed"
 
+echo "===== START MYSQL TCP RELAY ====="
+
+python /app/backend/mysql_tcp_relay.py &
+
+sleep 2
+
 echo "===== START FASTAPI ====="
 
 exec uvicorn main:app --host 0.0.0.0 --port "${PORT:-10000}"
