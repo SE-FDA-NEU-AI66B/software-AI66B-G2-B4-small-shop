@@ -1,64 +1,29 @@
-#!/bin/sh
-set -eu
+  FROM python:3.11-slim-bookworm
 
-: "${TS_AUTHKEY:?Missing TS_AUTHKEY environment variable}"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       ca-certificates curl gnupg \
+    && mkdir -p /usr/share/keyrings \
+    && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg \
+       -o /usr/share/keyrings/tailscale-archive-keyring.gpg \
+    && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list \
+       -o /etc/apt/sources.list.d/tailscale.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends tailscale \
+    && rm -rf /var/lib/apt/lists/*
 
-mkdir -p /var/lib/tailscale /var/run/tailscale
+# Đặt source code vào đúng cấu trúc package:
+# /app/code/backend/
+WORKDIR /app/code/backend
 
-echo "===== START TAILSCALE DAEMON ====="
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-tailscaled \
-  --state=/var/lib/tailscale/tailscaled.state \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  --tun=userspace-networking &
+COPY . .
 
-TAILSCALE_PID=$!
+# Cho Python tìm thấy package backend từ /app/code
+ENV PYTHONPATH=/app/code
 
-# Wait for the Unix socket, not for a successful login.
-READY=0
+RUN chmod +x /app/code/backend/start-tailscale-test.sh
 
-for i in $(seq 1 30); do
-    if [ -S /var/run/tailscale/tailscaled.sock ]; then
-        READY=1
-        break
-    fi
-
-    if ! kill -0 "$TAILSCALE_PID" 2>/dev/null; then
-        echo "ERROR: tailscaled process exited"
-        exit 1
-    fi
-
-    sleep 1
-done
-
-if [ "$READY" -ne 1 ]; then
-    echo "ERROR: Tailscale socket was not created"
-    exit 1
-fi
-
-echo "===== CONNECT TO TAILSCALE ====="
-
-tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  up \
-  --authkey="${TS_AUTHKEY}" \
-  --hostname=render-yums-test \
-  --accept-dns=false
-
-echo "===== TAILSCALE STATUS ====="
-
-tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  status
-
-echo "===== TEST WINDOWS DEVICE ====="
-
-tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  ping \
-  --timeout=10s \
-  100.115.168.64 || echo "WARNING: Windows ping test failed"
-
-echo "===== START FASTAPI ====="
-
-exec uvicorn main:app --host 0.0.0.0 --port "${PORT:-10000}"
+CMD ["/app/code/backend/start-tailscale-test.sh"]
