@@ -24,6 +24,7 @@ COPY . .
 # Cho Python tìm thấy package backend từ /app/code
 ENV PYTHONPATH=/app/code
 
-RUN chmod +x /app/code/backend/start-tailscale-test.sh
+RUN sed -i 's/\r$//' /app/code/backend/start-tailscale-test.sh \
+    && chmod +x /app/code/backend/start-tailscale-test.sh
 
-CMD ["/app/code/backend/start-tailscale-test.sh"]
+CMD ["/bin/sh", "/app/code/backend/start-tailscale-test.sh"]
