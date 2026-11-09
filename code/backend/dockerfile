@@ -17,11 +17,13 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY . /app/backend/
 
-RUN sed -i 's/\r$//' /app/start-tailscale-test.sh \
-    && chmod +x /app/start-tailscale-test.sh
+RUN sed -i 's/\r$//' /app/backend/start-tailscale-test.sh \
+    && chmod +x /app/backend/start-tailscale-test.sh
 
-ENV PYTHONPATH=/app/../..
+ENV PYTHONPATH=/app
 
-CMD ["/bin/sh", "/app/start-tailscale-test.sh"]
+WORKDIR /app/backend
+
+CMD ["/bin/sh", "/app/backend/start-tailscale-test.sh"]
