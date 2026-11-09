@@ -11,7 +11,8 @@ echo "===== START TAILSCALE DAEMON ====="
 tailscaled \
   --state=/var/lib/tailscale/tailscaled.state \
   --socket=/var/run/tailscale/tailscaled.sock \
-  --tun=userspace-networking &
+  --tun=userspace-networking \
+  --socks5-server=127.0.0.1:1055 &
 
 TAILSCALE_PID=$!
 
