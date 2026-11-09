@@ -348,6 +348,36 @@ def get_demand_predictions_alias(window_days: int = Query(30)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
 
+
+@app.get("/health", tags=["Health"])
+def health():
+    conn = None
+    try:
+        from database.connect_db import get_connection
+        # Create a MySQL connection using the existing PyMySQL function
+        conn = get_connection()
+        # Verify that the database can execute a query
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+        return {
+            "status": "healthy",
+            "database": "connected"
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "status": "unhealthy",
+                "database": "unavailable"
+            }
+        ) from e
+    finally:
+        if conn and conn.open:
+            conn.close()
+
+
+    
 # Register all routers after their endpoint declarations
 app.include_router(emp_router)
 app.include_router(auth_router)
