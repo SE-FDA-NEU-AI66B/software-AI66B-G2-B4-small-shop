@@ -19,6 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x /app/start-tailscale-test.sh
+RUN sed -i 's/\r$//' /app/code/backend/start-tailscale-test.sh \
+    && chmod +x /app/code/backend/start-tailscale-test.sh
 
-CMD ["/app/start-tailscale-test.sh"]
+CMD ["/bin/sh", "/app/code/backend/start-tailscale-test.sh"]
