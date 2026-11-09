@@ -61,7 +61,17 @@ tailscale \
 
 echo "===== START MYSQL TCP RELAY ====="
 
-python /app/backend/mysql_tcp_relay.py &
+python -u /app/backend/mysql_tcp_relay.py &
+RELAY_PID=$!
+
+sleep 2
+
+if ! kill -0 "$RELAY_PID" 2>/dev/null; then
+    echo "ERROR: MySQL TCP relay process exited"
+    exit 1
+fi
+
+echo "===== MYSQL RELAY PROCESS RUNNING ====="
 
 sleep 2
 
