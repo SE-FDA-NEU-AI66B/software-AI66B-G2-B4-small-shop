@@ -16,8 +16,8 @@ def get_all_inventory() -> List[Dict[str, Any]]:
                     p.product_id,
                     p.name AS product_name,
                     p.category_id,
-                    COALESCE(c.name, c.category_name, 'General') AS category_name,
-                    COALESCE(c.name, c.category_name, 'General') AS category,
+                    COALESCE(c.category_name, 'General') AS category_name,
+                    COALESCE(c.category_name, 'General') AS category,
                     p.unit_price,
                     COALESCE(i.quantity, 0) AS stock_quantity,
                     COALESCE(i.stocked_at, '2026-11-01') AS import_date,
@@ -54,8 +54,8 @@ def add_inventory(item_data: InventoryCreate) -> Dict[str, Any]:
 
             cursor.execute("""
                 SELECT p.product_id, p.name AS product_name, p.category_id, 
-                       COALESCE(c.name, c.category_name, 'General') AS category_name,
-                       COALESCE(c.name, c.category_name, 'General') AS category,
+                       COALESCE(c.category_name, 'General') AS category_name,
+                       COALESCE(c.category_name, 'General') AS category,
                        p.unit_price, COALESCE(i.quantity, 0) AS stock_quantity, 
                        COALESCE(i.stocked_at, '2026-11-01') AS import_date,
                        COALESCE(i.status, 'Available') AS status, 'bg-success' AS badge_class,
@@ -84,8 +84,8 @@ def update_inventory(sku: str, item_data: InventoryUpdate) -> Optional[Dict[str,
             )
             cursor.execute("""
                 SELECT p.product_id, p.name AS product_name, p.category_id, 
-                       COALESCE(c.name, c.category_name, 'General') AS category_name,
-                       COALESCE(c.name, c.category_name, 'General') AS category,
+                       COALESCE(c.category_name, 'General') AS category_name,
+                       COALESCE(c.category_name, 'General') AS category,
                        p.unit_price, COALESCE(i.quantity, 0) AS stock_quantity, 
                        COALESCE(i.stocked_at, '2026-11-01') AS import_date,
                        COALESCE(i.status, 'Available') AS status, 'bg-success' AS badge_class,
