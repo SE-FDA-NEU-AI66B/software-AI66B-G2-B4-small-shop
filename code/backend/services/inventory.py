@@ -9,7 +9,7 @@ from schema.inventory import InventoryCreate, InventoryUpdate
 def get_all_inventory() -> List[Dict[str, Any]]:
     connection = get_connection()
     try:
-        with connection.cursor(dictionary=True) as cursor:
+        with connection.cursor() as cursor:
             # Truy vấn kết hợp chuẩn xác với bảng inventory và categories thực tế trong DB
             query = """
                 SELECT 
@@ -40,7 +40,7 @@ def get_all_inventory() -> List[Dict[str, Any]]:
 def add_inventory(item_data: InventoryCreate) -> Dict[str, Any]:
     connection = get_connection()
     try:
-        with connection.cursor(dictionary=True) as cursor:
+        with connection.cursor() as cursor:
             cursor.execute(
                 "INSERT INTO products (name, category_id, unit_price, is_available) VALUES (%s, %s, %s, %s)",
                 (item_data.product_name, item_data.category_id, item_data.unit_price, True)
@@ -73,7 +73,7 @@ def update_inventory(sku: str, item_data: InventoryUpdate) -> Optional[Dict[str,
     connection = get_connection()
     try:
         product_id = int(sku.replace("P-", ""))
-        with connection.cursor(dictionary=True) as cursor:
+        with connection.cursor() as cursor:
             cursor.execute(
                 "UPDATE products SET name = %s, unit_price = %s WHERE product_id = %s",
                 (item_data.product_name, item_data.unit_price, product_id)
@@ -103,7 +103,7 @@ def delete_inventory(sku: str) -> bool:
     connection = get_connection()
     try:
         product_id = int(sku.replace("P-", ""))
-        with connection.cursor(dictionary=True) as cursor:
+        with connection.cursor() as cursor:
             cursor.execute("DELETE FROM inventory WHERE product_id = %s;", (product_id,))
             cursor.execute("DELETE FROM products WHERE product_id = %s;", (product_id,))
             return cursor.rowcount > 0
