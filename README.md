@@ -1,6 +1,6 @@
 # YUMS (YoU Manage your Shop)
 
-[Public URL](https://software-ai66b-g2-b4-small-shop.onrender.com/)
+[Public link](https://yums-frontend-qjq2.onrender.com)
 
 A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 
