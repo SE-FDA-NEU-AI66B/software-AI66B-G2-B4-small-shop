@@ -2,7 +2,7 @@ import select
 import socket
 import socketserver
 import socks
-
+import logging
 
 MYSQL_TAILSCALE_IP = "100.115.168.64"
 MYSQL_PORT = 3306
@@ -12,6 +12,16 @@ SOCKS_PORT = 1055
 
 RELAY_HOST = "127.0.0.1"
 RELAY_PORT = 13306
+
+CONNECT_TIMEOUT = 15
+BUFFER_SIZE = 65536
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+
+logger = logging.getLogger("mysql-relay")
 
 
 def handle_connection(client):
@@ -24,7 +34,18 @@ def handle_connection(client):
             SOCKS_HOST,
             SOCKS_PORT
         )
+        remote.settimeout(CONNECT_TIMEOUT)
+
+        logger.info(
+            "Connecting to MySQL through Tailscale: %s:%s",
+            MYSQL_TAILSCALE_IP,
+            MYSQL_PORT
+        )
+
         remote.connect((MYSQL_TAILSCALE_IP, MYSQL_PORT))
+        remote.settimeout(None)
+
+        logger.info("MySQL TCP connection established")
 
         sockets = [client, remote]
 
@@ -37,7 +58,7 @@ def handle_connection(client):
                 break
 
             for source in readable:
-                data = source.recv(65536)
+                data = source.recv(BUFFER_SIZE)
 
                 if not data:
                     return
@@ -45,13 +66,13 @@ def handle_connection(client):
                 destination = remote if source is client else client
                 destination.sendall(data)
 
-    except Exception as error:
-        print(f"MySQL relay connection error: {error}")
+    except Exception:
+        logger.exception("MySQL relay connection failed")
 
     finally:
         client.close()
 
-        if remote:
+        if remote is not None:
             remote.close()
 
 
@@ -66,9 +87,10 @@ class RelayHandler(socketserver.BaseRequestHandler):
 
 
 if __name__ == "__main__":
-    print(
-        f"MySQL TCP relay listening on "
-        f"{RELAY_HOST}:{RELAY_PORT}"
+    logger.info(
+        "MySQL TCP relay listening on %s:%s",
+        RELAY_HOST,
+        RELAY_PORT
     )
 
     with RelayServer(

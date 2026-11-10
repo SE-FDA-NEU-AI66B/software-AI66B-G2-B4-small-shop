@@ -4,21 +4,25 @@ set -eu
 
 : "${TS_AUTHKEY:?Missing TS_AUTHKEY environment variable}"
 
+TAILSCALE_SOCKET="/var/run/tailscale/tailscaled.sock"
+TAILSCALE_STATE="/var/lib/tailscale/tailscaled.state"
+
 mkdir -p /var/lib/tailscale /var/run/tailscale
 
 echo "===== START TAILSCALE DAEMON ====="
 
 tailscaled \
-  --state=/var/lib/tailscale/tailscaled.state \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  --tun=userspace-networking \
-  --socks5-server=127.0.0.1:1055 &
+    --state="$TAILSCALE_STATE" \
+    --socket="$TAILSCALE_SOCKET" \
+    --tun=userspace-networking \
+    --socks5-server=127.0.0.1:1055 &
 
 TAILSCALE_PID=$!
 
 READY=0
+
 for i in $(seq 1 30); do
-    if [ -S /var/run/tailscale/tailscaled.sock ]; then
+    if [ -S "$TAILSCALE_SOCKET" ]; then
         READY=1
         break
     fi
@@ -39,25 +43,23 @@ fi
 echo "===== CONNECT TO TAILSCALE ====="
 
 tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  up \
-  --authkey="${TS_AUTHKEY}" \
-  --hostname=render-yums-test \
-  --accept-dns=false
+    --socket="$TAILSCALE_SOCKET" \
+    up \
+    --authkey="$TS_AUTHKEY" \
+    --hostname=render-yums-test \
+    --accept-dns=false
 
 echo "===== TAILSCALE STATUS ====="
 
-tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  status
+tailscale --socket="$TAILSCALE_SOCKET" status
 
 echo "===== TEST WINDOWS DEVICE ====="
 
 tailscale \
-  --socket=/var/run/tailscale/tailscaled.sock \
-  ping \
-  --timeout=10s \
-  100.115.168.64 || echo "WARNING: Windows ping test failed"
+    --socket="$TAILSCALE_SOCKET" \
+    ping \
+    --timeout=10s \
+    100.115.168.64 || echo "WARNING: Windows ping test failed"
 
 echo "===== START MYSQL TCP RELAY ====="
 
@@ -72,8 +74,6 @@ if ! kill -0 "$RELAY_PID" 2>/dev/null; then
 fi
 
 echo "===== MYSQL RELAY PROCESS RUNNING ====="
-
-sleep 2
 
 echo "===== START FASTAPI ====="
 
