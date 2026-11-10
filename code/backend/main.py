@@ -2,6 +2,7 @@ import os
 import sys
 from typing import List, Optional
 
+from database.connect_db import get_connection
 from fastapi import APIRouter, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -350,10 +351,7 @@ def get_demand_predictions_alias(window_days: int = Query(30)):
 
 
 import logging
-from database.connect_db import get_connection
-
 logger = logging.getLogger(__name__)
-
 
 @app.get("/health")
 def health():
@@ -366,11 +364,13 @@ def health():
         cursor = conn.cursor()
         cursor.execute("SELECT 1")
         result = cursor.fetchone()
+        if result is None:
+            raise RuntimeError("MySQL SELECT 1 returned no result")
         logger.info("Health check: MySQL connection successful.")
         return {
             "status": "healthy",
             "database": "connected",
-            "test_query": result[0]
+            "test_query": "passed"
         }
     except Exception as e:
         logger.exception("HEALTH CHECK DATABASE ERROR")
