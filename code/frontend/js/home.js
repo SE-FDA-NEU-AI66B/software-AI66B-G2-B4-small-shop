@@ -42,26 +42,8 @@ if (welcomeUsername) {
     welcomeUsername.textContent = username;
 }
 
+
 let profile = document.querySelector(".user-profile, .account-card");
-if (!profile) {
-    const header = document.querySelector(".top-header, .page-header");
-    if (header) {
-        const actions = header.querySelector(".header-actions");
-        profile = document.createElement("div");
-        profile.className = "user-profile";
-        profile.innerHTML = `
-            <div class="user-avatar"></div>
-            <div class="user-info">
-                <div class="user-name"></div>
-                <div class="user-role"></div>
-            </div>
-        `;
-        (actions || header).append(profile);
-        if (actions) {
-            actions.classList.add("profile-actions");
-        }
-    }
-}
 
 if (profile) {
     const avatar = profile.querySelector(".user-avatar, .avatar");
@@ -71,12 +53,6 @@ if (profile) {
     if (avatar) avatar.textContent = initials;
     if (name) name.textContent = username;
     if (userRole) userRole.textContent = role;
-    if (!profile.querySelector(".profile-chevron")) {
-        const chevron = document.createElement("i");
-        chevron.className = "fa-solid fa-chevron-down profile-chevron";
-        chevron.setAttribute("aria-hidden", "true");
-        profile.append(chevron);
-    }
 
     const container = document.createElement("div");
     container.className = "profile-menu-container";
@@ -95,14 +71,27 @@ if (profile) {
     dropdown.hidden = true;
     dropdown.innerHTML = `
         <section class="profile-dropdown-account" aria-label="Account Information">
-            <h3>Account Information</h3>
-            <strong class="profile-dropdown-name"></strong>
-            <span class="profile-dropdown-role"></span>
-            <small class="profile-dropdown-username"></small>
+            <div class="profile-dropdown-user">
+                <div class="profile-dropdown-avatar" aria-hidden="true"></div>
+                <div class="profile-dropdown-user-info">
+                    <strong class="profile-dropdown-name"></strong>
+                    <span class="profile-dropdown-role"></span>
+                </div>
+            </div>
         </section>
         <div class="profile-dropdown-links">
-            <button type="button" class="profile-dropdown-item">My Profile</button>
-            <button type="button" class="profile-dropdown-item">Help</button>
+            <button type="button" class="profile-dropdown-item">
+                <i class="fa-regular fa-user" aria-hidden="true"></i>
+                My Profile
+            </button>
+            <button type="button" class="profile-dropdown-item">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                Settings
+            </button>
+            <button type="button" class="profile-dropdown-item">
+                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                Help
+            </button>
         </div>
         <div class="profile-dropdown-logout">
             <button type="button" class="profile-dropdown-item">
@@ -112,14 +101,24 @@ if (profile) {
         </div>
     `;
     container.append(dropdown);
+    dropdown.querySelector(".profile-dropdown-avatar").textContent = initials;
     dropdown.querySelector(".profile-dropdown-name").textContent = username;
     dropdown.querySelector(".profile-dropdown-role").textContent = role;
-    dropdown.querySelector(".profile-dropdown-username").textContent =
-        authenticatedUser.username ? `@${authenticatedUser.username}` : "";
 
+    let openAnimationFrame = 0;
     const setDropdownOpen = isOpen => {
-        dropdown.hidden = !isOpen;
         profile.setAttribute("aria-expanded", String(isOpen));
+        cancelAnimationFrame(openAnimationFrame);
+
+        if (isOpen) {
+            dropdown.hidden = false;
+            openAnimationFrame = requestAnimationFrame(() => {
+                dropdown.classList.add("is-open");
+            });
+        } else {
+            dropdown.classList.remove("is-open");
+            dropdown.hidden = true;
+        }
     };
 
     profile.addEventListener("click", () => {
