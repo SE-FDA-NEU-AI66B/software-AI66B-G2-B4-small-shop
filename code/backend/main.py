@@ -349,32 +349,51 @@ def get_demand_predictions_alias(window_days: int = Query(30)):
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
 
 
-@app.get("/health", tags=["Health"])
+import logging
+from database.connect_db import get_connection
+
+logger = logging.getLogger(__name__)
+
+
+@app.get("/health")
 def health():
     conn = None
+    cursor = None
+
     try:
-        from database.connect_db import get_connection
-        # Create a MySQL connection using the existing PyMySQL function
+        logger.info("Health check: testing MySQL connection...")
         conn = get_connection()
-        # Verify that the database can execute a query
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            cursor.fetchone()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        result = cursor.fetchone()
+        logger.info("Health check: MySQL connection successful.")
         return {
             "status": "healthy",
-            "database": "connected"
+            "database": "connected",
+            "test_query": result[0]
         }
     except Exception as e:
+        logger.exception("HEALTH CHECK DATABASE ERROR")
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            status_code=503,
             detail={
                 "status": "unhealthy",
-                "database": "unavailable"
+                "database": "unavailable",
+                "error_type": type(e).__name__,
+                "error": str(e)
             }
-        ) from e
+        )
     finally:
-        if conn and conn.open:
-            conn.close()
+        if cursor is not None:
+            try:
+                cursor.close()
+            except Exception:
+                logger.exception("Error closing MySQL cursor")
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                logger.exception("Error closing MySQL connection")
 
 
     
