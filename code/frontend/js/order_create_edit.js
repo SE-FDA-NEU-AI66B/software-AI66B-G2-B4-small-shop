@@ -5,7 +5,7 @@ const billItems = document.querySelector("#billItems");
 const billTotal = document.querySelector("#billTotal");
 const dishSearch = document.querySelector("#dishSearch");
 const sumBtn = document.querySelector("#sumBtn");
-const authenticatedUser = JSON.parse(sessionStorage.getItem("authenticatedUser") || "null");
+const orderAuthenticatedUser = JSON.parse(sessionStorage.getItem("authenticatedUser") || "null");
 const orderConfirmOverlay = document.querySelector("#orderConfirmOverlay");
 const customerPhoneInput = document.querySelector("#customerPhoneInput");
 const customerSuggestions = document.querySelector("#customerSuggestions");
@@ -542,7 +542,7 @@ async function saveNewOrder(isGuest = false) {
     }
 
     const payload = {
-        username: authenticatedUser.username,
+        username: orderAuthenticatedUser.username,
         customer_id: customerId,
         note: orderNoteInput.value.trim() || null,
         items: selectedDishes.map(dish => ({
