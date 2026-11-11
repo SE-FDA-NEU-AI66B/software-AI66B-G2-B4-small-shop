@@ -113,3 +113,9 @@
 
 ## 08/11/2026:
 - @ngocmai141106: New feature: record order creator (which employee created this order) !!! This is also available for old ahh orders and can be view in View order's detail, next to Order ID. Also, finished Add new customer function for the button in Confirm order's information screen. And render new information filed (Created at) in both Check all orders and View order's detail screen.
+
+## 10/11/2026:
+- @ngocmai141106: Deployed the web app online successfully omg finally!!!! Asked ppl outside of this project(my parents and sis) to try do change on foreign devices like theirs and the changes did apply. However it stills require manually deploy triggering on Render though i already set Auto-deploy mode to On commit?? So i guess now we'll work on local devices first, then i'll go manually deploy it every night b4 wrapping up and sleeping. I cant invite other ppl or give u guys link to access it bc it's a premium feature. Very capitalism screwed. Also, added scrollbar for the table zones in View and Check screens of orders, and synced their sidebar navigators taking Employee as sample.
+
+## 11/11/2026:
+- @ngocmai141106: Added a beautifully styled error toasters and synced navigation buttons in page header for all order pages
