@@ -359,14 +359,6 @@ body {
     padding: 4.5rem 1rem 1.25rem;
     overflow-x: hidden;
 }
-.main-content,
-.main-content.expand {
-    width: 100% !important;
-    max-width: 100%;
-    min-width: 0;
-    margin-left: 0 !important;
-    flex: 1 1 100%;
-}
 
 .sidebar {
     position: fixed;
@@ -548,6 +540,14 @@ body {
     .main-content {
         padding: 1.25rem;
     }
+    .main-content,
+    .main-content.expand {
+        width: 100% !important;
+        max-width: 100%;
+        min-width: 0;
+        margin-left: 0 !important;
+        flex: 1 1 100%;
+    }
     .orders-table {
         font-size: 0.8125rem;
     }
@@ -566,6 +566,14 @@ body {
         width: 100%;
         margin-left: 0;
         padding: 4.5rem 1rem 1.25rem;
+    }
+    .main-content,
+    .main-content.expand {
+        width: 100% !important;
+        max-width: 100%;
+        min-width: 0;
+        margin-left: 0 !important;
+        flex: 1 1 100%;
     }
     .order-list {
         padding: 0.75rem 0;
@@ -664,6 +672,14 @@ body {
     .main-content {
         padding-right: 0.75rem;
         padding-left: 0.75rem;
+    }
+    .main-content,
+    .main-content.expand {
+        width: 100% !important;
+        max-width: 100%;
+        min-width: 0;
+        margin-left: 0 !important;
+        flex: 1 1 100%;
     }
     .order-list-header h2 {
         font-size: 1.375rem;
