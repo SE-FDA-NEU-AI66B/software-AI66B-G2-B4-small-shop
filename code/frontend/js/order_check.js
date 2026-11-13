@@ -259,4 +259,25 @@ async function loadOrders() {
 searchInput.addEventListener("input", filterData);
 statusFilter.addEventListener("change", filterData);
 
+// force sidebar on responsive
+const checkSidebar = document.getElementById("sidebar");
+const checkMenuBtn = document.getElementById("menuBtn");
+if (checkSidebar && checkMenuBtn) {
+    const checkSidebarBreakpoint = window.matchMedia("(max-width: 64rem)");
+    function initializeCheckSidebar() {
+        checkSidebar.classList.toggle(
+            "hidden",
+            checkSidebarBreakpoint.matches
+        );
+    }
+    initializeCheckSidebar();
+    checkSidebarBreakpoint.addEventListener(
+        "change",
+        initializeCheckSidebar
+    );
+    checkMenuBtn.addEventListener("click", () => {
+        checkSidebar.classList.toggle("hidden");
+    });
+}
+
 loadOrders();

@@ -707,3 +707,12 @@ body {
         padding: 0.1875rem 0.3125rem;
     }
 }
+/* force sidebar to hide when responsive*/
+@media screen and (max-width: 64rem) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar:not(.hidden) {
+        transform: translateX(0);
+    }
+}
