@@ -84,7 +84,7 @@ async function renderOrders(data) {
     if (data.length === 0) {
         ordersTableBody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; padding: 30px;">
+                <td colspan="7" style="text-align: center; padding: 30px;">
                     No matching orders found.
                 </td>
             </tr>
