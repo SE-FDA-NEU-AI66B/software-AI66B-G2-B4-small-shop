@@ -707,6 +707,7 @@ body {
         padding: 0.1875rem 0.3125rem;
     }
 }
+
 /* force sidebar to hide when responsive*/
 @media screen and (max-width: 64rem) {
     .sidebar {
@@ -714,5 +715,22 @@ body {
     }
     .sidebar:not(.hidden) {
         transform: translateX(0);
+    }
+}
+/*force avt responsive*/
+@media (max-width: 64rem) {
+    .user-profile {
+        padding: 0;
+        border: none;
+        background: transparent;
+        gap: 0;
+    }
+    .user-info {
+        display: none;
+    }
+    .user-avatar {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
     }
 }
