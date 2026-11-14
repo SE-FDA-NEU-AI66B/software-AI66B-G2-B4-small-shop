@@ -4,13 +4,17 @@ from typing import Optional, List, Dict, Any
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from database.connect_db import get_connection
+# Đã bổ sung import schema đúng chuẩn
 from schema.inventory import InventoryCreate, InventoryUpdate
 
 def get_all_inventory() -> List[Dict[str, Any]]:
+    """
+    Lấy danh sách toàn bộ tồn kho và sản phẩm, liên kết chính xác với 
+    danh mục (categories) thực tế có trong cơ sở dữ liệu.
+    """
     connection = get_connection()
     try:
         with connection.cursor() as cursor:
-            # Truy vấn kết hợp chuẩn xác với bảng inventory và categories thực tế trong DB
             query = """
                 SELECT 
                     p.product_id,
@@ -19,17 +23,18 @@ def get_all_inventory() -> List[Dict[str, Any]]:
                     COALESCE(c.category_name, 'General') AS category_name,
                     COALESCE(c.category_name, 'General') AS category,
                     p.unit_price,
-                    COALESCE(i.quantity, 0) AS stock_quantity,
-                    COALESCE(i.stocked_at, '2026-11-01') AS import_date,
-                    COALESCE(i.status, 'Available') AS status,
+                    COALESCE(SUM(i.quantity), 0) AS stock_quantity,
+                    COALESCE(MAX(i.stocked_at), '2026-11-01') AS import_date,
+                    COALESCE(MAX(i.status), 'Available') AS status,
                     CASE 
-                        WHEN COALESCE(i.status, '') = 'Low Stock' THEN 'bg-danger'
+                        WHEN COALESCE(SUM(i.quantity), 0) <= 5 THEN 'bg-danger'
                         ELSE 'bg-success'
                     END AS badge_class,
                     CONCAT('P-', LPAD(p.product_id, 3, '0')) AS sku
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.category_id
                 LEFT JOIN inventory i ON p.product_id = i.product_id
+                GROUP BY p.product_id, p.name, p.category_id, c.category_name, p.unit_price
                 ORDER BY p.product_id DESC;
             """
             cursor.execute(query)
@@ -52,18 +57,24 @@ def add_inventory(item_data: InventoryCreate) -> Dict[str, Any]:
                 (product_id, item_data.stock_quantity, 'Available' if item_data.stock_quantity > 5 else 'Low Stock')
             )
 
+            # Sử dụng cú pháp tổng hợp tương tự get_all_inventory để tránh lỗi dữ liệu
             cursor.execute("""
                 SELECT p.product_id, p.name AS product_name, p.category_id, 
                        COALESCE(c.category_name, 'General') AS category_name,
                        COALESCE(c.category_name, 'General') AS category,
-                       p.unit_price, COALESCE(i.quantity, 0) AS stock_quantity, 
-                       COALESCE(i.stocked_at, '2026-11-01') AS import_date,
-                       COALESCE(i.status, 'Available') AS status, 'bg-success' AS badge_class,
+                       p.unit_price, COALESCE(SUM(i.quantity), 0) AS stock_quantity, 
+                       COALESCE(MAX(i.stocked_at), '2026-11-01') AS import_date,
+                       COALESCE(MAX(i.status), 'Available') AS status, 
+                       CASE 
+                           WHEN COALESCE(SUM(i.quantity), 0) <= 5 THEN 'bg-danger'
+                           ELSE 'bg-success'
+                       END AS badge_class,
                        CONCAT('P-', LPAD(p.product_id, 3, '0')) AS sku
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.category_id
                 LEFT JOIN inventory i ON p.product_id = i.product_id
                 WHERE p.product_id = %s
+                GROUP BY p.product_id, p.name, p.category_id, c.category_name, p.unit_price
             """, (product_id,))
             return cursor.fetchone()
     finally:
@@ -82,18 +93,24 @@ def update_inventory(sku: str, item_data: InventoryUpdate) -> Optional[Dict[str,
                 "UPDATE inventory SET quantity = %s WHERE product_id = %s",
                 (item_data.stock_quantity, product_id)
             )
+            # Sử dụng cú pháp tổng hợp tương tự get_all_inventory để tránh lỗi dữ liệu
             cursor.execute("""
                 SELECT p.product_id, p.name AS product_name, p.category_id, 
                        COALESCE(c.category_name, 'General') AS category_name,
                        COALESCE(c.category_name, 'General') AS category,
-                       p.unit_price, COALESCE(i.quantity, 0) AS stock_quantity, 
-                       COALESCE(i.stocked_at, '2026-11-01') AS import_date,
-                       COALESCE(i.status, 'Available') AS status, 'bg-success' AS badge_class,
+                       p.unit_price, COALESCE(SUM(i.quantity), 0) AS stock_quantity, 
+                       COALESCE(MAX(i.stocked_at), '2026-11-01') AS import_date,
+                       COALESCE(MAX(i.status), 'Available') AS status, 
+                       CASE 
+                           WHEN COALESCE(SUM(i.quantity), 0) <= 5 THEN 'bg-danger'
+                           ELSE 'bg-success'
+                       END AS badge_class,
                        CONCAT('P-', LPAD(p.product_id, 3, '0')) AS sku
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.category_id
                 LEFT JOIN inventory i ON p.product_id = i.product_id
                 WHERE p.product_id = %s
+                GROUP BY p.product_id, p.name, p.category_id, c.category_name, p.unit_price
             """, (product_id,))
             return cursor.fetchone()
     finally:
