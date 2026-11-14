@@ -4,7 +4,7 @@
 ![Architecture Diagram](./diagrams/YUMS_architecture.png)
 
 ## Data model
-![ERD](./images/erd.png)
+![ERD](.\images\YUMS_ERD.png)
 
 
 | Table              | Columns                                                                                                                         | Constraint · which M1 rule                                                                                                                                                                                                      |

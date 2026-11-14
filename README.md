@@ -10,6 +10,8 @@ A demand forecasting tool designed for small retail stores. The system allows us
 | Members       | @oanhtran @aizun @ngocmai141106 @HaVy2006 |
 | Product Owner | @oanhtran                                 |
 | Board         | https://github.com/orgs/SE-FDA-NEU-AI66B/projects/30/views/1 |
+| API links     | https://software-ai66b-g2-b4-small-shop.onrender.com/docs |
+| Deployed link | https://yums-frontend-qjq2.onrender.com |
 
 |Sprint No.  | Scrum Master | Scrum Master's account |
 |----------- | ----------- | --------------------- |
@@ -17,6 +19,7 @@ A demand forecasting tool designed for small retail stores. The system allows us
 |2           | Nguyen Do Anh Duong | @aizun |
 |3           | Tran Phuong Oanh | @oanhtran020906-sys|
 |4           | Tran Ngoc Mai | @ngocmai141106 |
+|5           | Nguyen Do Anh Duong | @aizun |
 
 ## Run
 
