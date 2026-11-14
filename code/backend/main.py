@@ -242,7 +242,8 @@ def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
 @cus_router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
-# --- PRODUCT ENDPOINTS (Đã sửa lỗi trùng route) ---
+
+# PRODUCT ENDPOINTS
 @prod_router.get("", response_model=List[ProductResponse])
 def get_all_products_endpoint():
     try:
@@ -271,7 +272,7 @@ def delete_product_endpoint(product_id: int):
         raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
     return {"message": f"Product {product_id} deleted successfully."}
 
-# --- INVENTORY ENDPOINTS (Đã chuẩn hóa) ---
+# INVENTORY ENDPOINTS 
 @inv_router.get("", response_model=List[InventoryResponse])
 def get_all_inventory_endpoint():
     try:
@@ -299,7 +300,7 @@ def delete_inventory_endpoint(sku: str):
         raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
     return {"message": f"Product {sku} deleted successfully."}
 
-# --- CATEGORY ENDPOINTS (Giữ nguyên) ---
+# CATEGORY ENDPOINTS 
 @cat_router.get("")
 def get_categories_endpoint():
     conn = None
@@ -315,15 +316,16 @@ def get_categories_endpoint():
         if conn and conn.open:
             conn.close()
 
-# --- SALES ANALYTICS ENDPOINTS (Đã khắc phục lỗi đường dẫn trùng lặp) ---
-@sales_router.get("/overview", response_model=List[SalesItemOverview])
+# SALES ANALYTICS ENDPOINTS
+@sales_router.get("/overview")
 def get_sales_overview_endpoint(
     top_n: Optional[str] = Query("5"),
     category: Optional[str] = Query(None),
-    timeframe: Optional[str] = Query("monthly")
+    timeframe: Optional[str] = Query("this_month")
 ):
     try:
-        return get_sales_overview(top_n=top_n, category=category)
+        # Truyền đầy đủ top_n, category và timeframe vào service mới
+        return get_sales_overview(top_n=top_n, category=category, timeframe=timeframe)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
 
