@@ -62,7 +62,8 @@ async function fetchProducts() {
 
     filterData();
   } catch (error) {
-    showToast(error.message);
+    console.error("Server Error Details:", error.message); 
+    showToast("Something went wrong on the server. Please try again later.");
   }
 }
 
@@ -206,7 +207,8 @@ async function handleFormSubmit(e) {
     closeModal();
     fetchProducts();
   } catch (error) {
-    showToast(error.message);
+    console.error("Server Error Details:", error.message); 
+    showToast("Something went wrong on the server. Please try again later.");
   }
 }
 
