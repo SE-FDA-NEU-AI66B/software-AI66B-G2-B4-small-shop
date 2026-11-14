@@ -28,15 +28,15 @@ from backend.services.order import update_order_note
 from schema.customer import CustomerCreate, CustomerUpdate
 from services.customer import search_customers, get_customers, get_customer_details, get_customer_types, create_customer, update_customer, delete_customer
 
-# Product schemas and services
+# Product schemas and services (Đã sửa lỗi trùng lặp route)
 from schema.product import ProductCreate, ProductUpdate, ProductResponse
 from services.product import get_all_products, add_product, update_product, delete_product
 
-# Inventory schemas and services
+# Inventory schemas and services 
 from schema.inventory import InventoryCreate, InventoryUpdate, InventoryResponse
 from services.inventory import get_all_inventory, add_inventory, update_inventory, delete_inventory
 
-# Sales schemas and services
+# Sales schemas and services (Đã sửa lỗi trùng lặp tiền tố /sales)
 from schema.sales import SalesItemOverview
 from services.sales import get_sales_overview, get_demand_predictions
 
@@ -242,12 +242,7 @@ def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
 @cus_router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
-
-# Product endpoints
-@prod_router.get("")
-def get_products_endpoint():
-    return get_products()
-
+# --- PRODUCT ENDPOINTS (Đã sửa lỗi trùng route) ---
 @prod_router.get("", response_model=List[ProductResponse])
 def get_all_products_endpoint():
     try:
@@ -276,7 +271,7 @@ def delete_product_endpoint(product_id: int):
         raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
     return {"message": f"Product {product_id} deleted successfully."}
 
-# Inventory endpoints
+# --- INVENTORY ENDPOINTS (Đã chuẩn hóa) ---
 @inv_router.get("", response_model=List[InventoryResponse])
 def get_all_inventory_endpoint():
     try:
@@ -304,26 +299,24 @@ def delete_inventory_endpoint(sku: str):
         raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
     return {"message": f"Product {sku} deleted successfully."}
 
-# Category endpoints
+# --- CATEGORY ENDPOINTS (Giữ nguyên) ---
 @cat_router.get("")
 def get_categories_endpoint():
     conn = None
     try:
-        from database.connect_db import get_connection
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("SELECT category_id, category_name FROM categories")
             categories = cursor.fetchall()
             return categories if categories else []
     except Exception as e:
-        print(f"Error details: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
     finally:
         if conn and conn.open:
             conn.close()
 
-# Sales analytics endpoints
-@sales_router.get("/sales/overview", response_model=List[SalesItemOverview], tags=["Sales"])
+# --- SALES ANALYTICS ENDPOINTS (Đã khắc phục lỗi đường dẫn trùng lặp) ---
+@sales_router.get("/overview", response_model=List[SalesItemOverview])
 def get_sales_overview_endpoint(
     top_n: Optional[str] = Query("5"),
     category: Optional[str] = Query(None),
@@ -334,31 +327,12 @@ def get_sales_overview_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
 
-@sales_router.get("/sales/predictions", tags=["Sales"])
+@sales_router.get("/predictions")
 def get_demand_predictions_endpoint(window_days: int = Query(30)):
     try:
         return get_demand_predictions(window_days=window_days)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
-
-@sales_test_router.get("/overview", response_model=List[SalesItemOverview])
-def get_sales_overview_alias(
-    top_n: Optional[str] = Query("5"),
-    category: Optional[str] = Query(None),
-    timeframe: Optional[str] = Query("monthly")
-):
-    try:
-        return get_sales_overview(top_n=top_n, category=category)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
-
-@sales_test_router.get("/predictions")
-def get_demand_predictions_alias(window_days: int = Query(30)):
-    try:
-        return get_demand_predictions(window_days=window_days)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
-
 
 import logging
 logger = logging.getLogger(__name__)
