@@ -180,8 +180,8 @@ function renderTable(data) {
     const safeName = (emp.name || '').replace(/'/g, "\\'");
 
     tr.innerHTML = `
-      <td class="emp-id">${idDisplay}</td>
-      <td>
+      <td class="emp-id" data-label="Employee ID">${idDisplay}</td>
+      <td data-label="Name & Username">
         <div class="emp-name-cell">
           <div class="emp-avatar">${getInitials(emp.name)}</div>
           <div>
@@ -190,11 +190,11 @@ function renderTable(data) {
           </div>
         </div>
       </td>
-      <td>${emp.role}</td>
-      <td>${emp.phone || 'N/A'}</td>
-      <td><span class="badge ${badgeClass}">${emp.status}</span></td>
-      <td>${formatDate(emp.created_at)}</td>
-      <td>
+      <td data-label="Position">${emp.role}</td>
+      <td data-label="Phone Number">${emp.phone || 'N/A'}</td>
+      <td data-label="Status"><span class="badge ${badgeClass}">${emp.status}</span></td>
+      <td data-label="Created Date">${formatDate(emp.created_at)}</td>
+      <td data-label="Actions">
         <div class="action-buttons" style="justify-content: flex-end; display: flex; gap: 8px;">
           <button class="btn-icon" title="Edit Employee" onclick="openEditEmployeeModal(${emp.employee_id})">
             <i class="fa-solid fa-pen-to-square"></i>
