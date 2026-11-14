@@ -119,3 +119,6 @@
 
 ## 11/11/2026:
 - @ngocmai141106: Added a beautifully styled error toasters and synced navigation buttons in page header for all order pages
+
+## 14/11/2026:
+- @oanhtran020906-sys: fix 2 pages include inventory and sales
