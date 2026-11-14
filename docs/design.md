@@ -4,7 +4,7 @@
 ![Architecture Diagram](./diagrams/YUMS_architecture.png)
 
 ## Data model
-![ERD](./images/erd.png)
+![ERD](.\images\YUMS_ERD.png)
 
 
 | Table              | Columns                                                                                                                         | Constraint · which M1 rule                                                                                                                                                                                                      |
@@ -25,32 +25,40 @@
 | Method | Path | Input | Success | Errors |
 | :--- | :--- | :--- | :--- | :--- |
 | **AUTH & USERS** | | | | |
-| `POST` | `/api/auth/register` | `username`, `password`, `role` | `201` · user profile created | `400` invalid format<br>`409` username/email/phone already exists |
-| `POST` | `/api/auth/login` | `identifier` (username), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
-| `POST` | `/api/auth/logout` | — | `200` · logged out successfully | `401` unauthorized |
-| `GET` | `/api/users/me` | — | `200` · current user profile & role permissions | `401` unauthorized |
+| POST | `/auth/change-password` | `PasswordChange` | Message | - |
+| POST | `/auth/forgot-password` | `ForgotPassword Request` | Message | - |
+| GET | `/auth/password-reset-requests` | None | List | - |
+| POST | `/auth/password-reset-requests/{user_id}/approve` | `user_id` (path) | Message | - |
+| `POST` | `/auth/login` | `identifier` (username), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
+| `POST` | `/auth/logout` | — | `200` · logged out successfully | `401` unauthorized |
 | **ORDER MANAGEMENT** | | | | |
-| `POST` | `/api/orders` | `customer_id`, `items` (product_id, quantity), `notes` | `201` · created order details | `400` invalid items or quantity<br>`401` unauthorized<br>`422` insufficient product stock |
-| `GET` | `/api/orders/<id>` | — | `200` · complete order details, items & status | `401` unauthorized<br>`404` order not found |
+| `POST` | `/orders` | `customer_id`, `items` (product_id, quantity), `notes` | `201` · created order details | `400` invalid items or quantity<br>`401` unauthorized<br>`422` insufficient product stock |
+| `GET` | `/orders/<id>` | — | `200` · complete order details, items & status | `401` unauthorized<br>`404` order not found |
 | **CUSTOMER MANAGEMENT** | | | | |
-| `POST` | `/api/customers` | `name`, `email`, `phone`, `address` | `201` · customer profile created | `400` invalid input<br>`401` unauthorized<br>`409` phone/email already registered |
-| `GET` | `/api/customers/<id>` | — | `200` · customer details & history | `401` unauthorized<br>`404` customer not found |
-| `PUT` | `/api/customers/<id>` | `name`, `email`, `phone`, `address` | `200` · updated customer profile | `400` invalid input<br>`401` unauthorized<br>`404` customer not found |
-| `DELETE` | `/api/customers/<id>` | — | `200` · customer deleted | `401` unauthorized<br>`403` action forbidden<br>`404` customer not found |
+| `POST` | `/customers` | `name`, `email`, `phone`, `address` | `201` · customer profile created | `400` invalid input<br>`401` unauthorized<br>`409` phone/email already registered |
+| `GET` | `/customers/<id>` | — | `200` · customer details & history | `401` unauthorized<br>`404` customer not found |
+| `PUT` | `/customers/<id>` | `name`, `email`, `phone`, `address` | `200` · updated customer profile | `400` invalid input<br>`401` unauthorized<br>`404` customer not found |
+| `DELETE` | `/customers/<id>` | — | `200` · customer deleted | `401` unauthorized<br>`403` action forbidden<br>`404` customer not found |
 | **EMPLOYEE MANAGEMENT** | | | | |
-| `POST` | `/api/employees` | `full_name`, `email`, `phone`, `role`, `department` | `201` · employee record created | `400` invalid data<br>`401` unauthorized<br>`403` manager access required |
-| `GET` | `/api/employees/<id>` | — | `200` · employee details | `401` unauthorized<br>`404` employee not found |
-| `PUT` | `/api/employees/<id>` | `full_name`, `email`, `phone`, `role`, `status` | `200` · updated employee record | `400` invalid data<br>`401` unauthorized<br>`404` employee not found |
-| `DELETE` | `/api/employees/<id>` | — | `200` · employee deleted/deactivated | `401` unauthorized<br>`403` manager access required<br>`404` employee not found |
+| `POST` | `/employees` | `full_name`, `email`, `phone`, `role`, `department` | `201` · employee record created | `400` invalid data<br>`401` unauthorized<br>`403` manager access required |
+| `GET` | `/employees/<id>` | — | `200` · employee details | `401` unauthorized<br>`404` employee not found |
+| `PUT` | `/employees/<id>` | `full_name`, `email`, `phone`, `role`, `status` | `200` · updated employee record | `400` invalid data<br>`401` unauthorized<br>`404` employee not found |
+| `DELETE` | `/employees/<id>` | — | `200` · employee deleted/deactivated | `401` unauthorized<br>`403` manager access required<br>`404` employee not found |
 | **INVENTORY (PRODUCTS)** | | | | |
-| `POST` | `/api/inventory/products` | `sku`, `name`, `category`, `price`, `stock_quantity` | `201` · product created | `400` invalid format<br>`401` unauthorized<br>`409` SKU already exists |
-| `GET` | `/api/inventory/products/<id>` | — | `200` · product details & current stock | `401` unauthorized<br>`404` product not found |
-| `PUT` | `/api/inventory/products/<id>` | `sku`, `name`, `category`, `price`, `stock_quantity` | `200` · updated product info | `400` invalid input<br>`401` unauthorized<br>`404` product not found |
-| `DELETE` | `/api/inventory/products/<id>` | — | `200` · product removed | `401` unauthorized<br>`403` action forbidden<br>`404` product not found |
+| `POST` | `/inventory/products` | `sku`, `name`, `category`, `price`, `stock_quantity` | `201` · product created | `400` invalid format<br>`401` unauthorized<br>`409` SKU already exists |
+| `GET` | `/inventory/products/<id>` | — | `200` · product details & current stock | `401` unauthorized<br>`404` product not found |
+| `PUT` | `/inventory/products/<id>` | `sku`, `name`, `category`, `price`, `stock_quantity` | `200` · updated product info | `400` invalid input<br>`401` unauthorized<br>`404` product not found |
+| `DELETE` | `/inventory/products/<id>` | — | `200` · product removed | `401` unauthorized<br>`403` action forbidden<br>`404` product not found |
 | **SALES & PREDICTIONS** | | | | |
-| `GET` | `/api/sales/dashboard` | `from`, `to` (ISO date), `granularity` (day/month) | `200` · sales metrics, revenue & trends summary | `400` invalid date range<br>`401` unauthorized |
-| `POST` | `/api/sales/predictions/upload` | `file` (CSV file attachment) | `200` · dataset uploaded & parsed successfully | `400` missing file<br>`401` unauthorized<br>`422` invalid CSV schema or format |
-| `GET` | `/api/sales/predictions/<id>` | — | `200` · demand prediction results & forecasted metrics | `401` unauthorized<br>`404` prediction job/file not found<br>`425` prediction still processing |
+| `GET` | `/sales/dashboard` | `from`, `to` (ISO date), `granularity` (day/month) | `200` · sales metrics, revenue & trends summary | `400` invalid date range<br>`401` unauthorized |
+| `POST` | `/sales/predictions/upload` | `file` (CSV file attachment) | `200` · dataset uploaded & parsed successfully | `400` missing file<br>`401` unauthorized<br>`422` invalid CSV schema or format |
+| `GET` | `/sales/predictions/<id>` | — | `200` · demand prediction results & forecasted metrics | `401` unauthorized<br>`404` prediction job/file not found<br>`425` prediction still processing |
+| **USERS MANAGEMENT** | | | | |
+| GET | `/users` | None | `List[User Response]` | - |
+| POST | `/users` | `UserCreate` | `UserResponse` (201) | - |
+| PUT | `/users/{user_id}` | `UserUpdate` | `UserResponse` | - |
+| POST | `/users/{user_id}/reset-password` | `user_id` (path) | Message | - |
+| DELETE | `/users/{user_id}` | `user_id` (path) | 204 No Content | - |
 
 ## Walking skeleton
 

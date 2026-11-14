@@ -3,6 +3,23 @@ const main = document.querySelector(".main-content");
 const sidebar = document.querySelector(".sidebar");
 
 if (menu_btn && main && sidebar) {
+    if (document.body.classList.contains("employee-page")) {
+        const employeeSidebarBreakpoint = window.matchMedia("(max-width: 64rem)");
+        const syncEmployeeSidebar = () => {
+            const isPhoneLayout = employeeSidebarBreakpoint.matches;
+            sidebar.classList.toggle("hidden", isPhoneLayout);
+            main.classList.toggle("expand", isPhoneLayout);
+            menu_btn.classList.toggle("update", isPhoneLayout);
+        };
+
+        syncEmployeeSidebar();
+        if (employeeSidebarBreakpoint.addEventListener) {
+            employeeSidebarBreakpoint.addEventListener("change", syncEmployeeSidebar);
+        } else {
+            employeeSidebarBreakpoint.addListener(syncEmployeeSidebar);
+        }
+    }
+
     menu_btn.addEventListener("click", function() {
         main.classList.toggle("expand");
         sidebar.classList.toggle("hidden");

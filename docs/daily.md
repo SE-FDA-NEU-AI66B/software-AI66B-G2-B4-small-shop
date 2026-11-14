@@ -120,5 +120,6 @@
 ## 11/11/2026:
 - @ngocmai141106: Added a beautifully styled error toasters and synced navigation buttons in page header for all order pages
 
-## 14/11/2026:
+## 14/11/2026
+- @aizun: after 1 week of digitally crippled, as my laptop exploded :( i finally comeback to add a phone friendly design for employee pages. 
 - @oanhtran020906-sys: fix 2 pages include inventory and sales
