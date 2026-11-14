@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/products";
+const API_URL = "http://127.0.0.1:8000/inventory";
 const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 
 let products = [];
@@ -52,6 +52,14 @@ async function fetchProducts() {
     if (!response.ok) throw new Error("Failed to load inventory from server.");
     
     products = await response.json();
+    
+    // Sắp xếp danh sách theo product_id tăng dần
+    products.sort((a, b) => {
+      const idA = a.product_id || parseInt((a.sku || '').replace(/\D/g, '')) || 0;
+      const idB = b.product_id || parseInt((b.sku || '').replace(/\D/g, '')) || 0;
+      return idA - idB;
+    });
+
     filterData();
   } catch (error) {
     showToast(error.message);
@@ -78,6 +86,8 @@ function renderTable(data) {
     const skuCode = item.sku || `P-${String(item.product_id).padStart(3, '0')}`;
     const displayCategory = item.category_name || item.category || 'General';
     const stockQty = item.stock_quantity !== undefined ? item.stock_quantity : (item.stock || 0);
+    
+    // Đảm bảo 3 trạng thái
     const statusText = item.status || (stockQty > 5 ? "In Stock" : "Low Stock");
     const badgeClass = item.badge_class || (stockQty > 5 ? "badge-instock" : "badge-expired");
     
@@ -114,9 +124,12 @@ function filterData() {
     const skuCode = (item.sku || `p-${String(item.product_id).padStart(3, '0')}`).toLowerCase();
     const productName = (item.product_name || item.name || '').toLowerCase();
     
+    const stockQty = item.stock_quantity !== undefined ? item.stock_quantity : (item.stock || 0);
+    const itemStatus = item.status || (stockQty > 5 ? "In Stock" : "Low Stock");
+    
     const matchesSearch = productName.includes(searchTerm) || skuCode.includes(searchTerm);
     const matchesCategory = selectedCategory === "" || (item.category_name || item.category) === selectedCategory;
-    const matchesStatus = selectedStatus === "" || (item.status === selectedStatus);
+    const matchesStatus = selectedStatus === "" || (itemStatus === selectedStatus);
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -210,7 +223,8 @@ window.deleteProduct = async function(sku) {
     showToast("Deleted product successfully!");
     fetchProducts();
   } catch (error) {
-    showToast(error.message);
+    console.error("Server Error Details:", error.message); 
+    showToast("Something went wrong on the server. Please try again later.");
   }
 };
 
