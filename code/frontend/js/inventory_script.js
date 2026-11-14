@@ -1,4 +1,5 @@
-const API_URL = "https://small-shop-tailscale.onrender.com/inventory";
+const API_URL = "http://127.0.0.1:8000/products";
+const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 
 let products = [];
 let isEditMode = false;
