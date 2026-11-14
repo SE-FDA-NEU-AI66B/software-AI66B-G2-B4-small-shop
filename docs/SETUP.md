@@ -9,15 +9,9 @@ Before running the application, make sure the following software is installed on
 - MySQL Server
 - Git (optional, for cloning the repository)
 
-Verify your installations:
-
-```bash
-python --version
-mysql --version
-```
-
 ---
 
+# RUN LOCALLY
 ## 1. Navigate to the Project Directory
 
 Open a terminal and move to the project folder:
@@ -139,17 +133,25 @@ Keep this terminal window running while testing the application. Your terminal s
 Open the following file in your web browser:
 
 ```text
-code/frontend/html/employees.html
+code/frontend/index.html
 ```
 
 You can open it by:
 
 - Double-clicking the file, or
-- Opening it directly from your browser
+- Opening it directly from your browser, or
+- Open with Live Server
+
+Log in with 2 test accounts:
+
+| Username | Password | Role|
+| :--- | :--- | :--- |
+| havy | 12345 | Admin |
+| minhanh | minhanh | Employee |
 
 Your screen should look like this if success:
 
-![success_frontend](./images/success_frontend.png)
+![success_frontend](./images/success_frontend.png) #need fix later
 ---
 
 ## 8. Verify the Application
@@ -231,13 +233,23 @@ python backend/main.py
 Then open:
 
 ```text
-code/frontend/html/employees.html
+code/frontend/index.html
 ```
 
-and test:
+Log in and test:
 
 - Add Employee
 - Update Employee
+
+# Run online (deployed domain)
+Go to: [Public URL](https://yums-frontend-qjq2.onrender.com)
+
+Log in with 2 test accounts:
+
+| Username | Password | Role|
+| :--- | :--- | :--- |
+| havy | 12345 | Admin |
+| minhanh | minhanh | Employee |
 
 ## Guide to Running Test Cases for Sales Analytics (US11, US15, US16)
 

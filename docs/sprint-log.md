@@ -53,3 +53,13 @@ Goal: Prove that all P0 story keeps working when we change them: every P0 story 
 - Total commits: 31 (all repo commits: 386)
 
 Not finished: none.
+
+# Sprint 5 (weeks 13-14)
+Start: 05/11/2026; End: 18/11/2026
+
+Goal: Complete the app with final touches. Deploy to online website.
+
+- Committed:  issues
+- Completed:  issues with 6 sub-issues
+- Velocity: 
+- Total commits:  (all repo commits: )
