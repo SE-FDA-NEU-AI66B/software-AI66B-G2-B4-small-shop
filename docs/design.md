@@ -25,10 +25,12 @@
 | Method | Path | Input | Success | Errors |
 | :--- | :--- | :--- | :--- | :--- |
 | **AUTH & USERS** | | | | |
-| `POST` | `/auth/register` | `username`, `password`, `role` | `201` · user profile created | `400` invalid format<br>`409` username/email/phone already exists |
+| POST | `/auth/change-password` | `PasswordChange` | Message | - |
+| POST | `/auth/forgot-password` | `ForgotPassword Request` | Message | - |
+| GET | `/auth/password-reset-requests` | None | List | - |
+| POST | `/auth/password-reset-requests/{user_id}/approve` | `user_id` (path) | Message | - |
 | `POST` | `/auth/login` | `identifier` (username), `password` | `200` · access token, user info & role | `400` missing credentials<br>`401` invalid credentials |
 | `POST` | `/auth/logout` | — | `200` · logged out successfully | `401` unauthorized |
-| `GET` | `/users/me` | — | `200` · current user profile & role permissions | `401` unauthorized |
 | **ORDER MANAGEMENT** | | | | |
 | `POST` | `/orders` | `customer_id`, `items` (product_id, quantity), `notes` | `201` · created order details | `400` invalid items or quantity<br>`401` unauthorized<br>`422` insufficient product stock |
 | `GET` | `/orders/<id>` | — | `200` · complete order details, items & status | `401` unauthorized<br>`404` order not found |
@@ -51,6 +53,12 @@
 | `GET` | `/sales/dashboard` | `from`, `to` (ISO date), `granularity` (day/month) | `200` · sales metrics, revenue & trends summary | `400` invalid date range<br>`401` unauthorized |
 | `POST` | `/sales/predictions/upload` | `file` (CSV file attachment) | `200` · dataset uploaded & parsed successfully | `400` missing file<br>`401` unauthorized<br>`422` invalid CSV schema or format |
 | `GET` | `/sales/predictions/<id>` | — | `200` · demand prediction results & forecasted metrics | `401` unauthorized<br>`404` prediction job/file not found<br>`425` prediction still processing |
+| **USERS MANAGEMENT** | | | | |
+| GET | `/users` | None | `List[User Response]` | - |
+| POST | `/users` | `UserCreate` | `UserResponse` (201) | - |
+| PUT | `/users/{user_id}` | `UserUpdate` | `UserResponse` | - |
+| POST | `/users/{user_id}/reset-password` | `user_id` (path) | Message | - |
+| DELETE | `/users/{user_id}` | `user_id` (path) | 204 No Content | - |
 
 ## Walking skeleton
 
