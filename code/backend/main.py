@@ -70,7 +70,6 @@ prod_router = APIRouter(prefix="/products", tags=["Products"])
 inv_router = APIRouter(prefix="/inventory", tags=["Inventory"])
 cat_router = APIRouter(prefix="/categories", tags=["Categories"])
 sales_router = APIRouter(prefix="/sales", tags=["Sales"])
-sales_test_router = APIRouter(prefix="/sales", tags=["Sales Test Alias"])
 
 # Employee endpoints
 @emp_router.get(
@@ -392,7 +391,7 @@ app.include_router(prod_router)
 app.include_router(inv_router)
 app.include_router(cat_router)
 app.include_router(sales_router)
-app.include_router(sales_test_router)
+
 
 if __name__ == "__main__":
     import uvicorn
