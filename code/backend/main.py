@@ -1,5 +1,7 @@
 import os
 import sys
+import socket
+import logging
 from typing import List, Optional
 
 from database.connect_db import get_connection
@@ -41,6 +43,14 @@ from services.sales import get_sales_overview, get_demand_predictions
 from config.api import settings
 
 app = FastAPI(title="YUMS")
+
+@app.on_event("startup")
+def check_mysql_network():
+    try:
+        with socket.create_connection(("100.115.168.64", 3306), timeout=5):
+            logging.info("MYSQL_TCP_CHECK: SUCCESS")
+    except Exception as e:
+        logging.error("MYSQL_TCP_CHECK: FAILED: %s", repr(e))
 
 # Configure CORS so browser fetch requests (POST, PUT, OPTIONS) are permitted
 app.add_middleware(
