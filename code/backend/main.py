@@ -387,6 +387,39 @@ def delete_product_endpoint(product_id: int):
         raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
     return {"message": f"Product {product_id} deleted successfully."}
 
+# Product endpoints
+@prod_router.get("")
+def get_products_endpoint():
+    return get_products()
+
+@prod_router.get("", response_model=List[ProductResponse])
+def get_all_products_endpoint():
+    try:
+        return get_all_products()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch products: {str(e)}")
+
+@prod_router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
+def create_product_endpoint(payload: ProductCreate):
+    try:
+        return add_product(payload)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create product: {str(e)}")
+
+@prod_router.put("/{product_id}", response_model=ProductResponse)
+def update_product_endpoint(product_id: int, payload: ProductUpdate):
+    updated = update_product(product_id, payload)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
+    return updated
+
+@prod_router.delete("/{product_id}")
+def delete_product_endpoint(product_id: int):
+    success = delete_product(product_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
+    return {"message": f"Product {product_id} deleted successfully."}
+
 # Inventory endpoints
 @inv_router.get("", response_model=List[InventoryResponse])
 def get_all_inventory_endpoint():
@@ -406,14 +439,14 @@ def create_inventory_endpoint(payload: InventoryCreate):
 def update_inventory_endpoint(sku: str, payload: InventoryUpdate):
     updated = update_inventory(sku, payload)
     if not updated:
-        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
+        raise HTTPException(status_code=404, detail=f"Inventory record {sku} not found.")
     return updated
 
 @inv_router.delete("/{sku}")
 def delete_inventory_endpoint(sku: str):
     if not delete_inventory(sku):
-        raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
-    return {"message": f"Product {sku} deleted successfully."}
+        raise HTTPException(status_code=404, detail=f"Inventory record {sku} not found.")
+    return {"message": f"Inventory record {sku} deleted successfully."}
 
 # Category endpoints
 @cat_router.get("")
