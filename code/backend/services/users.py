@@ -230,4 +230,3 @@ def approve_password_reset(user_id: int) -> None:
         raise
     finally:
         connection.close()
-    revoke_user_sessions(user_id)

@@ -114,8 +114,9 @@ table.customers-table tbody tr:last-child td {
 /* Customer ID Specific Styling */
 .cus-id {
     font-weight: 600;
-    color: var(--bg-sidebar);
+    color: var(--text-dark);
     letter-spacing: 0.5px;
+    
 }
 
 /* 4. Action Buttons (Match Employee Style) */

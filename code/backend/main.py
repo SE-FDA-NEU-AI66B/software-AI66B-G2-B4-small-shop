@@ -206,7 +206,7 @@ def change_password_endpoint(
     payload: PasswordChange,
     user: UserResponse,
 ):
-    change_password(user["user_id"], payload.new_password)
+    change_password(user.user_id, payload.new_password)
     return {"message": "Password changed successfully.", "must_change_password": False}
 
 
@@ -214,7 +214,7 @@ def change_password_endpoint(
 def forgot_password_endpoint(payload: ForgotPasswordRequest):
     create_password_reset_request(payload.username)
     return {
-        "message": "If the account exists, a password reset request has been sent to a manager."
+        "message": "Password reset request has been sent to a manager."
     }
 
 

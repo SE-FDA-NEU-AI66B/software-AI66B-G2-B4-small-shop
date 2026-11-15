@@ -1,3 +1,7 @@
+/* ==========================================================================
+   YUMS - User Management Styles (Aligned with employee.css)
+   ========================================================================== */
+
 .users-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -6,31 +10,34 @@
     max-width: 100%;
 }
 
+/* Table Styling — matches table.employee-table in employee.css */
 .users-table {
     width: 100%;
-    min-width: 820px;
+    min-width: 780px;
     border-collapse: collapse;
     text-align: left;
+    font-family: var(--font-content);
 }
 
 .users-table th {
-    padding: 16px 14px;
     background-color: #F2EAE0;
-    border-bottom: 2px solid var(--border-color);
     color: var(--text-dark);
     font-family: var(--font-content);
-    font-size: 0.8rem;
     font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 0.8rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border-color);
     white-space: nowrap;
+    text-align: left;
 }
 
 .users-table td {
-    padding: 16px 14px;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-dark);
+    padding: 16px 20px;
     font-size: 0.88rem;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 
@@ -42,82 +49,84 @@
     background-color: var(--hover-beige);
 }
 
-.users-table th:last-child,
-.users-table td:last-child {
-    text-align: right;
+.users-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.users-table td.user-id {
-    color: var(--bg-sidebar);
+/* Keep Actions column snug and centered */
+.users-table th:last-child,
+.users-table td:last-child {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center !important;
+}
+
+/* User ID column styling (matches .emp-id) */
+.users-table td:first-child {
     font-weight: 600;
+    color: var(--text-dark);
     letter-spacing: 0.5px;
 }
 
-.user-role-badge {
+/* Role Badges — matches .badge in employee.css & classes generated in users.js */
+.users-table .badge {
     display: inline-block;
     padding: 4px 10px;
-    border: 1px solid #D2DCE0;
     border-radius: 12px;
-    background-color: #E8EDF0;
-    color: var(--text-dark);
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.3px;
 }
 
-.user-role-badge.manager {
+.badge.role-employee {
+    background-color: #E8EDF0;
+    color: var(--text-dark);
+    border: 1px solid #D2DCE0;
+}
+
+.badge.role-manager {
     background-color: #FDF3D6;
-    border-color: #F5E1A4;
     color: #7A5B0B;
+    border: 1px solid #F5E1A4;
 }
 
-.user-role-badge.admin {
+.badge.role-admin {
     background-color: #E2EFCB;
-    border-color: #C4E197;
     color: #2E5A1C;
+    border: 1px solid #C4E197;
 }
 
+/* Action Buttons — matches .action-buttons & .btn-icon in employee.css */
+.users-table .action-buttons,
 .user-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     gap: 8px;
 }
 
-.user-actions .user-action-reset {
-    display: inline-flex;
+.users-table .btn-icon.reset-btn {
     width: auto;
-    min-width: 76px;
     height: 32px;
-    padding: 0 9px;
+    padding: 0 10px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
     font-family: var(--font-content);
     font-size: 0.78rem;
-    transition: all var(--transition-speed);
+    font-weight: 500;
+    white-space: nowrap;
 }
 
-.user-actions .user-action-reset:hover,
-.user-actions .user-action-reset:focus-visible {
-    background-color: var(--bg-sidebar);
-    border-color: var(--bg-sidebar);
-    color: var(--text-light);
-}
-
-.user-actions .btn-icon.delete:hover,
-.user-actions .btn-icon.delete:focus-visible {
+.users-table .btn-icon.delete-btn:hover,
+.users-table .btn-icon.delete-btn:focus-visible {
     background-color: var(--color-accent-red);
     border-color: var(--color-accent-red);
     color: var(--text-light);
 }
 
-.user-actions button:focus-visible {
+.users-table .action-buttons button:focus-visible {
     outline: 2px solid var(--bg-sidebar);
     outline-offset: 2px;
 }
@@ -129,41 +138,14 @@
     line-height: 1.5;
 }
 
-.reset-request-badge {
-    display: inline-flex;
-    min-width: 20px;
-    height: 20px;
-    margin-left: 8px;
-    padding: 0 6px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: #7F0303;
-    color: #fff;
-    font-size: 0.72rem;
-    font-weight: 600;
-}
-
-.reset-status {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-}
-
-.reset-status.pending {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    background: #f7e6bd;
-    color: #6a4700;
-    font-weight: 600;
-}
-
+/* Pending Password Reset Requests Panel */
 .reset-requests-panel {
-    margin-bottom: 20px;
-    padding: 16px;
+    margin-bottom: 25px;
+    padding: 18px 20px;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--card-bg);
+    border-radius: 6px;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .reset-requests-table {
@@ -175,37 +157,27 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .reset-requests-heading h3 {
-    color: var(--text-dark);
-    font-size: 1rem;
+    font-family: var(--font-title);
+    color: var(--color-accent-red);
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .reset-requests-heading span {
     color: var(--text-muted);
     font-size: 0.8rem;
+    font-weight: 500;
 }
 
-.approve-reset-button {
-    padding: 7px 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background: #f7e6bd;
-    color: var(--text-dark);
-    cursor: pointer;
-    font: inherit;
-}
-
-.approve-reset-button:hover,
-.approve-reset-button:focus-visible {
-    background-color: var(--hover-beige);
-}
-
-.approve-reset-button:disabled {
-    cursor: wait;
-    opacity: 0.6;
+.table-message {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px 16px;
+    font-size: 0.88rem;
 }
 
 .users-table-region:focus-visible {
@@ -213,133 +185,85 @@
     outline-offset: 3px;
 }
 
-@media (max-width: 900px) {
-    main.main-content {
-        margin-left: 0;
-        padding: 65px 24px 28px;
+/* ==========================================================================
+   Responsive Breakpoints (Matched to employee.css: 48rem / 768px)
+   ========================================================================== */
+@media (max-width: 48rem) {
+    body.employee-page .users-summary.kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .top-header {
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-}
-
-@media (max-width: 650px) {
-    main.main-content {
-        padding: 58px 14px 20px;
-    }
-
-    .top-header {
-        flex-direction: column;
-        margin-bottom: 24px;
-        padding-bottom: 16px;
-    }
-
-    .user-profile {
-        max-width: 100%;
-    }
-
-    .action-bar {
-        align-items: stretch;
-        gap: 12px;
-    }
-
-    .action-bar .filter-group {
-        min-width: 100%;
-    }
-
-    .action-bar .search-box {
-        width: 100%;
-    }
-
-    .action-bar .btn-add {
-        justify-content: center;
-    }
-
-    .users-summary {
-        grid-template-columns: 1fr;
-    }
-
-    .users-table-region {
+    body.employee-page .users-table-region {
         overflow: visible;
         background: transparent;
         border: 0;
         box-shadow: none;
     }
 
-    .users-table,
-    .users-table tbody {
+    body.employee-page .users-table,
+    body.employee-page .users-table tbody {
         display: block;
         min-width: 0;
         width: 100%;
     }
 
-    .users-table thead {
+    body.employee-page .users-table thead {
         display: none;
     }
 
-    .users-table tbody tr {
-        display: grid;
-        grid-template-columns: 1fr;
-        margin-bottom: 12px;
-        overflow: hidden;
+    body.employee-page .users-table tbody tr {
+        display: block;
+        margin-bottom: 0.875rem;
+        padding: 0.5rem 0.875rem;
         border: 1px solid var(--border-color);
         border-radius: 6px;
         background-color: var(--card-bg);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
 
-    .users-table tbody tr:hover {
+    body.employee-page .users-table tbody tr:hover {
         background-color: var(--card-bg);
     }
 
-    .users-table td {
+    body.employee-page .users-table tbody td {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 12px;
-        padding: 11px 14px;
-        overflow-wrap: anywhere;
-        text-align: right;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.625rem 0;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right !important;
+        white-space: normal;
     }
 
-    .users-table td::before {
+    body.employee-page .users-table tbody td:last-child {
+        width: 100%;
+        border-bottom: 0;
+    }
+
+    body.employee-page .users-table tbody td::before {
         content: attr(data-label);
-        flex: 0 0 auto;
         color: var(--text-muted);
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         font-weight: 600;
-        letter-spacing: 0.4px;
-        text-align: left;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
+        text-align: left;
     }
 
-    .users-table td[data-label="Actions"],
-    .users-table td[data-label="Action"] {
-        align-items: flex-start;
-    }
-
-    .users-table td[data-label="Actions"]::before,
-    .users-table td[data-label="Action"]::before {
-        padding-top: 8px;
-    }
-
-    .user-actions {
-        flex-wrap: wrap;
-    }
-
-    .users-table td.table-message {
+    body.employee-page .users-table tbody td[colspan] {
         display: block;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        background-color: var(--card-bg);
-        text-align: center;
+        text-align: center !important;
     }
 
-    .users-table td.table-message::before {
+    body.employee-page .users-table tbody td[colspan]::before {
         content: none;
+    }
+
+    body.employee-page .users-table .action-buttons {
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 
     .reset-requests-table {
@@ -347,13 +271,6 @@
     }
 
     .reset-requests-panel {
-        padding: 12px;
-    }
-
-    .reset-requests-panel .table-wrapper {
-        overflow: visible;
-        border: 0;
-        background: transparent;
-        box-shadow: none;
+        padding: 14px;
     }
 }
