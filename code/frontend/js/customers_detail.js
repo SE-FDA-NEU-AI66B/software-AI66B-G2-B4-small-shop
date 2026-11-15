@@ -92,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusClass = isDelivered ? 'delivered' : 'pending';
             return `
                 <tr>
-                    <td>ORD-${String(order.order_id).padStart(3, '0')}</td>
-                    <td>${formatDate(order.created_at)}</td>
-                    <td>${escapeHTML(order.items || '—')}</td>
-                    <td>${formatVND(order.total_amount)}</td>
-                    <td>${formatVND(order.discount_amount)}</td>
-                    <td><span class="order-status ${statusClass}">${status}</span></td>
+                    <td data-label="Order ID">ORD-${String(order.order_id).padStart(3, '0')}</td>
+                    <td data-label="Date">${formatDate(order.created_at)}</td>
+                    <td data-label="Items">${escapeHTML(order.items || '—')}</td>
+                    <td data-label="Total">${formatVND(order.total_amount)}</td>
+                    <td data-label="Discount">${formatVND(order.discount_amount)}</td>
+                    <td data-label="Status"><span class="order-status ${statusClass}">${status}</span></td>
                 </tr>
             `;
         }).join('');

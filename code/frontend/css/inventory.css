@@ -91,3 +91,104 @@ table.inventory-table tbody tr:last-child td {
     display: flex;
     gap: 8px;
 }
+
+@media (max-width: 48rem) {
+    body.employee-page .action-bar {
+        align-items: stretch;
+    }
+
+    body.employee-page .filter-group {
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    body.employee-page .filter-select {
+        width: 100%;
+    }
+
+    body.employee-page .table-wrapper {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    body.employee-page table.inventory-table,
+    body.employee-page .inventory-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    body.employee-page .inventory-table thead {
+        display: none;
+    }
+
+    body.employee-page .inventory-table tbody tr {
+        display: block;
+        margin-bottom: 0.875rem;
+        padding: 0.5rem 0.875rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--card-bg);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    body.employee-page .inventory-table tbody tr:hover {
+        background: var(--card-bg);
+    }
+
+    body.employee-page .inventory-table tbody td {
+        display: grid;
+        grid-template-columns: minmax(6.5rem, 0.75fr) minmax(0, 1.25fr);
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.625rem 0;
+        border-bottom: 1px solid var(--border-color);
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    body.employee-page .inventory-table tbody td::before {
+        content: attr(data-label);
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    body.employee-page .inventory-table tbody td:last-child {
+        border-bottom: 0;
+    }
+
+    body.employee-page .inventory-table tbody td[colspan] {
+        display: block;
+        text-align: center;
+    }
+
+    body.employee-page .inventory-table tbody td[colspan]::before {
+        content: none;
+    }
+
+    body.employee-page .inventory-table .action-buttons {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 30rem) {
+    body.employee-page .inventory-table tbody tr {
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+    }
+
+    body.employee-page .inventory-table tbody td {
+        grid-template-columns: minmax(5.5rem, 0.7fr) minmax(0, 1.3fr);
+        gap: 0.375rem;
+    }
+
+    body.employee-page .inventory-table tbody td::before {
+        font-size: 0.65rem;
+    }
+}

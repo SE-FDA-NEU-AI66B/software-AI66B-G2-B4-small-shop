@@ -2,14 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://127.0.0.1:8000';
     let customers = [];
     let customerTypes = [];
+    let rockCustomerTypeId = null;
 
     const tableBody = document.getElementById('customersTableBody');
     const searchInput = document.getElementById('searchInput');
     const roleFilter = document.getElementById('roleFilter');
     const sortToggle = document.getElementById('customerSortToggle');
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
     const totalCustomersEl = document.getElementById('totalCustomers');
     const totalMembersEl = document.getElementById('totalMembers');
     const membersTierLabel = document.getElementById('membersTierLabel');
@@ -108,13 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const tier = customer.type_name || 'Unknown';
             const tierClass = escapeHTML(tier.toLowerCase());
             row.innerHTML = `
-                <td><strong class="cus-id">${customerLabel(customer.customer_id)}</strong></td>
-                <td>${escapeHTML(customer.name)}</td>
-                <td>${escapeHTML(customer.phone)}</td>
-                <td style="text-align: right;">${formatVND(customer.total_spent)}</td>
-                <td style="text-align: center;"><span class="badge badge-tier ${tierClass}">${escapeHTML(tier)}</span></td>
-                <td style="text-align: center;">${formatDate(customer.created_at)}</td>
-                <td style="text-align: center;">
+                <td data-label="Customer ID"><strong class="cus-id">${customerLabel(customer.customer_id)}</strong></td>
+                <td data-label="Name">${escapeHTML(customer.name)}</td>
+                <td data-label="Phone">${escapeHTML(customer.phone)}</td>
+                <td data-label="Total Spending" style="text-align: right;">${formatVND(customer.total_spent)}</td>
+                <td data-label="Membership" style="text-align: center;"><span class="badge badge-tier ${tierClass}">${escapeHTML(tier)}</span></td>
+                <td data-label="Created At" style="text-align: center;">${formatDate(customer.created_at)}</td>
+                <td data-label="Actions" style="text-align: center;">
                     <div class="action-buttons">
                         <button class="btn-icon btn-edit" data-id="${customer.customer_id}" title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -193,11 +191,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadCustomerTypes() {
         customerTypes = await request('/customers/customer-types');
+        const rockType = customerTypes.find(type =>
+            type.type_name.toLowerCase() === 'rock'
+        );
+        if (!rockType) {
+            throw new Error('Rock membership type is not available.');
+        }
+        rockCustomerTypeId = String(rockType.customer_type_id);
+
         [addTypeSelect, editTypeSelect].forEach(select => {
             select.innerHTML = customerTypes.map(type =>
                 `<option value="${type.customer_type_id}">${escapeHTML(type.type_name)}</option>`
             ).join('');
         });
+        addTypeSelect.value = rockCustomerTypeId;
     }
 
     function openModal(modal) {
@@ -304,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             closeModal(addModal);
             addForm.reset();
+            addTypeSelect.value = rockCustomerTypeId;
             await loadCustomers();
             showToast('Added customer successfully!');
         } catch (error) {
@@ -366,11 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         filterCustomers();
     });
-    menuBtn?.addEventListener('click', () => {
-        sidebar?.classList.toggle('hidden');
-        mainContent?.classList.toggle('expand');
-    });
-
     (async () => {
         try {
             await loadCustomerTypes();

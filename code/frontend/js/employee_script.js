@@ -27,7 +27,7 @@ const statusInput = document.getElementById('status');
 
 // Helper to get initials for avatar
 function getInitials(name) {
-  if (!name) return "NV";
+  if (!name) return "EMP";
   const parts = name.trim().split(' ');
   if (parts.length >= 2) {
     return (parts[parts.length - 2][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -91,7 +91,7 @@ function deleteEmployee(employeeId, employeeName) {
   
   const nameEl = document.getElementById('deleteEmployeeName');
   if (nameEl) {
-    nameEl.textContent = `"${employeeName || 'N/A'}" (NV-${String(employeeId).padStart(3, '0')})`;
+    nameEl.textContent = `"${employeeName || 'N/A'}" (EMP-${String(employeeId).padStart(3, '0')})`;
   }
 
   const deleteModal = document.getElementById('deleteEmplohyeeModal');
@@ -169,7 +169,7 @@ function renderTable(data) {
 
   data.forEach(emp => {
     const tr = document.createElement('tr');
-    const idDisplay = `NV-${String(emp.employee_id).padStart(3, '0')}`;
+    const idDisplay = `EMP-${String(emp.employee_id).padStart(3, '0')}`;
     const statusClassMap = {
     'Active': 'badge-active',
     'On Leave': 'badge-leave',
@@ -220,7 +220,7 @@ function filterData() {
   const selectedRole = roleFilter ? roleFilter.value : '';
 
   const filtered = employees.filter(emp => {
-    const empIdFormatted = `nv-${String(emp.employee_id).padStart(3, '0')}`;
+    const empIdFormatted = `EMP-${String(emp.employee_id).padStart(3, '0')}`;
     const matchesSearch = (emp.name && emp.name.toLowerCase().includes(searchTerm)) || 
                           (emp.username && emp.username.toLowerCase().includes(searchTerm)) ||
                           empIdFormatted.includes(searchTerm);
