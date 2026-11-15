@@ -52,22 +52,39 @@ table.inventory-table tbody tr:last-child td {
     letter-spacing: 0.3px;
 }
 
+/* Available - còn hàng, bình thường */
 .badge-instock {
     background-color: #E2EFCB;
     color: #2E5A1C;
     border: 1px solid #C4E197;
 }
 
+/* Low Stock - sắp hết hàng */
 .badge-lowstock {
     background-color: #FDF3D6;
     color: #7A5B0B;
     border: 1px solid #F5E1A4;
 }
 
+/* Near Expiration - sắp hết hạn */
+.badge-nearexp {
+    background-color: #FBE5D0;
+    color: #8A4B20;
+    border: 1px solid #EFC6A0;
+}
+
+/* Expired - đã hết hạn */
 .badge-expired {
-    background-color: #F8D7DA;
-    color: #842029;
-    border: 1px solid #F5C2C7;
+    background-color: #FADBD8;
+    color: #78281F;
+    border: 1px solid #F5B7B1;
+}
+
+/* Sold out - hết hàng */
+.badge-soldout {
+    background-color: #E5E7E9;
+    color: #4D5656;
+    border: 1px solid #CACFD2;
 }
 
 .action-buttons {

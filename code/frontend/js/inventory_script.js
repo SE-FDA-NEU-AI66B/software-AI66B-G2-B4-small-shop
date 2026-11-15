@@ -4,6 +4,32 @@ const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 let products = [];
 let isEditMode = false;
 
+// 5 trạng thái sản phẩm (khớp với backend và database)
+const PRODUCT_STATUSES = ["Available", "Low Stock", "Near Expiration", "Expired", "Sold out"];
+const STATUS_BADGE_CLASS = {
+  "Available": "badge-instock",
+  "Low Stock": "badge-lowstock",
+  "Near Expiration": "badge-nearexp",
+  "Expired": "badge-expired",
+  "Sold out": "badge-soldout"
+};
+
+// Dùng khi backend không trả về status
+function getFallbackStatus(stockQty) {
+  if (stockQty === 0) return "Sold out";
+  if (stockQty <= 5) return "Low Stock";
+  return "Available";
+}
+
+// Tạo lại các lựa chọn của bộ lọc status theo 5 trạng thái
+function populateStatusFilter() {
+  if (!statusFilter) return;
+  const current = statusFilter.value;
+  statusFilter.innerHTML = '<option value="">All Statuses</option>' +
+    PRODUCT_STATUSES.map(st => `<option value="${st}">${st}</option>`).join('');
+  statusFilter.value = PRODUCT_STATUSES.includes(current) ? current : '';
+}
+
 // DOM Elements
 const tableBody = document.getElementById('inventoryTableBody');
 const searchInput = document.getElementById('searchInput');
@@ -87,10 +113,11 @@ function renderTable(data) {
     const skuCode = item.sku || `P-${String(item.product_id).padStart(3, '0')}`;
     const displayCategory = item.category_name || item.category || 'General';
     const stockQty = item.stock_quantity !== undefined ? item.stock_quantity : (item.stock || 0);
+    const expiredQty = item.expired_quantity || 0;
     
-    // Đảm bảo 3 trạng thái
-    const statusText = item.status || (stockQty > 5 ? "In Stock" : "Low Stock");
-    const badgeClass = item.badge_class || (stockQty > 5 ? "badge-instock" : "badge-expired");
+    // 5 trạng thái
+    const statusText = item.status || getFallbackStatus(stockQty);
+    const badgeClass = item.badge_class || STATUS_BADGE_CLASS[statusText] || "badge-instock";
     
     tr.innerHTML = `
       <td class="item-sku" data-label="Product ID">${skuCode}</td>
@@ -126,7 +153,7 @@ function filterData() {
     const productName = (item.product_name || item.name || '').toLowerCase();
     
     const stockQty = item.stock_quantity !== undefined ? item.stock_quantity : (item.stock || 0);
-    const itemStatus = item.status || (stockQty > 5 ? "In Stock" : "Low Stock");
+    const itemStatus = item.status || getFallbackStatus(stockQty);
     
     const matchesSearch = productName.includes(searchTerm) || skuCode.includes(searchTerm);
     const matchesCategory = selectedCategory === "" || (item.category_name || item.category) === selectedCategory;
@@ -232,6 +259,7 @@ window.deleteProduct = async function(sku) {
 
 // Event Listeners Setup
 document.addEventListener('DOMContentLoaded', () => {
+  populateStatusFilter();
   fetchProducts();   
   
   if (searchInput) searchInput.addEventListener('input', filterData);
