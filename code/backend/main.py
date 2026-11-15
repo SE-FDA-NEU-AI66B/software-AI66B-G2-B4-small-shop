@@ -7,6 +7,7 @@ from typing import List, Optional
 from database.connect_db import get_connection
 from fastapi import APIRouter, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
@@ -15,8 +16,22 @@ from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
 from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id, get_employee_details
 
 # Authentication schemas and services
-from schema.auth import LoginRequest
-from services.auth import authenticate_user
+from schema.auth import ForgotPasswordRequest, LoginRequest
+from schema.user import PasswordChange, UserCreate, UserResponse, UserUpdate
+from backend.services.auth import (
+    authenticate_user,
+    change_password
+)
+from backend.services.users import (
+    approve_password_reset,
+    create_password_reset_request,
+    create_user,
+    delete_user,
+    get_password_reset_requests,
+    get_users,
+    reset_user_password,
+    update_user,
+)
 
 # Order schemas and services
 from schema.order import OrderCreate, DeliveryResponse
@@ -28,15 +43,15 @@ from backend.services.order import update_order_note
 from schema.customer import CustomerCreate, CustomerUpdate
 from services.customer import search_customers, get_customers, get_customer_details, get_customer_types, create_customer, update_customer, delete_customer
 
-# Product schemas and services (Đã sửa lỗi trùng lặp route)
+# Product schemas and services
 from schema.product import ProductCreate, ProductUpdate, ProductResponse
 from services.product import get_all_products, add_product, update_product, delete_product
 
-# Inventory schemas and services 
+# Inventory schemas and services
 from schema.inventory import InventoryCreate, InventoryUpdate, InventoryResponse
 from services.inventory import get_all_inventory, add_inventory, update_inventory, delete_inventory
 
-# Sales schemas and services (Đã sửa lỗi trùng lặp tiền tố /sales)
+# Sales schemas and services
 from schema.sales import SalesItemOverview
 from services.sales import get_sales_overview, get_demand_predictions
 
@@ -62,15 +77,39 @@ app.add_middleware(
 )
 
 # Router declarations
-emp_router = APIRouter(prefix="/employees", tags=["Employees"])
+emp_router = APIRouter(
+    prefix="/employees",
+    tags=["Employees"],
+)
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
-cus_router = APIRouter(prefix="/customers", tags=["Customers"])
-ord_router = APIRouter(prefix="/orders", tags=["Orders"])
-prod_router = APIRouter(prefix="/products", tags=["Products"])
-inv_router = APIRouter(prefix="/inventory", tags=["Inventory"])
-cat_router = APIRouter(prefix="/categories", tags=["Categories"])
-sales_router = APIRouter(prefix="/sales", tags=["Sales"])
-sales_test_router = APIRouter(prefix="/sales", tags=["Sales Test Alias"])
+users_router = APIRouter(
+    prefix="/users",
+    tags=["Users"],
+)
+cus_router = APIRouter(
+    prefix="/customers",
+    tags=["Customers"],
+)
+ord_router = APIRouter(
+    prefix="/orders",
+    tags=["Orders"],
+)
+prod_router = APIRouter(
+    prefix="/products",
+    tags=["Products"],
+)
+inv_router = APIRouter(
+    prefix="/inventory",
+    tags=["Inventory"],
+)
+cat_router = APIRouter(
+    prefix="/categories",
+    tags=["Categories"],
+)
+sales_router = APIRouter(
+    prefix="/sales",
+    tags=["Sales"],
+)
 
 # Employee endpoints
 @emp_router.get(
@@ -161,6 +200,78 @@ def delete_employee_endpoint(employee_id: int):
 def login_endpoint(payload: LoginRequest):
     return authenticate_user(payload.username, payload.password)
 
+
+@auth_router.post("/change-password", summary="Change the signed-in user's password")
+def change_password_endpoint(
+    payload: PasswordChange,
+    user: UserResponse,
+):
+    change_password(user["user_id"], payload.new_password)
+    return {"message": "Password changed successfully.", "must_change_password": False}
+
+
+@auth_router.post("/forgot-password", summary="Request a manager password reset")
+def forgot_password_endpoint(payload: ForgotPasswordRequest):
+    create_password_reset_request(payload.username)
+    return {
+        "message": "If the account exists, a password reset request has been sent to a manager."
+    }
+
+
+@auth_router.get(
+    "/password-reset-requests",
+    summary="List pending password reset requests",
+)
+def list_password_reset_requests_endpoint(
+
+):
+    return get_password_reset_requests()
+
+
+@auth_router.post(
+    "/password-reset-requests/{user_id}/approve",
+    summary="Approve a password reset request",
+)
+def approve_password_reset_endpoint(
+    user_id: int,
+
+):
+    approve_password_reset(user_id)
+    return {"message": "Password reset successfully. The user must change it after signing in."}
+
+
+# User management endpoints
+@users_router.get("", response_model=List[UserResponse])
+def list_users_endpoint():
+    return get_users()
+
+@users_router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user_endpoint(
+    payload: UserCreate
+    ):
+    return create_user(payload)
+
+@users_router.put("/{user_id}", response_model=UserResponse)
+def update_user_endpoint(
+    user_id: int,
+    payload: UserUpdate
+):
+    return update_user(user_id, payload)
+
+@users_router.post("/{user_id}/reset-password")
+def reset_user_password_endpoint(
+    user_id: int
+):
+    reset_user_password(user_id)
+    return {"message": "Password reset successfully."}
+
+@users_router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_endpoint(
+    user_id: int,
+
+):
+    delete_user(user_id)
+
 # Order endpoints
 @ord_router.post("", status_code=status.HTTP_201_CREATED)
 def create_order_endpoint(payload: OrderCreate):
@@ -243,7 +354,11 @@ def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
 
-# PRODUCT ENDPOINTS
+# Product endpoints
+@prod_router.get("")
+def get_products_endpoint():
+    return get_products()
+
 @prod_router.get("", response_model=List[ProductResponse])
 def get_all_products_endpoint():
     try:
@@ -272,7 +387,7 @@ def delete_product_endpoint(product_id: int):
         raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
     return {"message": f"Product {product_id} deleted successfully."}
 
-# INVENTORY ENDPOINTS 
+# Inventory endpoints
 @inv_router.get("", response_model=List[InventoryResponse])
 def get_all_inventory_endpoint():
     try:
@@ -300,7 +415,7 @@ def delete_inventory_endpoint(sku: str):
         raise HTTPException(status_code=404, detail=f"Product SKU {sku} not found.")
     return {"message": f"Product {sku} deleted successfully."}
 
-# CATEGORY ENDPOINTS 
+# Category endpoints
 @cat_router.get("")
 def get_categories_endpoint():
     conn = None
@@ -311,32 +426,31 @@ def get_categories_endpoint():
             categories = cursor.fetchall()
             return categories if categories else []
     except Exception as e:
+        print(f"Error details: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
     finally:
         if conn and conn.open:
             conn.close()
 
-# SALES ANALYTICS ENDPOINTS
-@sales_router.get("/overview")
+# Sales analytics endpoints
+@sales_router.get("/sales/overview", response_model=List[SalesItemOverview], tags=["Sales"])
 def get_sales_overview_endpoint(
     top_n: Optional[str] = Query("5"),
     category: Optional[str] = Query(None),
-    timeframe: Optional[str] = Query("this_month")
+    timeframe: Optional[str] = Query("monthly")
 ):
     try:
-        # Truyền đầy đủ top_n, category và timeframe vào service mới
-        return get_sales_overview(top_n=top_n, category=category, timeframe=timeframe)
+        return get_sales_overview(top_n=top_n, category=category)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
 
-@sales_router.get("/predictions")
+@sales_router.get("/sales/predictions", tags=["Sales"])
 def get_demand_predictions_endpoint(window_days: int = Query(30)):
     try:
         return get_demand_predictions(window_days=window_days)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to calculate predictions: {str(e)}")
 
-import logging
 logger = logging.getLogger(__name__)
 
 @app.get("/health")
@@ -386,13 +500,13 @@ def health():
 # Register all routers after their endpoint declarations
 app.include_router(emp_router)
 app.include_router(auth_router)
+app.include_router(users_router)
 app.include_router(cus_router)
 app.include_router(ord_router)
 app.include_router(prod_router)
 app.include_router(inv_router)
 app.include_router(cat_router)
 app.include_router(sales_router)
-app.include_router(sales_test_router)
 
 if __name__ == "__main__":
     import uvicorn
