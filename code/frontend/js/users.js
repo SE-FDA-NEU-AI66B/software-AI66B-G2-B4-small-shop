@@ -25,6 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const userUsernameInput = document.getElementById("userUsername");
     const userRoleInput = document.getElementById("userRole");
     const defaultPasswordNote = document.getElementById("defaultPasswordNote");
+    const confirmModal = document.getElementById("customConfirmModal");
+    const confirmModalTitle = document.getElementById("confirmModalTitle");
+    const confirmModalText = document.getElementById("confirmModalText");
+    const confirmModalClose = document.getElementById("confirmModalClose");
+    const confirmModalCancel = document.getElementById("confirmModalCancel");
+    const confirmModalOk = document.getElementById("confirmModalOk");
+    let pendingConfirmation = null;
 
     // Initialize data loading
     loadAllData();
@@ -50,6 +57,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (userSearchInput) {
         userSearchInput.addEventListener("input", (e) => filterAndRenderUsers(e.target.value));
     }
+    if (confirmModalClose) {
+        confirmModalClose.addEventListener("click", closeConfirmModal);
+    }
+    if (confirmModalCancel) {
+        confirmModalCancel.addEventListener("click", closeConfirmModal);
+    }
+    if (confirmModalOk) {
+        confirmModalOk.addEventListener("click", () => {
+            const action = pendingConfirmation;
+            closeConfirmModal();
+            if (action) action();
+        });
+    }
+    if (confirmModal) {
+        confirmModal.addEventListener("click", (e) => {
+            if (e.target === confirmModal) closeConfirmModal();
+        });
+    }
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && confirmModal && confirmModal.classList.contains("active")) {
+            closeConfirmModal();
+        }
+    });
 
     // Load both Users and Pending Password Reset Requests
     async function loadAllData() {
@@ -200,6 +230,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (userModal) userModal.classList.remove("active");
     }
 
+    function showConfirmModal(title, message, confirmLabel, action) {
+        if (!confirmModal) {
+            showToast("Confirmation dialog is unavailable.", "error");
+            return;
+        }
+
+        if (confirmModalTitle) confirmModalTitle.textContent = title;
+        if (confirmModalText) confirmModalText.textContent = message;
+        if (confirmModalOk) confirmModalOk.textContent = confirmLabel;
+        pendingConfirmation = action;
+        confirmModal.classList.add("active");
+        if (confirmModalCancel) confirmModalCancel.focus();
+    }
+
+    function closeConfirmModal() {
+        if (confirmModal) confirmModal.classList.remove("active");
+        pendingConfirmation = null;
+    }
+
     // 3. CREATE OR UPDATE USER (POST /users or PUT /users/{id})
     async function handleSaveUser(e) {
         e.preventDefault();
@@ -241,60 +290,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 4. DELETE USER (DELETE /users/{user_id})
-    window.appDeleteUser = async function(id) {
-        if (!confirm("Are you sure you want to delete this user?")) return;
+    window.appDeleteUser = function(id) {
+        showConfirmModal("Delete user?", "Are you sure you want to delete this user? This action cannot be undone.", "Delete user", async () => {
+            try {
+                const response = await fetch(`${API_BASE}/users/${id}`, {
+                    method: "DELETE"
+                });
 
-        try {
-            const response = await fetch(`${API_BASE}/users/${id}`, {
-                method: "DELETE"
-            });
+                if (!response.ok && response.status !== 204) {
+                    throw new Error("Failed to delete user");
+                }
 
-            if (!response.ok && response.status !== 204) {
-                throw new Error("Failed to delete user");
+                showToast("User deleted successfully", "success");
+                loadAllData();
+            } catch (error) {
+                showToast(error.message, "error");
             }
-
-            showToast("User deleted successfully", "success");
-            loadAllData();
-        } catch (error) {
-            showToast(error.message, "error");
-        }
+        });
     }
 
     // 5. ADMIN RESET USER PASSWORD DIRECTLY (POST /users/{user_id}/reset-password)
-    window.appResetPassword = async function(id, username) {
-        if (!confirm(`Are you sure you want to reset password for "${username}" back to default?`)) return;
+    window.appResetPassword = function(id, username) {
+        showConfirmModal("Reset password?", `Reset the password for "${username}" back to the default password?`, "Reset password", async () => {
+            try {
+                const response = await fetch(`${API_BASE}/users/${id}/reset-password`, {
+                    method: "POST"
+                });
 
-        try {
-            const response = await fetch(`${API_BASE}/users/${id}/reset-password`, {
-                method: "POST"
-            });
+                if (!response.ok) throw new Error("Failed to reset password");
 
-            if (!response.ok) throw new Error("Failed to reset password");
-
-            const result = await response.json();
-            showToast(result.message || "Password reset successfully.", "success");
-        } catch (error) {
-            showToast(error.message, "error");
-        }
+                const result = await response.json();
+                showToast(result.message || "Password reset successfully.", "success");
+            } catch (error) {
+                showToast(error.message, "error");
+            }
+        });
     }
 
     // 6. APPROVE PENDING PASSWORD RESET REQUEST (POST /auth/password-reset-requests/{user_id}/approve)
-    window.appApproveReset = async function(userId) {
-        if (!confirm("Approve password reset request for this user?")) return;
+    window.appApproveReset = function(userId) {
+        showConfirmModal("Approve password reset?", "Approve the password reset request for this user?", "Approve reset", async () => {
+            try {
+                const response = await fetch(`${API_BASE}/auth/password-reset-requests/${userId}/approve`, {
+                    method: "POST"
+                });
 
-        try {
-            const response = await fetch(`${API_BASE}/auth/password-reset-requests/${userId}/approve`, {
-                method: "POST"
-            });
+                if (!response.ok) throw new Error("Failed to approve password reset");
 
-            if (!response.ok) throw new Error("Failed to approve password reset");
-
-            const result = await response.json();
-            showToast(result.message || "Password reset approved successfully.", "success");
-            loadAllData();
-        } catch (error) {
-            showToast(error.message, "error");
-        }
+                const result = await response.json();
+                showToast(result.message || "Password reset approved successfully.", "success");
+                loadAllData();
+            } catch (error) {
+                showToast(error.message, "error");
+            }
+        });
     }
 
     // Utility: Toast notifications

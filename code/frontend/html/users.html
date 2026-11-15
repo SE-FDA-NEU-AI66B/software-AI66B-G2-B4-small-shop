@@ -152,6 +152,22 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="customConfirmModal" role="alertdialog" aria-modal="true" aria-labelledby="confirmModalTitle" aria-describedby="confirmModalText">
+        <div class="modal-container" style="max-width: 420px;">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">Confirm Action</h3>
+                <button type="button" class="modal-close" id="confirmModalClose" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalText" style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.5;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="confirmModalCancel">Cancel</button>
+                <button type="button" class="btn-primary" id="confirmModalOk">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toastNotification" role="status" aria-live="polite"></div>
     <script src="../js/session.js?v=1"></script>
     <script src="../js/session.js?v=1"></script>
