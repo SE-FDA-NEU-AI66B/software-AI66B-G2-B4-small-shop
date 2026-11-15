@@ -136,12 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return `
                 <tr>
-                    <td>US-${String(user.user_id).padStart(3, '0')}</td>
-                    <td><strong>${escapeHtml(user.username)}</strong></td>
-                    <td><span class="badge role-${user.role.toLowerCase()}">${escapeHtml(user.role)}</span></td>
-                    <td>${createdAtFormatted}</td>
-                    <td>${resetBadge}</td>
-                    <td>
+                    <td data-label="User ID">US-${String(user.user_id).padStart(3, '0')}</td>
+                    <td data-label="Username"><strong>${escapeHtml(user.username)}</strong></td>
+                    <td data-label="Role"><span class="badge role-${user.role.toLowerCase()}">${escapeHtml(user.role)}</span></td>
+                    <td data-label="Created At">${createdAtFormatted}</td>
+                    <td data-label="Reset Request">${resetBadge}</td>
+                    <td data-label="Actions">
                         <div class="action-buttons">
                             <button type="button" class="btn-icon reset-btn" title="Reset Password" onclick="window.appResetPassword(${user.user_id}, '${escapeHtml(user.username)}')">
                                 <i class="fa-solid fa-key"></i> Reset
@@ -173,10 +173,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const requestedAt = req.requested_at ? new Date(req.requested_at).toLocaleString() : 'N/A';
             return `
                 <tr>
-                    <td><strong>${escapeHtml(req.username)}</strong></td>
-                    <td>${escapeHtml(req.role || 'User')}</td>
-                    <td>${requestedAt}</td>
-                    <td>
+                    <td data-label="Username"><strong>${escapeHtml(req.username)}</strong></td>
+                    <td data-label="Role">${escapeHtml(req.role || 'User')}</td>
+                    <td data-label="Requested At">${requestedAt}</td>
+                    <td data-label="Action">
                         <button type="button" class="btn-primary" style="padding: 4px 12px; font-size: 12px;" onclick="window.appApproveReset(${req.user_id})">
                             Approve Reset
                         </button>

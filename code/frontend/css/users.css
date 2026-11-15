@@ -200,6 +200,13 @@
         box-shadow: none;
     }
 
+    body.employee-page .reset-requests-panel .table-wrapper {
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+
     body.employee-page .users-table,
     body.employee-page .users-table tbody {
         display: block;
@@ -237,6 +244,11 @@
         white-space: normal;
     }
 
+    body.employee-page .users-table tbody td::before {
+        flex: 0 0 38%;
+        overflow-wrap: anywhere;
+    }
+
     body.employee-page .users-table tbody td:last-child {
         width: 100%;
         border-bottom: 0;
@@ -264,6 +276,10 @@
     body.employee-page .users-table .action-buttons {
         justify-content: flex-end;
         flex-wrap: wrap;
+    }
+
+    body.employee-page .users-table .action-buttons button {
+        min-height: 2rem;
     }
 
     .reset-requests-table {
