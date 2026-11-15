@@ -4,7 +4,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - 347-CI
 
   pull_request:
     branches:
