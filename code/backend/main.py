@@ -433,18 +433,14 @@ def get_categories_endpoint():
             conn.close()
 
 # Sales analytics endpoints
-@sales_router.get("/sales/overview", response_model=List[SalesItemOverview], tags=["Sales"])
+@sales_router.get("/overview", response_model=SalesItemOverview)
 def get_sales_overview_endpoint(
-    top_n: Optional[str] = Query("5"),
-    category: Optional[str] = Query(None),
-    timeframe: Optional[str] = Query("monthly")
+    top_n: str = "5",
+    category: Optional[str] = None,
+    timeframe: str = "this_month"
 ):
-    try:
-        return get_sales_overview(top_n=top_n, category=category)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch sales overview: {str(e)}")
-
-@sales_router.get("/sales/predictions", tags=["Sales"])
+    return get_sales_overview(top_n=top_n, category=category, timeframe=timeframe)
+@sales_router.get("/predictions", tags=["Sales"])
 def get_demand_predictions_endpoint(window_days: int = Query(30)):
     try:
         return get_demand_predictions(window_days=window_days)
