@@ -28,6 +28,7 @@
         "customers.html",
         "customers_detail.html",
         "inventory.html",
+        "employee_details.html",
         "change_password.html"
     ]);
 
@@ -56,7 +57,8 @@
         html.role-employee .sidebar-menu a[href="employees.html"],
         html.role-employee .sidebar-menu a[href="employee_details.html"],
         html.role-employee .sidebar-menu a[href="sales.html"],
-        html.role-employee .sidebar-menu a[href="users.html"] {
+        html.role-employee .sidebar-menu a[href="users.html"],
+        html.role-employee #backToEmployees {
             display: none !important;
         }
         html.page-customers.role-employee #deleteCustomerModal {

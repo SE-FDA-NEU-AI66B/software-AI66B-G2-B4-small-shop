@@ -65,7 +65,9 @@ if (loginForm) {
             sessionStorage.setItem("authenticatedUser", JSON.stringify(user));
             window.location.href = user.must_change_password
                 ? "change_password.html"
-                : "home.html";
+                : user.role === "Employee"
+                    ? "employee_details.html"
+                    : "sales.html";
         } catch (error) {
             if (message) {
                 message.textContent = error.message || "Unable to connect to the server.";

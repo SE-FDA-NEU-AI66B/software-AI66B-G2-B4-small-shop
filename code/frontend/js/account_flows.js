@@ -30,7 +30,9 @@ if (changePasswordForm) {
             const user = window.currentUser;
             user.must_change_password = false;
             sessionStorage.setItem("authenticatedUser", JSON.stringify(user));
-            window.location.replace("home.html");
+            window.location.replace(
+                user.role === "Employee" ? "employee_details.html" : "sales.html"
+            );
         } catch (error) {
             if (message) {
                 message.textContent = error.message || "Unable to connect to the server.";

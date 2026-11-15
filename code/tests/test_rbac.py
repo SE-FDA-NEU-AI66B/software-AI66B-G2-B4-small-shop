@@ -56,6 +56,28 @@ def test_protected_api_requires_a_bearer_token(client):
     assert client.get("/customers").status_code == 401
 
 
+def test_employee_can_access_only_their_own_employee_details(client, monkeypatch):
+    set_authenticated_role("Employee")
+    requested_usernames = []
+    details = {
+        "employee": {"employee_id": 4, "username": "test-user"},
+        "stats": {"total_orders": 0, "total_sales": 0},
+        "recent_orders": [],
+    }
+    monkeypatch.setattr(
+        main,
+        "get_employee_details_by_username",
+        lambda username: requested_usernames.append(username) or details,
+    )
+
+    response = client.get("/auth/me/employee-details?id=999")
+
+    assert response.status_code == 200
+    assert response.json() == details
+    assert requested_usernames == ["test-user"]
+    assert client.get("/employees/4/details").status_code == 403
+
+
 def test_authenticated_user_can_change_their_password(client, monkeypatch):
     set_authenticated_role("Employee")
     changes = []

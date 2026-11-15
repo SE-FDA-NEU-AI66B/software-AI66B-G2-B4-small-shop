@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 
 # Employee schemas and services
 from schema.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id, get_employee_details
+from services.employee import add_employee, update_employee, get_all_employees, delete_employee, get_employee_by_id, get_employee_details, get_employee_details_by_username
 
 # Authentication schemas and services
 from schema.auth import ForgotPasswordRequest, LoginRequest
@@ -211,6 +211,23 @@ def delete_employee_endpoint(employee_id: int):
 @auth_router.post("/login", summary="Authenticate user and return token")
 def login_endpoint(payload: LoginRequest):
     return authenticate_user(payload.username, payload.password)
+
+
+@auth_router.get(
+    "/me/employee-details",
+    summary="Get the signed-in employee's own details and order history",
+    dependencies=[Depends(get_current_user)],
+)
+def get_my_employee_details_endpoint(user: dict = Depends(get_current_user)):
+    try:
+        return get_employee_details_by_username(user["username"])
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Employee details are unavailable. Check the database connection.",
+        ) from e
 
 
 @auth_router.post("/change-password", summary="Change the signed-in user's password")
