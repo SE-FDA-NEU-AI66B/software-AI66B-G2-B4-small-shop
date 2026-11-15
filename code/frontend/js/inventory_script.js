@@ -29,6 +29,7 @@ const openModalBtn = document.getElementById('openAddModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 const toast = document.getElementById('toastNotification');
+const isEmployee = window.currentUser?.role === 'Employee';
 
 // Hidden input lưu mã lô (inventory code) đang sửa
 const inventoryIdInput = document.createElement('input');
@@ -173,16 +174,18 @@ function renderTable(data) {
       <td data-label="Import Date">${formatDate(item.import_date)}</td>
       <td data-label="Expiry Date">${formatDate(item.expiry_date)}</td>
       <td data-label="Status"><span class="badge ${badgeClass}">${statusText}</span></td>
-      <td data-label="Actions">
-        <div class="action-buttons" style="justify-content: flex-end;">
-          <button class="btn-icon" title="Edit Record" onclick="openEditProductModal('${invCode}')">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="btn-icon delete" title="Delete Record" onclick="deleteProduct('${invCode}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      </td>
+      ${isEmployee ? '' : `
+        <td data-label="Actions">
+          <div class="action-buttons" style="justify-content: flex-end;">
+            <button class="btn-icon" title="Edit Record" onclick="openEditProductModal('${invCode}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn-icon delete" title="Delete Record" onclick="deleteProduct('${invCode}')">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </td>
+      `}
     `;
     tableBody.appendChild(tr);
   });

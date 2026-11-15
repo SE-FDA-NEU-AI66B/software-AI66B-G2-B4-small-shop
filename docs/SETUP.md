@@ -98,6 +98,20 @@ DB_NAME=mini_shop
 
 Replace `change_to_your_password` with your actual MySQL password.
 
+Set `JWT_SECRET_KEY` to a private, random value (do not commit it). For example,
+generate one with:
+
+```powershell
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+Paste the generated value into `backend/.env`. The API uses it to sign and verify
+JWT access tokens.
+
+Administrators and managers have full access. Employees can create and view
+orders, view and maintain customers (except deleting them), and view inventory.
+The API enforces these permissions even when a user bypasses the frontend.
+
 ---
 
 ## 5. Initialize the Database

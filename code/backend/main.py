@@ -20,7 +20,9 @@ from schema.auth import ForgotPasswordRequest, LoginRequest
 from schema.user import PasswordChange, UserCreate, UserResponse, UserUpdate
 from backend.services.auth import (
     authenticate_user,
-    change_password
+    change_password,
+    get_current_user,
+    require_roles,
 )
 from backend.services.users import (
     approve_password_reset,
@@ -77,38 +79,48 @@ app.add_middleware(
 )
 
 # Router declarations
+MANAGEMENT_ROLES = ("Admin", "Manager")
+
 emp_router = APIRouter(
     prefix="/employees",
     tags=["Employees"],
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
 )
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 users_router = APIRouter(
     prefix="/users",
     tags=["Users"],
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
 )
 cus_router = APIRouter(
     prefix="/customers",
     tags=["Customers"],
+    dependencies=[Depends(get_current_user)],
 )
 ord_router = APIRouter(
     prefix="/orders",
     tags=["Orders"],
+    dependencies=[Depends(get_current_user)],
 )
 prod_router = APIRouter(
     prefix="/products",
     tags=["Products"],
+    dependencies=[Depends(get_current_user)],
 )
 inv_router = APIRouter(
     prefix="/inventory",
     tags=["Inventory"],
+    dependencies=[Depends(get_current_user)],
 )
 cat_router = APIRouter(
     prefix="/categories",
     tags=["Categories"],
+    dependencies=[Depends(get_current_user)],
 )
 sales_router = APIRouter(
     prefix="/sales",
     tags=["Sales"],
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
 )
 
 # Employee endpoints
@@ -204,9 +216,9 @@ def login_endpoint(payload: LoginRequest):
 @auth_router.post("/change-password", summary="Change the signed-in user's password")
 def change_password_endpoint(
     payload: PasswordChange,
-    user: UserResponse,
+    user: dict = Depends(get_current_user),
 ):
-    change_password(user.user_id, payload.new_password)
+    change_password(user["user_id"], payload.new_password)
     return {"message": "Password changed successfully.", "must_change_password": False}
 
 
@@ -221,6 +233,7 @@ def forgot_password_endpoint(payload: ForgotPasswordRequest):
 @auth_router.get(
     "/password-reset-requests",
     summary="List pending password reset requests",
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
 )
 def list_password_reset_requests_endpoint(
 
@@ -231,6 +244,7 @@ def list_password_reset_requests_endpoint(
 @auth_router.post(
     "/password-reset-requests/{user_id}/approve",
     summary="Approve a password reset request",
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
 )
 def approve_password_reset_endpoint(
     user_id: int,
@@ -288,14 +302,21 @@ def get_order_endpoint(order_id: int):
         raise HTTPException(status_code=404, detail="Order not found.")
     return order
 
-@ord_router.patch("/{order_id}/deliver", response_model=DeliveryResponse)
+@ord_router.patch(
+    "/{order_id}/deliver",
+    response_model=DeliveryResponse,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def deliver_order_endpoint(order_id: int):
     return mark_order_delivered(order_id)
 
-@ord_router.patch("/{order_id}/note")
+@ord_router.patch(
+    "/{order_id}/note",
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def update_order_note_route(
     order_id: int,
-    data: OrderNoteUpdate
+    data: OrderNoteUpdate,
 ):
     return update_order_note(order_id, data)
 
@@ -350,7 +371,11 @@ def create_customer_endpoint(payload: CustomerCreate):
 def update_customer_endpoint(customer_id: int, payload: CustomerUpdate):
     return update_customer(customer_id, payload)
 
-@cus_router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@cus_router.delete(
+    "/{customer_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def delete_customer_endpoint(customer_id: int):
     delete_customer(customer_id)
 
@@ -366,54 +391,33 @@ def get_all_products_endpoint():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch products: {str(e)}")
 
-@prod_router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
+@prod_router.post(
+    "",
+    response_model=ProductResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def create_product_endpoint(payload: ProductCreate):
     try:
         return add_product(payload)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to create product: {str(e)}")
 
-@prod_router.put("/{product_id}", response_model=ProductResponse)
+@prod_router.put(
+    "/{product_id}",
+    response_model=ProductResponse,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def update_product_endpoint(product_id: int, payload: ProductUpdate):
     updated = update_product(product_id, payload)
     if not updated:
         raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
     return updated
 
-@prod_router.delete("/{product_id}")
-def delete_product_endpoint(product_id: int):
-    success = delete_product(product_id)
-    if not success:
-        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
-    return {"message": f"Product {product_id} deleted successfully."}
-
-# Product endpoints
-@prod_router.get("")
-def get_products_endpoint():
-    return get_products()
-
-@prod_router.get("", response_model=List[ProductResponse])
-def get_all_products_endpoint():
-    try:
-        return get_all_products()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch products: {str(e)}")
-
-@prod_router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
-def create_product_endpoint(payload: ProductCreate):
-    try:
-        return add_product(payload)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to create product: {str(e)}")
-
-@prod_router.put("/{product_id}", response_model=ProductResponse)
-def update_product_endpoint(product_id: int, payload: ProductUpdate):
-    updated = update_product(product_id, payload)
-    if not updated:
-        raise HTTPException(status_code=404, detail=f"Product with ID {product_id} not found.")
-    return updated
-
-@prod_router.delete("/{product_id}")
+@prod_router.delete(
+    "/{product_id}",
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def delete_product_endpoint(product_id: int):
     success = delete_product(product_id)
     if not success:
@@ -428,21 +432,33 @@ def get_all_inventory_endpoint():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch inventory: {str(e)}")
 
-@inv_router.post("", response_model=InventoryResponse, status_code=status.HTTP_201_CREATED)
+@inv_router.post(
+    "",
+    response_model=InventoryResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def create_inventory_endpoint(payload: InventoryCreate):
     try:
         return add_inventory(payload)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to create item: {str(e)}")
 
-@inv_router.put("/{sku}", response_model=InventoryResponse)
+@inv_router.put(
+    "/{sku}",
+    response_model=InventoryResponse,
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def update_inventory_endpoint(sku: str, payload: InventoryUpdate):
     updated = update_inventory(sku, payload)
     if not updated:
         raise HTTPException(status_code=404, detail=f"Inventory record {sku} not found.")
     return updated
 
-@inv_router.delete("/{sku}")
+@inv_router.delete(
+    "/{sku}",
+    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
+)
 def delete_inventory_endpoint(sku: str):
     if not delete_inventory(sku):
         raise HTTPException(status_code=404, detail=f"Inventory record {sku} not found.")
