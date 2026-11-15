@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 347-CI
+      - main
 
   pull_request:
     branches:
