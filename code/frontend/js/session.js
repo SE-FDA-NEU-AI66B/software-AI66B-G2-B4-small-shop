@@ -67,10 +67,6 @@
         html.page-inventory.role-employee .inventory-table th:last-child {
             display: none !important;
         }
-        html.page-order-view.role-employee #confirmDeliveryBtn,
-        html.page-order-view.role-employee #statusConfirmOverlay {
-            display: none !important;
-        }
     `;
     document.head.appendChild(roleStyles);
 

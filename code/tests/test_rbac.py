@@ -107,13 +107,24 @@ def test_employee_can_manage_customers_except_delete(client, monkeypatch):
     assert client.delete("/customers/1").status_code == 403
 
 
-def test_employee_can_read_and_create_orders_but_not_update_them(client, monkeypatch):
+def test_employee_can_create_orders_and_confirm_delivery(client, monkeypatch):
     set_authenticated_role("Employee")
     monkeypatch.setattr(main, "get_orders", lambda: [])
     monkeypatch.setattr(main, "create_order", lambda payload: {"order_id": 1})
+    monkeypatch.setattr(
+        main,
+        "mark_order_delivered",
+        lambda order_id: {
+            "order_id": order_id,
+            "created_at": "2026-11-15T00:00:00",
+            "deliver_status": "delivered",
+        },
+    )
     order = {"username": "test-user", "items": [{"product_id": 1, "quantity": 1}]}
 
     assert client.get("/orders").status_code == 200
     assert client.post("/orders", json=order).status_code == 201
-    assert client.patch("/orders/1/deliver").status_code == 403
+    response = client.patch("/orders/1/deliver")
+    assert response.status_code == 200
+    assert response.json()["deliver_status"] == "delivered"
     assert client.patch("/orders/1/note", json={"note": "change"}).status_code == 403

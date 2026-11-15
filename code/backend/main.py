@@ -304,9 +304,7 @@ def get_order_endpoint(order_id: int):
 
 @ord_router.patch(
     "/{order_id}/deliver",
-    response_model=DeliveryResponse,
-    dependencies=[Depends(require_roles(*MANAGEMENT_ROLES))],
-)
+    response_model=DeliveryResponse)
 def deliver_order_endpoint(order_id: int):
     return mark_order_delivered(order_id)
 

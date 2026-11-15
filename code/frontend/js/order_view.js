@@ -306,9 +306,7 @@ function renderOrder(order) {
     }
 
     if (confirmDeliveryBtn) {
-        confirmDeliveryBtn.hidden =
-            order.deliver_status !== "not_deliver" ||
-            window.currentUser?.role === "Employee";
+        confirmDeliveryBtn.hidden = order.deliver_status !== "not_deliver";
     }
 }
 
