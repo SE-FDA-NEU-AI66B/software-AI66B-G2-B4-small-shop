@@ -3,6 +3,13 @@
    ========================================== */
 
 /* 1. Table Container */
+#membershipTier:disabled,
+#editMembershipTier:disabled {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: default;
+}
+
 .table-wrapper {
     width: 100%;
     max-width: 100%;

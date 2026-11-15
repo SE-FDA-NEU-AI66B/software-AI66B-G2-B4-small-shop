@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://127.0.0.1:8000';
     let customers = [];
     let customerTypes = [];
+    let rockCustomerTypeId = null;
 
     const tableBody = document.getElementById('customersTableBody');
     const searchInput = document.getElementById('searchInput');
@@ -190,11 +191,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadCustomerTypes() {
         customerTypes = await request('/customers/customer-types');
+        const rockType = customerTypes.find(type =>
+            type.type_name.toLowerCase() === 'rock'
+        );
+        if (!rockType) {
+            throw new Error('Rock membership type is not available.');
+        }
+        rockCustomerTypeId = String(rockType.customer_type_id);
+
         [addTypeSelect, editTypeSelect].forEach(select => {
             select.innerHTML = customerTypes.map(type =>
                 `<option value="${type.customer_type_id}">${escapeHTML(type.type_name)}</option>`
             ).join('');
         });
+        addTypeSelect.value = rockCustomerTypeId;
     }
 
     function openModal(modal) {
@@ -301,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             closeModal(addModal);
             addForm.reset();
+            addTypeSelect.value = rockCustomerTypeId;
             await loadCustomers();
             showToast('Added customer successfully!');
         } catch (error) {
