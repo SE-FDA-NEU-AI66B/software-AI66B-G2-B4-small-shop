@@ -93,14 +93,14 @@ function renderTable(data) {
     const badgeClass = item.badge_class || (stockQty > 5 ? "badge-instock" : "badge-expired");
     
     tr.innerHTML = `
-      <td class="item-sku">${skuCode}</td>
-      <td style="font-weight: 600; color: var(--bg-sidebar);">${item.product_name || item.name}</td>
-      <td><span class="badge" style="background: #EAECEE; color: #2C3E50;">${displayCategory}</span></td>
-      <td>${formatVND(item.unit_price)}</td>
-      <td style="font-weight: 600;">${stockQty}</td>
-      <td>${item.import_date || '2026-11-01'}</td>
-      <td><span class="badge ${badgeClass}">${statusText}</span></td>
-      <td>
+      <td class="item-sku" data-label="Product ID">${skuCode}</td>
+      <td data-label="Product Name" style="font-weight: 600; color: var(--bg-sidebar);">${item.product_name || item.name}</td>
+      <td data-label="Category"><span class="badge" style="background: #EAECEE; color: #2C3E50;">${displayCategory}</span></td>
+      <td data-label="Unit Price">${formatVND(item.unit_price)}</td>
+      <td data-label="Stock Qty" style="font-weight: 600;">${stockQty}</td>
+      <td data-label="Import Date">${item.import_date || '2026-11-01'}</td>
+      <td data-label="Status"><span class="badge ${badgeClass}">${statusText}</span></td>
+      <td data-label="Actions">
         <div class="action-buttons" style="justify-content: flex-end;">
           <button class="btn-icon" title="Edit Product" onclick="openEditProductModal('${skuCode}')">
             <i class="fa-solid fa-pen-to-square"></i>
