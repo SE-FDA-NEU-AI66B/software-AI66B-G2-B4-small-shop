@@ -79,6 +79,8 @@ jobs:
           connection.close()
           "
 
+      - name: Initialize test database
+        run: python -m backend.database.init_db
+
       - name: Run tests
-        run: |
-          python -m pytest tests/ -v
+        run: python -m pytest tests/ -v
