@@ -36,7 +36,7 @@ jobs:
           --health-retries=10
 
     env:
-      DB_NAME: small_shop_test
+      DB_NAME: mini_shop
       DB_USER: root
       DB_PASSWORD: root
       DB_HOST: 127.0.0.1
