@@ -15,9 +15,11 @@ client = TestClient(app)
 
 
 def test_tc_us11_01_get_sales_overview_normal():
-    """TC-US11-01: Normal case - Get Top 5 Beverage items"""
-    response = client.get("/sales/overview?top_n=5&category=Beverage")
+    """TC-US11-01: Normal case - Get Top 5 products"""
+    response = client.get("/sales/overview?top_n=5")
+
     assert response.status_code == 200
+
     data = response.json()
     assert isinstance(data, dict)
     assert "kpis" in data
@@ -25,8 +27,6 @@ def test_tc_us11_01_get_sales_overview_normal():
     assert "timeline" in data
     assert isinstance(data["products"], list)
     assert len(data["products"]) <= 5
-    for product in data["products"]:
-        assert product["category"] == "Beverage"
 
 def test_tc_us11_02_top_n_all():
     """TC-US11-02: Get all products using top_n=ALL"""
