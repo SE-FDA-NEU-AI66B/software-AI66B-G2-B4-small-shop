@@ -237,3 +237,16 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER before_employee_delete
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+    UPDATE orders 
+    SET employee_id = NULL 
+    WHERE employee_id = OLD.employee_id;
+END //
+
+DELIMITER ;
