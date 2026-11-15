@@ -250,3 +250,16 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER before_customer_delete
+BEFORE DELETE ON customers
+FOR EACH ROW
+BEGIN
+    UPDATE orders 
+    SET customer_id = NULL 
+    WHERE customer_id = OLD.customer_id;
+END //
+
+DELIMITER ;
