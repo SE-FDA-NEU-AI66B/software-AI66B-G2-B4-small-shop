@@ -180,6 +180,36 @@
         </div>
     </div>
 
+    <div
+        class="modal-overlay delete-confirmation-overlay"
+        id="deleteInventoryModal"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="deleteInventoryTitle"
+        aria-describedby="deleteInventoryMessage"
+        tabindex="-1"
+    >
+        <div class="modal-container delete-confirmation">
+            <div class="delete-confirmation-icon" aria-hidden="true">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div class="delete-confirmation-content">
+                <h3 id="deleteInventoryTitle">Delete inventory record?</h3>
+                <p id="deleteInventoryMessage">
+                    Are you sure you want to delete <strong id="deleteInventoryCode"></strong>?
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelDeleteInventoryBtn">Keep record</button>
+                <button type="button" class="btn-delete-confirm" id="confirmDeleteInventoryBtn">
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                    Delete record
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toastNotification">System Notification</div>
     
     <!-- Custom Script -->
