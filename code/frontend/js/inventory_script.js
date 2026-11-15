@@ -29,6 +29,13 @@ const openModalBtn = document.getElementById('openAddModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 const toast = document.getElementById('toastNotification');
+const isEmployee = window.currentUser?.role === 'Employee';
+const deleteInventoryModal = document.getElementById('deleteInventoryModal');
+const deleteInventoryCode = document.getElementById('deleteInventoryCode');
+const confirmDeleteInventoryBtn = document.getElementById('confirmDeleteInventoryBtn');
+const cancelDeleteInventoryBtn = document.getElementById('cancelDeleteInventoryBtn');
+let pendingDeleteCode = null;
+let deleteTrigger = null;
 
 // Hidden input lưu mã lô (inventory code) đang sửa
 const inventoryIdInput = document.createElement('input');
@@ -173,16 +180,18 @@ function renderTable(data) {
       <td data-label="Import Date">${formatDate(item.import_date)}</td>
       <td data-label="Expiry Date">${formatDate(item.expiry_date)}</td>
       <td data-label="Status"><span class="badge ${badgeClass}">${statusText}</span></td>
-      <td data-label="Actions">
-        <div class="action-buttons" style="justify-content: flex-end;">
-          <button class="btn-icon" title="Edit Record" onclick="openEditProductModal('${invCode}')">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="btn-icon delete" title="Delete Record" onclick="deleteProduct('${invCode}')">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      </td>
+      ${isEmployee ? '' : `
+        <td data-label="Actions">
+          <div class="action-buttons" style="justify-content: flex-end;">
+            <button class="btn-icon" title="Edit Product" onclick="openEditProductModal('${invCode}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn-icon delete" title="Delete Product" onclick="deleteProduct('${invCode}', this)">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </td>
+      `}
     `;
     tableBody.appendChild(tr);
   });
@@ -282,22 +291,47 @@ async function handleFormSubmit(e) {
 }
 
 // ---------- Delete ----------
-window.deleteProduct = async function(invCode) {
-  if (!confirm(`Delete inventory record ${invCode}? Only this batch will be removed.`)) return;
+function closeDeleteConfirmation() {
+  deleteInventoryModal?.classList.remove('active');
+  pendingDeleteCode = null;
+  if (confirmDeleteInventoryBtn) {
+    confirmDeleteInventoryBtn.disabled = false;
+    confirmDeleteInventoryBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete record';
+  }
+  deleteTrigger?.focus();
+  deleteTrigger = null;
+}
 
+window.deleteProduct = function(invCode, trigger) {
+  if (isEmployee || !deleteInventoryModal) return;
+  pendingDeleteCode = invCode;
+  deleteTrigger = trigger instanceof HTMLElement ? trigger : document.activeElement;
+  deleteInventoryCode.textContent = invCode;
+  deleteInventoryModal.classList.add('active');
+  confirmDeleteInventoryBtn?.focus();
+};
+
+async function confirmDeleteProduct() {
+  if (!pendingDeleteCode || !confirmDeleteInventoryBtn) return;
+  const invCode = pendingDeleteCode;
+  confirmDeleteInventoryBtn.disabled = true;
+  confirmDeleteInventoryBtn.textContent = 'Deleting...';
   try {
-    const response = await fetch(`${API_URL}/${invCode}`, { method: "DELETE" });
+    const response = await fetch(`${API_URL}/${encodeURIComponent(invCode)}`, { method: "DELETE" });
     if (!response.ok) {
       const errData = await response.json();
       throw new Error(errData.detail || "Failed to delete record.");
     }
+    closeDeleteConfirmation();
     showToast("Deleted inventory record successfully!");
-    fetchInventory();
+    await fetchInventory();
   } catch (error) {
     console.error("Server Error Details:", error.message);
-    showToast("Something went wrong on the server. Please try again later.");
+    showToast(error.message || "Something went wrong on the server. Please try again later.");
+    confirmDeleteInventoryBtn.disabled = false;
+    confirmDeleteInventoryBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete record';
   }
-};
+}
 
 // ---------- Init ----------
 document.addEventListener('DOMContentLoaded', () => {
@@ -319,4 +353,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === modal) closeModal();
     });
   }
+
+  confirmDeleteInventoryBtn?.addEventListener('click', confirmDeleteProduct);
+  cancelDeleteInventoryBtn?.addEventListener('click', closeDeleteConfirmation);
+
+  if (deleteInventoryModal) {
+    deleteInventoryModal.addEventListener('click', event => {
+      if (event.target === deleteInventoryModal) closeDeleteConfirmation();
+    });
+  }
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && deleteInventoryModal?.classList.contains('active')) {
+      closeDeleteConfirmation();
+    }
+  });
 });
