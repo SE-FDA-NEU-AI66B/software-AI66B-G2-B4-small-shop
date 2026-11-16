@@ -17,7 +17,7 @@ if (changePasswordForm) {
 
         if (submitButton) submitButton.disabled = true;
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/change-password", {
+            const response = await fetch("https://small-shop-tailscale.onrender.com/auth/change-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ new_password: newPassword })
