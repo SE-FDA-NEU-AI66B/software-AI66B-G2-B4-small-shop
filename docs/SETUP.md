@@ -1,302 +1,470 @@
-# Setup Guide
-*There is a **Quick Start Summary** below if you don't want to read all the text.*
+# YUMS – Setup and Installation Guide
 
-## Prerequisites
+This document explains how to set up and run **YUMS (YoU Manage your Shop)** locally or in GitHub Codespaces. It also includes instructions for database initialization, frontend access, test execution, and troubleshooting.
 
-Before running the application, make sure the following software is installed on your machine:
+## 1. Prerequisites
 
-- Python 3.12
-- MySQL Server
-- Git (optional, for cloning the repository)
+Install or prepare the following tools:
 
----
+| Tool | Recommended version | Purpose |
+|---|---|---|
+| Python | 3.12 | Backend and test execution |
+| MySQL | 8.0 | Application database |
+| Git | Latest | Clone and manage the repository |
+| Docker | Latest | Run MySQL in Codespaces or locally (optional) |
+| Visual Studio Code | Latest | Recommended development environment |
 
-# RUN LOCALLY
-## 1. Navigate to the Project Directory
+> **Note:** Use Python 3.12 to match the project's GitHub Actions CI environment.
 
-Open a terminal and move to the project folder:
+## 2. Get the Source Code
+
+Clone the repository:
 
 ```bash
-cd code
+git clone https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop.git
 ```
 
----
+Move into the project directory:
 
-## 2. Create and Activate a Python Virtual Environment
+```bash
+cd software-AI66B-G2-B4-small-shop/code
+```
 
-Create a virtual environment using Python 3.12:
+All subsequent terminal commands in this guide assume that the current directory is `code/`, unless stated otherwise.
+
+## 3. Set Up the Python Environment
+
+### 3.1. Create a virtual environment
+
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+**Linux, macOS, or GitHub Codespaces:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+If your environment uses `python` instead of `python3`, you can use:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the virtual environment:
+After activation, install the project dependencies:
 
-### Windows (PowerShell)
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r backend/requirements.txt
+```
+
+Check the Python version:
+
+```bash
+python --version
+```
+
+Make sure Python 3.12 is being used.
+
+## 4. Configure the MySQL Database
+
+YUMS requires a running MySQL database. Choose **one** of the following options.
+
+### Option A: Use an Existing MySQL Server
+
+If MySQL is already installed on your machine:
+
+1. Start the MySQL service.
+2. Log in to MySQL.
+3. Create the application database if it does not already exist:
+
+```sql
+CREATE DATABASE mini_shop;
+```
+
+4. Keep your MySQL username and password available for the next configuration step.
+
+### Option B: Run MySQL with Docker
+
+This option is recommended for GitHub Codespaces or environments without a local MySQL installation.
+
+Start a MySQL 8.0 container:
+
+```bash
+docker run --name yums-mysql \
+  -e MYSQL_ROOT_PASSWORD=root12345 \
+  -e MYSQL_DATABASE=mini_shop \
+  -p 3306:3306 \
+  -d mysql:8.0
+```
+
+Wait for MySQL to become ready:
+
+```bash
+docker logs -f yums-mysql
+```
+
+Wait until the logs indicate that MySQL is ready for connections. Press `Ctrl + C` to exit the log view. The container will continue running.
+
+**If the container already exists**, do not run the creation command again. Check its status:
+
+```bash
+docker ps -a
+```
+
+Start the existing container if it is stopped:
+
+```bash
+docker start yums-mysql
+```
+
+Check its logs:
+
+```bash
+docker logs yums-mysql
+```
+
+> **Important:** `root12345` is a development password used in this example. The password in your application configuration must match the password configured when the MySQL container was created. Changing `.env` does not change the MySQL account password.
+
+## 5. Configure Environment Variables
+
+Create a `.env` file inside the `backend/` directory.
+
+The expected path is:
+
+```text
+code/
+└── backend/
+    └── .env
+```
+
+If the project provides `backend/.env.example`, copy it first:
+
+**Windows (PowerShell):**
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+Copy-Item backend/.env.example backend/.env
 ```
 
-### Windows (Command Prompt)
-
-```cmd
-.venv\Scripts\activate.bat
-```
-
-### Linux / macOS
-
-```bash
-source .venv/bin/activate
-```
-### Or with Anaconda
-**Create new environment**
-```bash
-conda create -name yums python=3.12
-```
-**Activate environment**
-```bash
-conda activate yums
-```
----
-
-## 3. Install Backend Dependencies
-
-Install all required Python packages:
-
-```bash
-pip install -r backend/requirements.txt
-```
-
----
-
-## 4. Configure Environment Variables
-
-Copy the example environment file:
-
-### Windows
-
-```cmd
-copy backend\.env.example backend\.env
-```
-
-### Linux/macOS
+**Linux, macOS, or Codespaces:**
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Open `backend/.env` and update the MySQL connection settings, especially:
+If the example file is unavailable, create `backend/.env` manually.
+
+Configure the database variables:
 
 ```env
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=change_to_your_password
+DB_PASSWORD=root12345
 DB_NAME=mini_shop
 ```
 
-Replace `change_to_your_password` with your actual MySQL password.
+Adjust these values according to your MySQL configuration.
 
-Set `JWT_SECRET_KEY` to a private, random value (do not commit it). For example,
-generate one with:
+- `DB_HOST`: MySQL server address.
+- `DB_PORT`: MySQL server port.
+- `DB_USER`: MySQL username.
+- `DB_PASSWORD`: MySQL password.
+- `DB_NAME`: Application database name.
 
-```powershell
+Also configure the JWT secret required by the application. If the project uses `JWT_SECRET_KEY`, generate a secure value with:
+
+```bash
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-Paste the generated value into `backend/.env`. The API uses it to sign and verify
-JWT access tokens.
+Copy the generated value into `backend/.env`:
 
-Administrators and managers have full access. Employees can create and view
-orders, view and maintain customers (except deleting them), and view inventory.
-The API enforces these permissions even when a user bypasses the frontend.
-
----
-
-## 5. Initialize the Database
-
-Run the database initialization script **(!!! run only once !!!)**:
-
-```bash
-python backend/database/init_db.py
+```env
+JWT_SECRET_KEY=your_generated_secret
 ```
 
-This script will create the required database tables and seed any initial data. If success, your terminal should show:
+Use the variable names expected by `backend/.env.example` and the application. Do not commit `.env` or expose real credentials in GitHub.
 
-![success_init_db](./images/init_db_success.png)
+## 6. Initialize the Database
 
----
+Make sure:
 
-## 6. Start the Backend Server
+- Your virtual environment is activated.
+- MySQL is running.
+- The database configuration in `backend/.env` is correct.
+- The `mini_shop` database exists.
 
-Run the main application:
+From the `code/` directory, run:
+
+```bash
+python -m backend.database.init_db
+```
+
+This initializes the database tables required by the application.
+
+If initialization fails, check the MySQL connection and environment variables before proceeding.
+
+## 7. Run the Backend
+
+From the `code/` directory, start the backend:
 
 ```bash
 python backend/main.py
 ```
 
-Keep this terminal window running while testing the application. Your terminal should look like this:
+If the application starts successfully, keep the terminal running.
 
-![success_backen](./images/success_backend.png)
+For GitHub Codespaces, open the **Ports** tab and make the backend port accessible if required. Use the port displayed by the application startup output.
 
----
+## 8. Run the Frontend
 
-## 7. Open the Frontend
-
-Open the following file in your web browser:
+The frontend is located in:
 
 ```text
 code/frontend/index.html
 ```
 
-You can open it by:
+You can open it using either of these methods:
 
-- Double-clicking the file, or
-- Opening it directly from your browser, or
-- Open with Live Server
+**Option A: Visual Studio Code Live Server**
 
-Log in with 2 test accounts:
+1. Open the project in Visual Studio Code.
+2. Open `frontend/index.html`.
+3. Right-click the file.
+4. Select **Open with Live Server**.
 
-| Username | Password | Role|
-| :--- | :--- | :--- |
-| havy | 12345 | Admin |
-| minhanh | minhanh | Employee |
+**Option B: Python HTTP Server**
 
-Your screen should look like this if success:
-
-![success_frontend](./images/success_frontend.png) #need fix later
----
-
-## 8. Verify the Application
-
-Test the following features:
-
-### Add Employee
-
-1. Open `employees.html`
-2. Click **Add Employee**
-3. Fill in the employee information
-4. Submit the form
-5. Verify that the new employee appears in the employee list
-
-### Update Employee
-
-1. Click the **pen icon** at the row of any existing employee
-2. Modify employee details
-3. Save changes
-4. Verify that the updated information is displayed correctly
-
-**Every changes you made on the UI will also be changed in the database. Verify it by type this queries into MySQL Query GUI**
-
-```SQL
-select * from employees;
-```
----
-
-## Troubleshooting
-
-### MySQL Connection Error
-
-Check that:
-
-- MySQL Server is running
-- The credentials in `backend/.env` are correct
-- The configured database user has permission to create and modify databases
-- The current directory matches the command's file path. If you are in `../software-AI66B-G2-B4-small-shop>`, use pip install `-r code/backend/requirements.txt`.Adjust other paths accordingly
-
-### Missing Python Packages
-
-Reinstall dependencies:
+From the `code/` directory, run:
 
 ```bash
-pip install -r backend/requirements.txt
-```
-
-### Backend Fails to Start
-
-Verify:
-
-- Python version is 3.12
-- Virtual environment is activated
-- `.env` file exists and contains valid values
-- Database initialization completed successfully
-
----
-
-## Quick Start Summary
-
-```bash
-cd code
-
-python -m venv .venv
-
-.\.venv\Scripts\activate
-
-pip install -r backend/requirements.txt
-
-copy backend/.env.example backend/.env
-
-# Update MySQL password in backend\.env
-
-python backend/database/init_db.py
-
-python backend/main.py
+python -m http.server 5500 --directory frontend
 ```
 
 Then open:
 
 ```text
-code/frontend/index.html
+http://localhost:5500
 ```
 
-Log in and test:
+For GitHub Codespaces, open port `5500` from the **Ports** tab.
 
-- Add Employee
-- Update Employee
+> Make sure the frontend is configured to communicate with the correct backend URL. In Codespaces, use the forwarded backend URL when accessing the application remotely.
 
-# Run online (deployed domain)
-Go to: [Public URL](https://yums-frontend-qjq2.onrender.com)
+## 9. Demo Accounts
 
-Log in with 2 test accounts:
+The following accounts are provided for application testing:
 
-| Username | Password | Role|
-| :--- | :--- | :--- |
-| havy | 12345 | Admin |
-| minhanh | minhanh | Employee |
+| Username | Password | Role |
+|---|---|---|
+| `havy` | `12345` | Admin |
+| `minhanh` | `minhanh` | Employee |
 
-## Guide to Running Test Cases for Sales Analytics (US11, US15, US16)
+The application provides role-based access:
 
-This document guides you through setting up the environment and executing automated test suites (`pytest`) for the User Stories related to Sales Management and Demand Prediction.
+- **Admin:** Can access management functions and administrative features.
+- **Employee:** Has access to permitted employee operations.
 
-### 1. Setting Up the Test Environment
+These are demo credentials. Do not use them as production credentials.
 
-Before running tests, ensure you are in the project's root directory and your virtual environment (`.venv`) is activated:
+## 10. Run All Test Cases
 
-- **On Windows (PowerShell / CMD):**
-  ```bash
-  .venv\Scripts\activate
+Run tests from the `code/` directory with the virtual environment activated.
 
-  - **On Linux / macOS:**
-  ```bash
-  source .venv/bin/activate
-  ```
-Install the necessary testing packages (if not already installed):
-```bash
-pip install pytest httpx
-```
-### 2. Test Execution Commands
-
-To execute all test files belonging to the Sales module:
+First, ensure dependencies are installed:
 
 ```bash
-pytest tests/test_sales.py -v
+python -m pip install -r backend/requirements.txt
 ```
-Run with Detailed Output (Debug Log / Print)
-```bash
-pytest tests/test_sales.py -v -s
-```
-### 3. Pass Criteria
-Endpoints return standard HTTP status codes (200 OK for valid data, or 400/422 for invalid test inputs).
 
-The terminal displays PASSED for each corresponding test function.
+Then execute the complete test suite:
+
+```bash
+python -m pytest tests/ -v
+```
+
+This command discovers and runs all test files under `tests/`, rather than running only sales-related tests.
+
+Useful alternatives:
+
+**Show print output during test execution:**
+
+```bash
+python -m pytest tests/ -v -s
+```
+
+**Generate a coverage report:**
+
+Install the optional coverage package:
+
+```bash
+python -m pip install pytest-cov
+```
+
+Run:
+
+```bash
+python -m pytest tests/ --cov=backend --cov-report=term-missing
+```
+
+> **Note:** Tests that access MySQL require a running database and valid environment configuration. If a test fails, check the error output to determine whether it is caused by the application, test data, dependencies, or database connection.
+
+## 11. GitHub Codespaces Quick Setup
+
+For a fresh GitHub Codespace, follow this sequence:
+
+1. Open the repository on GitHub.
+2. Select **Code → Codespaces → Create codespace**.
+3. Open the terminal and enter the project directory:
+
+```bash
+cd code
+```
+
+4. Create and activate the Python environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+5. Install dependencies:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r backend/requirements.txt
+```
+
+6. Start MySQL using the Docker instructions in [Section 4](#4-configure-the-mysql-database).
+
+7. Create and configure `backend/.env` using [Section 5](#5-configure-environment-variables).
+
+8. Initialize the database:
+
+```bash
+python backend/database/init_db.py
+```
+
+9. Start the backend:
+
+```bash
+python backend/main.py
+```
+
+10. Open the backend port from the Codespaces **Ports** tab. In another terminal, start the frontend using the instructions in [Section 8](#8-run-the-frontend).
+
+11. Run the test suite:
+
+```bash
+python -m pytest tests/ -v
+```
+
+## 12. Troubleshooting
+
+### MySQL connection refused
+
+Example:
+
+```text
+Connection refused
+```
+
+Possible causes:
+
+- MySQL is not running.
+- The MySQL container has stopped.
+- The configured host or port is incorrect.
+
+Check the Docker container:
+
+```bash
+docker ps -a
+```
+
+If it is stopped:
+
+```bash
+docker start yums-mysql
+```
+
+Check that MySQL is ready:
+
+```bash
+docker logs yums-mysql
+```
+
+### MySQL access denied
+
+Example:
+
+```text
+Access denied for user 'root'
+```
+
+Possible causes:
+
+- The username or password in `backend/.env` is incorrect.
+- The password configured in `.env` does not match the existing MySQL account.
+- The container was created previously with a different password.
+
+Check the credentials used when the MySQL container was first created. Updating `.env` alone does not reset the database password.
+
+### Missing Python package
+
+Example:
+
+```text
+ModuleNotFoundError: No module named 'jwt'
+```
+
+Activate the virtual environment and reinstall dependencies:
+
+```bash
+python -m pip install -r backend/requirements.txt
+```
+
+If the package is still missing, check that the required dependency is declared in `backend/requirements.txt`.
+
+### Database initialization fails
+
+Check that:
+
+- MySQL is running and ready.
+- The database `mini_shop` exists.
+- The database credentials in `backend/.env` are correct.
+- The command is executed from the `code/` directory.
+
+### Backend does not start
+
+Check that:
+
+- The virtual environment is activated.
+- All required dependencies are installed.
+- `backend/.env` exists and contains valid configuration.
+- MySQL is running and accessible.
+
+Review the terminal output for the specific error.
+
+### Tests fail
+
+Run the test suite with detailed output:
+
+```bash
+python -m pytest tests/ -v -s
+```
+
+Check the failure message, database state, environment variables, and installed dependencies. Make sure the test database is initialized before running tests that require it.
+
+## 13. Online Deployment
+
+The deployed YUMS application is available at:
+
+**Frontend:** [YUMS Application](https://yums-frontend-qjq2.onrender.com)
+
+The online application uses its deployed backend and database configuration. Local setup instructions in this document are intended for development and testing.

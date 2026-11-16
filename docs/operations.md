@@ -36,6 +36,70 @@ There are two ways we can do this:
 
 Note: This only can be done when we remember the exact commit code of the latest good version, and after all of us have discussed thoroughly on what's the problem and really agree to rollback, as well as notifying again once the rollback is finished to take turns to test manually.
 
+## 2. The CI Pipeline
+
+### 2.1. Overview
+
+The project uses GitHub Actions to automatically verify code changes before they are merged into the `main` branch.
+
+The CI workflow is defined in `.github/workflows/ci.yml`.
+
+The workflow performs the following tasks:
+- Checks out the source code.
+- Sets up the Python environment.
+- Installs project dependencies.
+- Checks the MySQL database connection.
+- Initializes the test database.
+- Runs automated tests using pytest.
+
+The workflow is triggered by the GitHub events configured in `ci.yml`.
+
+### 2.2. CI Workflow Steps
+
+**1. Checkout code**
+
+Uses `actions/checkout@v4` to download the repository source code into the GitHub Actions runner so that subsequent steps can access the project files.
+
+**2. Set up Python**
+
+Uses `actions/setup-python@v5` to configure Python 3.12. It also enables pip dependency caching to reduce installation time in subsequent workflow runs.
+
+**3. Install dependencies**
+
+Upgrades pip and installs the required Python packages from `backend/requirements.txt`.
+
+**4. Check MySQL connection**
+
+Connects to the MySQL test database using the environment variables configured in the workflow. This verifies that the database service is accessible before running the tests.
+
+**5. Initialize test database**
+
+Runs `python -m backend.database.init_db` to initialize the test database and prepare the database schema required by the application.
+
+**6. Run tests**
+
+Runs `python -m pytest tests/ -v` to execute the project's automated test suite and display detailed test results.
+
+### 2.3. CI Execution Evidence
+
+The following information records the actual result of the latest successful CI execution on the `main` branch.
+
+**Latest successful GitHub Actions run:**
+
+![success](images/success1.png)
+![success](images/success2.png)
+
+### 2.4. Branch Protection Rules
+
+The `main` branch is protected by GitHub branch protection rules to ensure that code changes are reviewed and verified before merging.
+
+The following requirements are enabled:
+
+1. **Require a pull request before merging:** Direct changes must go through a Pull Request.
+2. **Require at least 1 approving review:** At least one reviewer must approve the Pull Request before it can be merged.
+3. **Require status checks to pass before merging:** The required CI status check must pass before merging is allowed.
+
+These rules help prevent unreviewed or failing code from being merged into the `main` branch.
 ## 4. Known risks and technical debt
 | Item | Layer | What could happen | Plan |
 |-------|--------|-------------------------|-------|

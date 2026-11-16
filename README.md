@@ -5,6 +5,9 @@
 [Public backend URL](https://small-shop-tailscale.onrender.com)    
 [Health check link](https://small-shop-tailscale.onrender.com/health)
 
+[![CI](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/actions/workflows/ci.yml)
+
+A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 ## Description
 YUMS (YoU Manage your Shop) is a management website designed for small food and beverage
 (F&B) shop owners. It provides a centralized system to handle day-to-day operations, long-term
@@ -51,3 +54,14 @@ simplicity.
 ## Run
 
 ```docs/SETUP.MD```
+
+## Open in GitHub Codespaces
+
+You can open this project in GitHub Codespaces to develop without installing the environment locally.
+
+1. Open the repository on GitHub.
+2. Click **Code** → **Codespaces**.
+3. Click **Create codespace on main**.
+4. Open the terminal and follow the setup instructions in [`docs/SETUP.MD`](docs/SETUP.MD).
+
+For detailed installation and configuration, see [Setup Guide](docs/SETUP.MD).
