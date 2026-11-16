@@ -100,6 +100,34 @@ The following requirements are enabled:
 3. **Require status checks to pass before merging:** The required CI status check must pass before merging is allowed.
 
 These rules help prevent unreviewed or failing code from being merged into the `main` branch.
+
+ ## 3. Monitoring
+
+**Application Logs**
+
+YUMS is hosted on Render. The team can inspect backend logs through **Render Dashboard → Web Service → Logs** to investigate application errors, failed requests, and database connectivity issues. Passwords, authentication tokens, and sensitive personal information must not be logged.
+
+**Health Check**
+
+- Endpoint: `https://small-shop-tailscale.onrender.com/health`
+- HTTP 200: The application and MySQL database are healthy.
+- HTTP 503: The health check detects a failure.
+
+**Key Monitoring Metrics**
+
+| Metric | Threshold | Monitoring Method |
+|---|---|---|
+| Error Rate | 1% | Calculate HTTP 5xx responses as a percentage of total requests when sufficient log data is available. |
+| Response Time | 3 seconds (proposed) | Manually measure API request duration using Chrome DevTools → Network → Timing. |
+
+During testing, the deployed `/products` API responded in approximately **2.56 seconds**, including **2.55 seconds waiting for the server response**.
+
+**Incident Detection and Response**
+
+The team uses the `/health` endpoint, Render Logs, and manual response-time checks to investigate application problems. If the error rate exceeds 1% or response times consistently exceed 3 seconds, the team investigates backend errors, database connectivity, and recent deployments.
+
+The Render Free plan limits access to application metrics. Automated threshold-based alerting has not yet been verified.
+
 ## 4. Known risks and technical debt
 | Item | Layer | What could happen | Plan |
 |-------|--------|-------------------------|-------|
