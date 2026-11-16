@@ -26,3 +26,14 @@ A demand forecasting tool designed for small retail stores. The system allows us
 ## Run
 
 ```docs/SETUP.MD```
+
+## Open in GitHub Codespaces
+
+You can open this project in GitHub Codespaces to develop without installing the environment locally.
+
+1. Open the repository on GitHub.
+2. Click **Code** → **Codespaces**.
+3. Click **Create codespace on main**.
+4. Open the terminal and follow the setup instructions in [`docs/SETUP.MD`](docs/SETUP.MD).
+
+For detailed installation and configuration, see [Setup Guide](docs/SETUP.MD).
