@@ -1,8 +1,10 @@
 import bcrypt
+import jwt
 import pytest
 from fastapi import HTTPException
 
 from backend.services import auth
+from backend.config.api import settings
 
 
 class FakeCursor:
@@ -22,7 +24,10 @@ class FakeCursor:
         self.parameters = parameters
 
     def fetchone(self):
-        if self.user and self.parameters == (self.user["username"],):
+        if self.user and self.parameters in (
+            (self.user["username"],),
+            (self.user["user_id"],),
+        ):
             return self.user
         return None
 
@@ -52,6 +57,7 @@ def make_user(password, is_active=True, must_change_password=False):
 def test_authenticates_exact_username_and_bcrypt_password(monkeypatch):
     connection = FakeConnection(make_user("12345"))
     monkeypatch.setattr(auth, "get_connection", lambda: connection)
+    monkeypatch.setattr(settings, "JWT_SECRET_KEY", "a-test-secret-key-that-is-long-enough")
 
     result = auth.authenticate_user("havy", "12345")
 
@@ -90,3 +96,30 @@ def test_hash_password_returns_a_bcrypt_hash():
 
     assert hashed_password != "12345"
     assert bcrypt.checkpw(b"12345", hashed_password.encode("ascii"))
+
+
+def test_current_user_uses_active_database_role(monkeypatch):
+    user = make_user("12345")
+    connection = FakeConnection(user)
+    monkeypatch.setattr(auth, "get_connection", lambda: connection)
+    monkeypatch.setattr(settings, "JWT_SECRET_KEY", "a-test-secret-key-that-is-long-enough")
+    token = auth._create_access_token(user)
+    credentials = auth.HTTPAuthorizationCredentials(
+        scheme="Bearer",
+        credentials=token,
+    )
+
+    current_user = auth.get_current_user(credentials)
+
+    assert current_user["role"] == "Admin"
+    assert connection.cursor_instance.parameters == (user["user_id"],)
+    assert connection.closed
+
+
+def test_role_dependency_rejects_employee_from_management_actions():
+    dependency = auth.require_roles("Admin", "Manager")
+
+    with pytest.raises(HTTPException) as error:
+        dependency({"role": "Employee"})
+
+    assert error.value.status_code == 403
