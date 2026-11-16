@@ -61,23 +61,23 @@ def test_authenticates_exact_username_and_bcrypt_password(monkeypatch):
 
     result = auth.authenticate_user("havy", "12345")
 
-assert result["user_id"] == 1
-assert result["username"] == "havy"
-assert result["role"] == "Admin"
-assert result["must_change_password"] is False
+    assert result["user_id"] == 1
+    assert result["username"] == "havy"
+    assert result["role"] == "Admin"
+    assert result["must_change_password"] is False
 
-assert result["token_type"] == "bearer"
+    assert result["token_type"] == "bearer"
 
-claims = jwt.decode(
-    result["access_token"],
-    settings.JWT_SECRET_KEY,
-    algorithms=["HS256"],
-)
-assert claims["sub"] == "1"
+    claims = jwt.decode(
+        result["access_token"],
+        settings.JWT_SECRET_KEY,
+        algorithms=["HS256"],
+    )
+    assert claims["sub"] == "1"
 
-assert connection.cursor_instance.parameters == ("havy",)
-assert "WHERE BINARY username = BINARY %s" in connection.cursor_instance.query
-assert connection.closed
+    assert connection.cursor_instance.parameters == ("havy",)
+    assert "WHERE BINARY username = BINARY %s" in connection.cursor_instance.query
+    assert connection.closed
 
 
 @pytest.mark.parametrize(
