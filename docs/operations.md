@@ -35,3 +35,37 @@ There are two ways we can do this:
 4. Manually try to verify that the latest good version is brought back.    
 
 Note: This only can be done when we remember the exact commit code of the latest good version, and after all of us have discussed thoroughly on what's the problem and really agree to rollback, as well as notifying again once the rollback is finished to take turns to test manually.
+
+## 4. Known risks and technical debt
+| Item | Layer | What could happen | Plan |
+|-------|--------|-------------------------|-------|
+| Database based on a specific local Windows laptop only | Infrastructure | Once this machine is turned off or loses internet connection, the backend deployed on Render will lose access to the MySQL database, leading to other people’s device not being able to access the public web. | Improve database availability or find other more sustainable platforms, though might not be free (hire a professional server). |
+| API URL configuration | Code | A wrong API such as 127.0.0.1 or else may cause the frontend to fail when accessing the deployed backend. | Centralize API configuration and separate local vs product environments. |
+| Database schema synchronization | Data | Missing database columns or schema’s difference between environments may cause SQL errors thus block some features like login from working, | Maintain database migration scripts and keep schemas synchronized. |
+| Automated test coverage | Tests | Automated tests written by us are often based on the BR list, so bugs in authentication, product management or other things that aren’t covered in BR may be missed and go undetected. | Add more automated tests for critical features right when spotting something uncovered. |
+| Deployment and troubleshooting documentations | Docs | Outdated deploying instructions may cause users to feel puzzled and configure the service wrongly and difficulties when fixing errors. | Review and update the documents regularly, especially after major changes. |
+
+## 5. Maintenance plan
+| Area | What to do | Owner | How often |
+|-------|---------------|----------|--------------|
+Bug fixes | Review bug reports, reproduce issues, handle issues, test the affected features before merging changes | All (backend and frontend developers) | Whenever there’s a bug |
+| Dependency updates | Check for outdated dependencies and update them after testing | All (backend and frontend developers) | Monthly |
+| Database backups | Make backup version for the MySQL database; verify backup files and regularly test its restoration | Database administrators (oftenly @aizun and @HaVy2006) | Weekly |
+Monitoring | Check render deployment status, backend health endpoint, applications logs, and database connectivity | DevOps (mainly @ngocmai141106 at the moment) | Weekly, and ideally after every commit on main |
+| Documentation | Review and update setup instructions, API configurations, deployment procedures, rollback instructions etc. | All members | Monthly or after significant changes |
+
+## 6. Lesson learned
+*Incorrect API configuration*
+What happened: The frontend uses 127.0.0.1:8000 as the API URL. It only works when the backend was running locally, causing the Fail to fetch error when accessing the website.
+What we changed: We configured the frontend to use the correct public Render backend URL in production.
+What we would do differently next time: Separate development and production environment configurations from the beginning and verify API URLs before deployment.
+
+*Database Schema Inconsistency*
+What happened: The backend login function queried the must_change_password column but the MySQL users table didn’t have that column, thus causing the error and returning HTTP 500 error code during login.
+What we changed: We added that missing column to the MySQL database while maintaining the existing user records.
+What we would do next time: Maintain database migration scripts and test database schema compatibility before deploying backend changes.
+
+*Database connectivity and deployment challenges*
+What happened: The deployed backend on Render depends on a MySQL database hosted on a local Windows machine (@ngocmai141106’s) so once the device is turned off, connectivity issues could make the application fail to run even when the backend service is still running.
+What we changed: We tried to configure Tailscale, TCP replay and add a health endpoint for the backend to diagnose connection problems. However, this problem is still unsolved and the device above has to stay turned on whenever needed.
+What we would do differently next time: Possibly plan infrastructure dependencies earlier and differently, document network configuration and test database connectivity and recovery procedures before deployment.
