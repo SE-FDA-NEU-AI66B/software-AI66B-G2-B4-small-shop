@@ -1,9 +1,35 @@
 # YUMS (YoU Manage your Shop)
 
-[Public link](https://yums-frontend-qjq2.onrender.com)
+## Links
+[Public frontend URL](https://yums-frontend-qjq2.onrender.com)    
+[Public backend URL](https://small-shop-tailscale.onrender.com)    
+[Health check link](https://small-shop-tailscale.onrender.com/health)
 
-A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
+## Description
+YUMS (YoU Manage your Shop) is a management website designed for small food and beverage
+(F&B) shop owners. It provides a centralized system to handle day-to-day operations, long-term
+information tracking, and specially customized to fit small shops’ requirements and preferences in
+simplicity.
 
+## Demo accounts 
+| Username | Password | Role|
+| :--- | :--- | :--- |
+| havy | 12345 | Admin |
+| minhanh | minhanh | Employee |
+
+## CI badges
+
+## P0 stories
+| P0 stories | Screen start |
+|---|---|
+| US01: Order creation | \order_create_edit.html |
+| US02: Order delivery status | \order_view.html |
+| US06: Orders viewing - P0 | \order_view.html |
+| US11: Sale dashboard - P0 | \sales.html |
+| US15: Demand forecasting - P0 | \sales.html |
+| US16: Restock recommendation - P0 | sale.html |
+
+## The Team
 | Criteria      | Info                                      |
 |-------------- |-------------------------------------------|
 | Group         | G2                                        |
@@ -13,6 +39,7 @@ A demand forecasting tool designed for small retail stores. The system allows us
 | API links     | https://software-ai66b-g2-b4-small-shop.onrender.com/docs |
 | Deployed link | https://yums-frontend-qjq2.onrender.com |
 
+## Sprints
 |Sprint No.  | Scrum Master | Scrum Master's account |
 |----------- | ----------- | --------------------- |
 |1           | Nguyen Ha Vy | @HaVy2006 |
