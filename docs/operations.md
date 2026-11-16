@@ -101,34 +101,32 @@ The following requirements are enabled:
 
 These rules help prevent unreviewed or failing code from being merged into the `main` branch.
 
- ## 3.Moritoring
+ ## 3. Monitoring
 
 **Application Logs**
 
-YUMS uses Render to host the FastAPI backend. The team can monitor application activity and investigate errors through **Render Dashboard → Web Service → Logs**.
-
-Logs are used to identify application errors, failed requests, and database connection issues. Sensitive information, such as passwords, authentication tokens, and customers' personal data, must not be logged.
+YUMS is hosted on Render. The team can inspect backend logs through **Render Dashboard → Web Service → Logs** to investigate application errors, failed requests, and database connectivity issues. Passwords, authentication tokens, and sensitive personal information must not be logged.
 
 **Health Check**
 
-- **Endpoint:** `https://small-shop-tailscale.onrender.com/health`
-- **HTTP 200:** The application and MySQL database are healthy.
-- **HTTP 503:** The application detects a health-check failure, such as an unavailable database.
+- Endpoint: `https://small-shop-tailscale.onrender.com/health`
+- HTTP 200: The application and MySQL database are healthy.
+- HTTP 503: The health check detects a failure.
 
 **Key Monitoring Metrics**
 
 | Metric | Threshold | Monitoring Method |
 |---|---|---|
-| Error Rate | 1% | Calculate the percentage of HTTP 5xx responses and investigate Render Logs if the threshold is exceeded. |
-| Response Time | 3 seconds (proposed) | Measure API response times using Chrome DevTools (Network → Timing). |
+| Error Rate | 1% | Calculate HTTP 5xx responses as a percentage of total requests when sufficient log data is available. |
+| Response Time | 3 seconds (proposed) | Manually measure API request duration using Chrome DevTools → Network → Timing. |
 
-During testing, the deployed `/products` API returned a total response time of approximately **2.56 seconds**, including **2.55 seconds waiting for the server response**.
+During testing, the deployed `/products` API responded in approximately **2.56 seconds**, including **2.55 seconds waiting for the server response**.
 
 **Incident Detection and Response**
 
-The team checks the `/health` endpoint and Render Logs to detect application failures. If the error rate exceeds 1% or response times consistently exceed 3 seconds, the team investigates backend errors, MySQL connectivity, and recent deployments.
+The team uses the `/health` endpoint, Render Logs, and manual response-time checks to investigate application problems. If the error rate exceeds 1% or response times consistently exceed 3 seconds, the team investigates backend errors, database connectivity, and recent deployments.
 
-Automated threshold-based alerts have not yet been verified; these checks can currently be performed manually.
+The Render Free plan limits access to application metrics. Automated threshold-based alerting has not yet been verified.
 
 ## 4. Known risks and technical debt
 | Item | Layer | What could happen | Plan |
