@@ -2,6 +2,8 @@
 
 [Public link](https://yums-frontend-qjq2.onrender.com)
 
+[![CI](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/SE-FDA-NEU-AI66B/software-AI66B-G2-B4-small-shop/actions/workflows/ci.yml)
+
 A demand forecasting tool designed for small retail stores. The system allows users to upload historical sales data, forecast product demand for the upcoming weeks or months, and receive inventory replenishment recommendations.
 
 | Criteria      | Info                                      |
