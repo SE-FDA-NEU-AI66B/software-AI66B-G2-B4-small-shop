@@ -59,7 +59,15 @@ Start: 05/11/2026; End: 18/11/2026
 
 Goal: Complete the app with final touches. Deploy to online website.
 
-- Committed:  issues
-- Completed:  issues with 6 sub-issues
-- Velocity: 
-- Total commits:  (all repo commits: )
+- Committed:  15 issues
+- Completed:  15 issues with
+- Velocity: 75
+- Total commits:  101 (all repo commits: 487)
+
+| Sprint | Goal | Committed | Completed | Velocity | Commits | Repo Total |
+|---------|---------|---------:|---------:|---------:|---------:|---------:|
+| Sprint 1 | Requirements, personas, stories, business rules, UI definition | 22 | 15 | 15 | 88 | 88 |
+| Sprint 2 | Database, architecture, employee CRUD, frontend foundation | 30 | 30 (44 subs) | 75 | 129 | 217 |
+| Sprint 3 | Complete all P0 stories end-to-end with real data | 30 | 30 (42 subs) | 75 | 118 | 335 |
+| Sprint 4 | Automated testing coverage for all P0 stories | 15 | 15 (6 subs) | 54 | 31 | 386 |
+| Sprint 5 | Final polishing and production deployment | 15 | 15 | 75 | 101 | 487 |
