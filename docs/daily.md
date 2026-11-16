@@ -123,3 +123,9 @@
 ## 14/11/2026
 - @aizun: after 1 week of digitally crippled, as my laptop exploded :( i finally comeback to add a phone friendly design for employee pages. 
 - @oanhtran020906-sys: fix 2 pages include inventory and sales
+
+## 15/11/2026:
+- @aizun: THE APP IS OFFICIALLY COMPLETED! 13 hours of none stop coding. The winner takes it all
+
+## 16/11/2026:
+- @oanthran020906-sys: Set up GitHub Actions CI workflow, Verify CI pipeline and collect execution evidence, Configure branch protection rules for main, Document CI pipeline in operations.md and Add GitHub Actions CI badge to README.
