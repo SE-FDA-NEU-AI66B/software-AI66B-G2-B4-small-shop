@@ -348,7 +348,7 @@ python -m pip install -r backend/requirements.txt
 8. Initialize the database:
 
 ```bash
-python -m backend.database.init_db
+python backend/database/init_db.py
 ```
 
 9. Start the backend:
