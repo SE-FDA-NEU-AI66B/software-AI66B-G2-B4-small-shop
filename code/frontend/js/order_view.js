@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://small-shop-tailscale.onrender.com";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 const params = new URLSearchParams(window.location.search);
 const orderId = params.get("id");
@@ -316,16 +316,7 @@ async function loadOrderDetails() {
         return;
     }
 
-    orderItems.innerHTML = `
-        <tr>
-            <td colspan="5">
-                <div class="loading-state">
-                    <span class="loading-spinner"></span>
-                    <span>Loading order details...</span>
-                </div>
-            </td>
-        </tr>
-    `;
+    showTableLoading(orderItems, 5, "Loading order details...");
     try {
         const response = await fetch(
             `${API_BASE_URL}/orders/${encodeURIComponent(orderId)}`

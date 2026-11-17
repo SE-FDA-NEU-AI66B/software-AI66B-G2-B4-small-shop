@@ -1,5 +1,5 @@
-const API_URL = "https://small-shop-tailscale.onrender.com/inventory";
-const CATEGORIES_URL = "https://small-shop-tailscale.onrender.com/categories";
+const API_URL = "http://127.0.0.1:8000/inventory";
+const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
 
 // Mỗi phần tử = MỘT lô nhập kho (một dòng trong bảng inventory), không gộp theo sản phẩm
 let records = [];
@@ -127,6 +127,7 @@ async function loadCategories() {
 
 // ---------- Data ----------
 async function fetchInventory() {
+  showTableLoading(tableBody, 9, "Loading inventory...");
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error("Failed to load inventory from server.");
@@ -144,6 +145,13 @@ async function fetchInventory() {
     filterData();
   } catch (error) {
     console.error("Server Error Details:", error.message);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="9" style="text-align: center; color: #b42318; padding: 30px;">
+          Unable to load inventory. Please try again.
+        </td>
+      </tr>
+    `;
     showToast("Something went wrong on the server. Please try again later.");
   }
 }

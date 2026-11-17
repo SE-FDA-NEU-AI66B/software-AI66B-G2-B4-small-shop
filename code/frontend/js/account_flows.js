@@ -15,9 +15,9 @@ if (changePasswordForm) {
             return;
         }
 
-        if (submitButton) submitButton.disabled = true;
+        showButtonLoading(submitButton, "Changing password...");
         try {
-            const response = await fetch("https://small-shop-tailscale.onrender.com/auth/change-password", {
+            const response = await fetch("http://127.0.0.1:8000/auth/change-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ new_password: newPassword })
@@ -38,7 +38,7 @@ if (changePasswordForm) {
                 message.textContent = error.message || "Unable to connect to the server.";
             }
         } finally {
-            if (submitButton) submitButton.disabled = false;
+            hideButtonLoading(submitButton);
         }
     });
 }

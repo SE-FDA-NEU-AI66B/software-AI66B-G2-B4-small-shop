@@ -1,4 +1,4 @@
-const API_SALES_URL = "https://small-shop-tailscale.onrender.com/sales";
+const API_SALES_URL = "http://127.0.0.1:8000/sales";
 const toast = document.getElementById('toastNotification');
 
 let salesLineChartInstance = null;
@@ -41,6 +41,7 @@ function resetSalesKpis() {
 }
 
 async function fetchSalesOverview() {
+  showTableLoading("topSellingTableBody", 7, "Loading sales...");
   const topNDropdown = document.getElementById('topNDropdown');
   const categoryInput = document.getElementById('categoryInput');
   const timeframeFilter = document.getElementById('timeframeFilter');
@@ -64,6 +65,8 @@ async function fetchSalesOverview() {
     renderSalesOverviewDashboard(data, { topN, category, timeframe });
   } catch (error) {
     resetSalesKpis();
+    document.getElementById('topSellingTableBody').innerHTML =
+      `<tr><td colspan="7" class="table-message">Unable to load sales data. Please try again.</td></tr>`;
     console.error("Server Error Details:", error.message); 
     showToast("Something went wrong on the server. Please try again later.");
   }
@@ -229,6 +232,7 @@ function renderSalesTable(dataToRender) {
 }
 
 async function fetchPredictions() {
+  showTableLoading("predictionTableBody", 6, "Loading predictions...");
   const selectElement = document.getElementById('predictionWindowSelect');
   const windowDays = parseInt(selectElement ? selectElement.value : "30");
 
@@ -241,6 +245,8 @@ async function fetchPredictions() {
     const data = await response.json();
     renderPredictionTable(data, windowDays);
   } catch (error) {
+    document.getElementById('predictionTableBody').innerHTML =
+      `<tr><td colspan="6" class="table-message">Unable to load predictions. Please try again.</td></tr>`;
     showToast(error.message);
   }
 }
@@ -291,7 +297,7 @@ async function loadSalesCategoriesDropdown() {
   if (!categorySelect) return;
 
   try {
-    const response = await fetch("https://small-shop-tailscale.onrender.com/categories");
+    const response = await fetch("http://127.0.0.1:8000/categories");
     if (!response.ok) throw new Error("Failed to load categories");
     
     const categories = await response.json();
