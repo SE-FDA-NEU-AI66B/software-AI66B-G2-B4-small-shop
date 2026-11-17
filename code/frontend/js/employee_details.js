@@ -100,11 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        showTableLoading(recentOrdersBody, 6, 'Loading orders...');
         try {
             const response = await fetch(
                 isEmployee
-                    ? 'https://small-shop-tailscale.onrender.com/auth/me/employee-details'
-                    : `https://small-shop-tailscale.onrender.com/employees/${encodeURIComponent(employeeId)}/details`
+                    ? 'http://127.0.0.1:8000/auth/me/employee-details'
+                    : `http://127.0.0.1:8000/employees/${encodeURIComponent(employeeId)}/details`
             );
             const result = await response.json().catch(() => null);
             if (!response.ok) {

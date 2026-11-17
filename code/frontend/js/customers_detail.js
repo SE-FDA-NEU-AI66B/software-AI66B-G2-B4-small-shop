@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE_URL = 'https://small-shop-tailscale.onrender.com';
+    const API_BASE_URL = 'http://127.0.0.1:8000';
     const customerId = Number(new URLSearchParams(window.location.search).get('id'));
     const recentOrdersBody = document.getElementById('recentOrdersBody');
 
@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        showTableLoading(recentOrdersBody, 6, 'Loading orders...');
         try {
             const response = await fetch(
                 `${API_BASE_URL}/customers/${customerId}/details`
