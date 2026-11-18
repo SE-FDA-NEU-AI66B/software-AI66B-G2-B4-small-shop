@@ -1,4 +1,5 @@
-const API_SALES_URL = "http://127.0.0.1:8000/sales";
+
+const API_SALES_URL = "https://small-shop-tailscale.onrender.com/sales";
 const toast = document.getElementById('toastNotification');
 
 let salesLineChartInstance = null;

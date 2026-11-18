@@ -1,5 +1,5 @@
-const API_URL = "http://127.0.0.1:8000/inventory";
-const CATEGORIES_URL = "http://127.0.0.1:8000/categories";
+const API_URL = "https://small-shop-tailscale.onrender.com/inventory";
+const CATEGORIES_URL = "https://small-shop-tailscale.onrender.com/categories";
 
 // Mỗi phần tử = MỘT lô nhập kho (một dòng trong bảng inventory), không gộp theo sản phẩm
 let records = [];
